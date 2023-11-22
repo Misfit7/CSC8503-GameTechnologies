@@ -4,16 +4,16 @@ events:
   -
     kind: "message-v1"
     backtrace:
-      - "H:/Desktop/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineSystem.cmake:233 (message)"
+      - "C:/Users/84251/Desktop/C++/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineSystem.cmake:233 (message)"
       - "CMakeLists.txt:5 (project)"
     message: |
       The system is: Windows - 10.0 - AMD64
   -
     kind: "message-v1"
     backtrace:
-      - "H:/Desktop/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
-      - "H:/Desktop/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
-      - "H:/Desktop/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "C:/Users/84251/Desktop/C++/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Users/84251/Desktop/C++/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Users/84251/Desktop/C++/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
       - "CMakeLists.txt:5 (project)"
     message: |
       Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
@@ -23,36 +23,36 @@ events:
       
       The output was:
       0
-      MSBuild version 17.7.2+d6990bcfa for .NET Framework
-      Build started 22/11/2023 14:24:24.
+      用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
+      版权所有(C) Microsoft Corporation。保留所有权利。
       
-      Project "C:\\Users\\c2069089\\Desktop\\CSC8503 2023\\CMakeFiles\\3.28.0-rc5\\CompilerIdCXX\\CompilerIdCXX.vcxproj" on node 1 (default targets).
+      生成启动时间为 22/11/2023 17:12:09。
+      节点 1 上的项目“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\3.28.0-rc5\\CompilerIdCXX\\CompilerIdCXX.vcxproj”(默认目标)。
       PrepareForBuild:
-        Creating directory "Debug\\".
-        Creating directory "Debug\\CompilerIdCXX.tlog\\".
+        正在创建目录“Debug\\”。
+        正在创建目录“Debug\\CompilerIdCXX.tlog\\”。
       InitializeBuildStatus:
-        Creating "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-        Touching "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
+        正在创建“Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
       ClCompile:
-        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc143.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
+        F:\\Visual Stuio 2019\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /nologo /W0 /WX- /diagnostics:column /Od /D _MBCS /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\\\" /Fd"Debug\\vc142.pdb" /external:W0 /Gd /TP /FC /errorReport:queue CMakeCXXCompilerId.cpp
         CMakeCXXCompilerId.cpp
       Link:
-        C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
-        CompilerIdCXX.vcxproj -> C:\\Users\\c2069089\\Desktop\\CSC8503 2023\\CMakeFiles\\3.28.0-rc5\\CompilerIdCXX\\CompilerIdCXX.exe
+        F:\\Visual Stuio 2019\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:".\\CompilerIdCXX.exe" /INCREMENTAL:NO /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:".\\CompilerIdCXX.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:".\\CompilerIdCXX.lib" /MACHINE:X64 Debug\\CMakeCXXCompilerId.obj
+        CompilerIdCXX.vcxproj -> C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\3.28.0-rc5\\CompilerIdCXX\\CompilerIdCXX.exe
       PostBuildEvent:
         for %%i in (cl.exe) do @echo CMAKE_CXX_COMPILER=%%~$PATH:i
         :VCEnd
-        CMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\Hostx64\\x64\\cl.exe
+        CMAKE_CXX_COMPILER=F:\\Visual Stuio 2019\\VC\\Tools\\MSVC\\14.29.30133\\bin\\Hostx64\\x64\\cl.exe
       FinalizeBuildStatus:
-        Deleting file "Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild".
-        Touching "Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate".
-      Done Building Project "C:\\Users\\c2069089\\Desktop\\CSC8503 2023\\CMakeFiles\\3.28.0-rc5\\CompilerIdCXX\\CompilerIdCXX.vcxproj" (default targets).
+        正在删除文件“Debug\\CompilerIdCXX.tlog\\unsuccessfulbuild”。
+        正在对“Debug\\CompilerIdCXX.tlog\\CompilerIdCXX.lastbuildstate”执行 Touch 任务。
+      已完成生成项目“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\3.28.0-rc5\\CompilerIdCXX\\CompilerIdCXX.vcxproj”(默认目标)的操作。
       
-      Build succeeded.
-          0 Warning(s)
-          0 Error(s)
+      已成功生成。
+          0 个警告
+          0 个错误
       
-      Time Elapsed 00:00:00.68
+      已用时间 00:00:03.58
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -60,19 +60,19 @@ events:
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.vcxproj"
       
       The CXX compiler identification is MSVC, found in:
-        C:/Users/c2069089/Desktop/CSC8503 2023/CMakeFiles/3.28.0-rc5/CompilerIdCXX/CompilerIdCXX.exe
+        C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/3.28.0-rc5/CompilerIdCXX/CompilerIdCXX.exe
       
   -
     kind: "try_compile-v1"
     backtrace:
-      - "H:/Desktop/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
-      - "H:/Desktop/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "C:/Users/84251/Desktop/C++/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeDetermineCompilerABI.cmake:57 (try_compile)"
+      - "C:/Users/84251/Desktop/C++/cmake-3.28.0-rc5-windows-x86_64/share/cmake-3.28/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
       - "CMakeLists.txt:5 (project)"
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/c2069089/Desktop/CSC8503 2023/CMakeFiles/CMakeScratch/TryCompile-hkpmrm"
-      binary: "C:/Users/c2069089/Desktop/CSC8503 2023/CMakeFiles/CMakeScratch/TryCompile-hkpmrm"
+      source: "C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-5j23h3"
+      binary: "C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-5j23h3"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
@@ -81,39 +81,39 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/c2069089/Desktop/CSC8503 2023/CMakeFiles/CMakeScratch/TryCompile-hkpmrm'
+        Change Dir: 'C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-5j23h3'
         
-        Run Build Command(s): "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe" cmTC_f9376.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=17.0 /v:n
-        MSBuild version 17.7.2+d6990bcfa for .NET Framework
-        Build started 22/11/2023 14:24:25.
+        Run Build Command(s): "F:/Visual Stuio 2019/MSBuild/Current/Bin/MSBuild.exe" cmTC_4d43a.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
+        用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
+        版权所有(C) Microsoft Corporation。保留所有权利。
         
-        Project "C:\\Users\\c2069089\\Desktop\\CSC8503 2023\\CMakeFiles\\CMakeScratch\\TryCompile-hkpmrm\\cmTC_f9376.vcxproj" on node 1 (default targets).
+        生成启动时间为 22/11/2023 17:12:13。
+        节点 1 上的项目“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-5j23h3\\cmTC_4d43a.vcxproj”(默认目标)。
         PrepareForBuild:
-          Creating directory "cmTC_f9376.dir\\Debug\\".
-          Creating directory "C:\\Users\\c2069089\\Desktop\\CSC8503 2023\\CMakeFiles\\CMakeScratch\\TryCompile-hkpmrm\\Debug\\".
-          Creating directory "cmTC_f9376.dir\\Debug\\cmTC_f9376.tlog\\".
+          正在创建目录“cmTC_4d43a.dir\\Debug\\”。
+          正在创建目录“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-5j23h3\\Debug\\”。
+          正在创建目录“cmTC_4d43a.dir\\Debug\\cmTC_4d43a.tlog\\”。
         InitializeBuildStatus:
-          Creating "cmTC_f9376.dir\\Debug\\cmTC_f9376.tlog\\unsuccessfulbuild" because "AlwaysCreate" was specified.
-          Touching "cmTC_f9376.dir\\Debug\\cmTC_f9376.tlog\\unsuccessfulbuild".
+          正在创建“cmTC_4d43a.dir\\Debug\\cmTC_4d43a.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
         ClCompile:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_f9376.dir\\Debug\\\\" /Fd"cmTC_f9376.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "H:\\Desktop\\cmake-3.28.0-rc5-windows-x86_64\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
-          Microsoft (R) C/C++ Optimizing Compiler Version 19.37.32824 for x64
+          F:\\Visual Stuio 2019\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_4d43a.dir\\Debug\\\\" /Fd"cmTC_4d43a.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\84251\\Desktop\\C++\\cmake-3.28.0-rc5-windows-x86_64\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
+          用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30152 版
+          版权所有(C) Microsoft Corporation。保留所有权利。
           CMakeCXXCompilerABI.cpp
-          Copyright (C) Microsoft Corporation.  All rights reserved.
-          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_f9376.dir\\Debug\\\\" /Fd"cmTC_f9376.dir\\Debug\\vc143.pdb" /external:W1 /Gd /TP /errorReport:queue "H:\\Desktop\\cmake-3.28.0-rc5-windows-x86_64\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_4d43a.dir\\Debug\\\\" /Fd"cmTC_4d43a.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\84251\\Desktop\\C++\\cmake-3.28.0-rc5-windows-x86_64\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
         Link:
-          C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.37.32822\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\c2069089\\Desktop\\CSC8503 2023\\CMakeFiles\\CMakeScratch\\TryCompile-hkpmrm\\Debug\\cmTC_f9376.exe" /INCREMENTAL /ILK:"cmTC_f9376.dir\\Debug\\cmTC_f9376.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/c2069089/Desktop/CSC8503 2023/CMakeFiles/CMakeScratch/TryCompile-hkpmrm/Debug/cmTC_f9376.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/c2069089/Desktop/CSC8503 2023/CMakeFiles/CMakeScratch/TryCompile-hkpmrm/Debug/cmTC_f9376.lib" /MACHINE:X64  /machine:x64 cmTC_f9376.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_f9376.vcxproj -> C:\\Users\\c2069089\\Desktop\\CSC8503 2023\\CMakeFiles\\CMakeScratch\\TryCompile-hkpmrm\\Debug\\cmTC_f9376.exe
+          F:\\Visual Stuio 2019\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-5j23h3\\Debug\\cmTC_4d43a.exe" /INCREMENTAL /ILK:"cmTC_4d43a.dir\\Debug\\cmTC_4d43a.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-5j23h3/Debug/cmTC_4d43a.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-5j23h3/Debug/cmTC_4d43a.lib" /MACHINE:X64  /machine:x64 cmTC_4d43a.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_4d43a.vcxproj -> C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-5j23h3\\Debug\\cmTC_4d43a.exe
         FinalizeBuildStatus:
-          Deleting file "cmTC_f9376.dir\\Debug\\cmTC_f9376.tlog\\unsuccessfulbuild".
-          Touching "cmTC_f9376.dir\\Debug\\cmTC_f9376.tlog\\cmTC_f9376.lastbuildstate".
-        Done Building Project "C:\\Users\\c2069089\\Desktop\\CSC8503 2023\\CMakeFiles\\CMakeScratch\\TryCompile-hkpmrm\\cmTC_f9376.vcxproj" (default targets).
+          正在删除文件“cmTC_4d43a.dir\\Debug\\cmTC_4d43a.tlog\\unsuccessfulbuild”。
+          正在对“cmTC_4d43a.dir\\Debug\\cmTC_4d43a.tlog\\cmTC_4d43a.lastbuildstate”执行 Touch 任务。
+        已完成生成项目“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-5j23h3\\cmTC_4d43a.vcxproj”(默认目标)的操作。
         
-        Build succeeded.
-            0 Warning(s)
-            0 Error(s)
+        已成功生成。
+            0 个警告
+            0 个错误
         
-        Time Elapsed 00:00:00.82
+        已用时间 00:00:00.63
         
       exitCode: 0
 ...

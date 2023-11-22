@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/c2069089/Desktop/CSC8503 2023/CSC8503
+# Install script for directory: C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

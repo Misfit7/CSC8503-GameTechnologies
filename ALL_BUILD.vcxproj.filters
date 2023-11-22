@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <CustomBuild Include="C:\Users\c2069089\Desktop\CSC8503 2023\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\84251\Desktop\C++\GameTechnologies\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>

@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/c2069089/Desktop/CSC8503 2023
+# Install script for directory: C:/Users/84251/Desktop/C++/GameTechnologies
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,22 +34,22 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/c2069089/Desktop/CSC8503 2023/NCLCoreClasses/cmake_install.cmake")
+  include("C:/Users/84251/Desktop/C++/GameTechnologies/NCLCoreClasses/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/c2069089/Desktop/CSC8503 2023/CSC8503CoreClasses/cmake_install.cmake")
+  include("C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503CoreClasses/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/c2069089/Desktop/CSC8503 2023/OpenGLRendering/cmake_install.cmake")
+  include("C:/Users/84251/Desktop/C++/GameTechnologies/OpenGLRendering/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("C:/Users/c2069089/Desktop/CSC8503 2023/CSC8503/cmake_install.cmake")
+  include("C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/cmake_install.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
@@ -60,5 +60,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "C:/Users/c2069089/Desktop/CSC8503 2023/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/84251/Desktop/C++/GameTechnologies/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

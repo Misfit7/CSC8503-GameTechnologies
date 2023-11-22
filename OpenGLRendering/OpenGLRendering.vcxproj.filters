@@ -1,69 +1,69 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\CMakeFiles\OpenGLRendering.dir\cmake_pch.cxx">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\CMakeFiles\OpenGLRendering.dir\cmake_pch.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\OGLTexture.h">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\OGLTexture.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\OGLShader.h">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\OGLShader.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\OGLRenderer.h">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\OGLRenderer.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\OGLMesh.h">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\OGLMesh.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\OGLComputeShader.h">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\OGLComputeShader.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\OGLTexture.cpp">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\OGLTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\OGLShader.cpp">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\OGLShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\OGLRenderer.cpp">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\OGLRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\OGLMesh.cpp">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\OGLMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\OGLComputeShader.cpp">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\OGLComputeShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\glad\gl.h">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\glad\gl.h">
       <Filter>GLAD</Filter>
     </ClCompile>
-    <ClCompile Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\glad\gl.c">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\glad\gl.c">
       <Filter>GLAD</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\CMakeFiles\OpenGLRendering.dir\Debug\cmake_pch.hxx">
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\CMakeFiles\OpenGLRendering.dir\Debug\cmake_pch.hxx">
       <Filter>Precompile Header File</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\CMakeFiles\OpenGLRendering.dir\Release\cmake_pch.hxx">
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\CMakeFiles\OpenGLRendering.dir\Release\cmake_pch.hxx">
       <Filter>Precompile Header File</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="C:\Users\c2069089\Desktop\CSC8503 2023\OpenGLRendering\CMakeLists.txt" />
+    <CustomBuild Include="C:\Users\84251\Desktop\C++\GameTechnologies\OpenGLRendering\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="GLAD">
-      <UniqueIdentifier>{23488075-D83E-3BC1-82D7-7B03CCFEBAFA}</UniqueIdentifier>
+      <UniqueIdentifier>{820608E2-F48C-3F18-9B16-58A965AF3C27}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{28C267EF-8E51-335A-91FB-1BA771EB7A3E}</UniqueIdentifier>
+      <UniqueIdentifier>{3178A9E7-E9A7-35D3-97FC-D5BF31C7390B}</UniqueIdentifier>
     </Filter>
     <Filter Include="Precompile Header File">
-      <UniqueIdentifier>{C457A110-1784-342C-9A17-F6F89DD7F4A5}</UniqueIdentifier>
+      <UniqueIdentifier>{9D91A99C-E8E1-390F-B6BD-821780D46F67}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{AFB5C0E2-CB81-365B-A7C4-561F78B76109}</UniqueIdentifier>
+      <UniqueIdentifier>{B46CC580-0BAD-3EC5-8336-0795B7CC021A}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
