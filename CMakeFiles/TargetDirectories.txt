@@ -1,0 +1,6 @@
+C:/Users/c2069089/Desktop/CSC8503 2023/CMakeFiles/ALL_BUILD.dir
+C:/Users/c2069089/Desktop/CSC8503 2023/CMakeFiles/ZERO_CHECK.dir
+C:/Users/c2069089/Desktop/CSC8503 2023/NCLCoreClasses/CMakeFiles/NCLCoreClasses.dir
+C:/Users/c2069089/Desktop/CSC8503 2023/CSC8503CoreClasses/CMakeFiles/CSC8503CoreClasses.dir
+C:/Users/c2069089/Desktop/CSC8503 2023/OpenGLRendering/CMakeFiles/OpenGLRendering.dir
+C:/Users/c2069089/Desktop/CSC8503 2023/CSC8503/CMakeFiles/CSC8503.dir
