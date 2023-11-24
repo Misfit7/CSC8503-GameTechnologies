@@ -530,7 +530,7 @@ void TutorialGame::MoveSelectedObject() {
         return;//we haven't selected anything!
     }
     //Push the selected object!
-    if (Window::GetMouse()->ButtonPressed(NCL::MouseButtons::Right)) {
+    if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::Right)) {
         Ray ray = CollisionDetection::BuildRayFromMouse(world->GetMainCamera());
 
         RayCollision closestCollision;

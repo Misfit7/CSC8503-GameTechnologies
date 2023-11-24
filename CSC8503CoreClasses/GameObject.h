@@ -3,90 +3,120 @@
 #include "CollisionVolume.h"
 
 using std::vector;
+using namespace std;
 
 namespace NCL::CSC8503 {
-	class NetworkObject;
-	class RenderObject;
-	class PhysicsObject;
+    class NetworkObject;
+    class RenderObject;
+    class PhysicsObject;
 
-	class GameObject	{
-	public:
-		GameObject(const std::string& name = "");
-		~GameObject();
+    enum class CollisionLayer {
+        Default = 1,
+        Wall = 2,
+        Player = 4,
+        Enemy = 8,
+        Coins = 16,
+        Floor = 32,
+        UI = 256,
+        Finish = 512
+    };
 
-		void SetBoundingVolume(CollisionVolume* vol) {
-			boundingVolume = vol;
-		}
+    enum AxisLock {
+        LINEAR_X = (1 << 0),
+        LINEAR_Y = (1 << 1),
+        LINEAR_Z = (1 << 2),
+        ANGULAR_X = (1 << 3),
+        ANGULAR_Y = (1 << 4),
+        ANGULAR_Z = (1 << 5)
+    };
 
-		const CollisionVolume* GetBoundingVolume() const {
-			return boundingVolume;
-		}
+    class GameObject {
+    public:
+        GameObject(const std::string& name = "");
+        ~GameObject();
 
-		bool IsActive() const {
-			return isActive;
-		}
+        void SetBoundingVolume(CollisionVolume* vol) {
+            boundingVolume = vol;
+        }
 
-		Transform& GetTransform() {
-			return transform;
-		}
+        const CollisionVolume* GetBoundingVolume() const {
+            return boundingVolume;
+        }
 
-		RenderObject* GetRenderObject() const {
-			return renderObject;
-		}
+        bool IsActive() const {
+            return isActive;
+        }
 
-		PhysicsObject* GetPhysicsObject() const {
-			return physicsObject;
-		}
+        Transform& GetTransform() {
+            return transform;
+        }
 
-		NetworkObject* GetNetworkObject() const {
-			return networkObject;
-		}
+        RenderObject* GetRenderObject() const {
+            return renderObject;
+        }
 
-		void SetRenderObject(RenderObject* newObject) {
-			renderObject = newObject;
-		}
+        PhysicsObject* GetPhysicsObject() const {
+            return physicsObject;
+        }
 
-		void SetPhysicsObject(PhysicsObject* newObject) {
-			physicsObject = newObject;
-		}
+        NetworkObject* GetNetworkObject() const {
+            return networkObject;
+        }
 
-		const std::string& GetName() const {
-			return name;
-		}
+        void SetRenderObject(RenderObject* newObject) {
+            renderObject = newObject;
+        }
 
-		virtual void OnCollisionBegin(GameObject* otherObject) {
-			//std::cout << "OnCollisionBegin event occured!\n";
-		}
+        void SetPhysicsObject(PhysicsObject* newObject) {
+            physicsObject = newObject;
+        }
 
-		virtual void OnCollisionEnd(GameObject* otherObject) {
-			//std::cout << "OnCollisionEnd event occured!\n";
-		}
+        const std::string& GetName() const {
+            return name;
+        }
 
-		bool GetBroadphaseAABB(Vector3&outsize) const;
+        virtual void OnCollisionBegin(GameObject* otherObject) {
+            //std::cout << "OnCollisionBegin event occured!\n";
+        }
 
-		void UpdateBroadphaseAABB();
+        virtual void OnCollisionEnd(GameObject* otherObject) {
+            //std::cout << "OnCollisionEnd event occured!\n";
+        }
 
-		void SetWorldID(int newID) {
-			worldID = newID;
-		}
+        bool GetBroadphaseAABB(Vector3& outsize) const;
 
-		int		GetWorldID() const {
-			return worldID;
-		}
+        void UpdateBroadphaseAABB();
 
-	protected:
-		Transform			transform;
+        bool GetUsesGravity() const { return useGravity; }
+        void SetUsesGravity(bool s) { useGravity = s; }
 
-		CollisionVolume*	boundingVolume;
-		PhysicsObject*		physicsObject;
-		RenderObject*		renderObject;
-		NetworkObject*		networkObject;
+        void SetWorldID(int newID) {
+            worldID = newID;
+        }
 
-		bool		isActive;
-		int			worldID;
-		std::string	name;
+        int		GetWorldID() const {
+            return worldID;
+        }
 
-		Vector3 broadphaseAABB;
-	};
+        void ConstrainLinearVelocity();
+        void ConstrainAngularVelocity();
+
+    protected:
+        Transform			transform;
+
+        CollisionVolume* boundingVolume;
+        PhysicsObject* physicsObject;
+        RenderObject* renderObject;
+        NetworkObject* networkObject;
+
+        bool		isActive;
+        int			worldID;
+        std::string	name;
+
+        Vector3 broadphaseAABB;
+
+        int lockFlags;
+        bool useGravity;
+    };
 }
 

@@ -198,8 +198,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceforModuleDependencies>
     </ClCompile>
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\GameTechRenderer.h" />
-    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\NetworkedGame.h" />
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\GameTechVulkanRenderer.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\NetworkPlayer.h" />
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\NetworkedGame.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\StateGameObject.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\TutorialGame.h" />
     <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\GameTechRenderer.cpp">

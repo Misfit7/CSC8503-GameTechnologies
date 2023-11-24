@@ -3,13 +3,15 @@ set(PROJECT_NAME CSC8503)
 ################################################################################
 # Source groups
 ################################################################################
-set(Header_Files
-    "GameTechRenderer.h"
-    "NetworkedGame.h"
-    "NetworkPlayer.h"
-    "StateGameObject.h"
-    "TutorialGame.h"
-)
+#set(Header_Files
+#    "GameTechRenderer.h"
+#    "NetworkedGame.h"
+#    "NetworkPlayer.h"
+#    "StateGameObject.h"
+#    "TutorialGame.h"
+#)
+file(GLOB Header_Files *.h)
+
 source_group("Header Files" FILES ${Header_Files})
 
 set(Source_Files
