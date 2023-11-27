@@ -12,7 +12,7 @@ StateGameObject::StateGameObject() {
 }
 
 StateGameObject::~StateGameObject() {
-	delete stateMachine;
+    delete stateMachine;
 }
 
 void StateGameObject::Update(float dt) {

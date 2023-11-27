@@ -26,7 +26,7 @@ events:
       用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
       版权所有(C) Microsoft Corporation。保留所有权利。
       
-      生成启动时间为 22/11/2023 17:12:09。
+      生成启动时间为 27/11/2023 23:05:01。
       节点 1 上的项目“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\3.28.0-rc5\\CompilerIdCXX\\CompilerIdCXX.vcxproj”(默认目标)。
       PrepareForBuild:
         正在创建目录“Debug\\”。
@@ -52,7 +52,7 @@ events:
           0 个警告
           0 个错误
       
-      已用时间 00:00:03.58
+      已用时间 00:00:00.85
       
       
       Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CompilerIdCXX.exe"
@@ -71,8 +71,8 @@ events:
     checks:
       - "Detecting CXX compiler ABI info"
     directories:
-      source: "C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-5j23h3"
-      binary: "C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-5j23h3"
+      source: "C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-gw8u1a"
+      binary: "C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-gw8u1a"
     cmakeVariables:
       CMAKE_CXX_FLAGS: "/DWIN32 /D_WINDOWS /GR /EHsc"
       CMAKE_CXX_FLAGS_DEBUG: "/Zi /Ob0 /Od /RTC1"
@@ -81,39 +81,39 @@ events:
       variable: "CMAKE_CXX_ABI_COMPILED"
       cached: true
       stdout: |
-        Change Dir: 'C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-5j23h3'
+        Change Dir: 'C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-gw8u1a'
         
-        Run Build Command(s): "F:/Visual Stuio 2019/MSBuild/Current/Bin/MSBuild.exe" cmTC_4d43a.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
+        Run Build Command(s): "F:/Visual Stuio 2019/MSBuild/Current/Bin/MSBuild.exe" cmTC_d3f58.vcxproj /p:Configuration=Debug /p:Platform=x64 /p:VisualStudioVersion=16.0 /v:n
         用于 .NET Framework 的 Microsoft (R) 生成引擎版本 16.11.2+f32259642
         版权所有(C) Microsoft Corporation。保留所有权利。
         
-        生成启动时间为 22/11/2023 17:12:13。
-        节点 1 上的项目“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-5j23h3\\cmTC_4d43a.vcxproj”(默认目标)。
+        生成启动时间为 27/11/2023 23:05:02。
+        节点 1 上的项目“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-gw8u1a\\cmTC_d3f58.vcxproj”(默认目标)。
         PrepareForBuild:
-          正在创建目录“cmTC_4d43a.dir\\Debug\\”。
-          正在创建目录“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-5j23h3\\Debug\\”。
-          正在创建目录“cmTC_4d43a.dir\\Debug\\cmTC_4d43a.tlog\\”。
+          正在创建目录“cmTC_d3f58.dir\\Debug\\”。
+          正在创建目录“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-gw8u1a\\Debug\\”。
+          正在创建目录“cmTC_d3f58.dir\\Debug\\cmTC_d3f58.tlog\\”。
         InitializeBuildStatus:
-          正在创建“cmTC_4d43a.dir\\Debug\\cmTC_4d43a.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+          正在创建“cmTC_d3f58.dir\\Debug\\cmTC_d3f58.tlog\\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
         ClCompile:
-          F:\\Visual Stuio 2019\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_4d43a.dir\\Debug\\\\" /Fd"cmTC_4d43a.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\84251\\Desktop\\C++\\cmake-3.28.0-rc5-windows-x86_64\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
+          F:\\Visual Stuio 2019\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\CL.exe /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_d3f58.dir\\Debug\\\\" /Fd"cmTC_d3f58.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\84251\\Desktop\\C++\\cmake-3.28.0-rc5-windows-x86_64\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
           用于 x64 的 Microsoft (R) C/C++ 优化编译器 19.29.30152 版
           版权所有(C) Microsoft Corporation。保留所有权利。
           CMakeCXXCompilerABI.cpp
-          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_4d43a.dir\\Debug\\\\" /Fd"cmTC_4d43a.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\84251\\Desktop\\C++\\cmake-3.28.0-rc5-windows-x86_64\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
+          cl /c /Zi /W1 /WX- /diagnostics:column /Od /Ob0 /D _MBCS /D WIN32 /D _WINDOWS /D "CMAKE_INTDIR=\\"Debug\\"" /Gm- /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /GR /Fo"cmTC_d3f58.dir\\Debug\\\\" /Fd"cmTC_d3f58.dir\\Debug\\vc142.pdb" /external:W1 /Gd /TP /errorReport:queue "C:\\Users\\84251\\Desktop\\C++\\cmake-3.28.0-rc5-windows-x86_64\\share\\cmake-3.28\\Modules\\CMakeCXXCompilerABI.cpp"
         Link:
-          F:\\Visual Stuio 2019\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-5j23h3\\Debug\\cmTC_4d43a.exe" /INCREMENTAL /ILK:"cmTC_4d43a.dir\\Debug\\cmTC_4d43a.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-5j23h3/Debug/cmTC_4d43a.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-5j23h3/Debug/cmTC_4d43a.lib" /MACHINE:X64  /machine:x64 cmTC_4d43a.dir\\Debug\\CMakeCXXCompilerABI.obj
-          cmTC_4d43a.vcxproj -> C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-5j23h3\\Debug\\cmTC_4d43a.exe
+          F:\\Visual Stuio 2019\\VC\\Tools\\MSVC\\14.29.30133\\bin\\HostX64\\x64\\link.exe /ERRORREPORT:QUEUE /OUT:"C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-gw8u1a\\Debug\\cmTC_d3f58.exe" /INCREMENTAL /ILK:"cmTC_d3f58.dir\\Debug\\cmTC_d3f58.ilk" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-gw8u1a/Debug/cmTC_d3f58.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:/Users/84251/Desktop/C++/GameTechnologies/CMakeFiles/CMakeScratch/TryCompile-gw8u1a/Debug/cmTC_d3f58.lib" /MACHINE:X64  /machine:x64 cmTC_d3f58.dir\\Debug\\CMakeCXXCompilerABI.obj
+          cmTC_d3f58.vcxproj -> C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-gw8u1a\\Debug\\cmTC_d3f58.exe
         FinalizeBuildStatus:
-          正在删除文件“cmTC_4d43a.dir\\Debug\\cmTC_4d43a.tlog\\unsuccessfulbuild”。
-          正在对“cmTC_4d43a.dir\\Debug\\cmTC_4d43a.tlog\\cmTC_4d43a.lastbuildstate”执行 Touch 任务。
-        已完成生成项目“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-5j23h3\\cmTC_4d43a.vcxproj”(默认目标)的操作。
+          正在删除文件“cmTC_d3f58.dir\\Debug\\cmTC_d3f58.tlog\\unsuccessfulbuild”。
+          正在对“cmTC_d3f58.dir\\Debug\\cmTC_d3f58.tlog\\cmTC_d3f58.lastbuildstate”执行 Touch 任务。
+        已完成生成项目“C:\\Users\\84251\\Desktop\\C++\\GameTechnologies\\CMakeFiles\\CMakeScratch\\TryCompile-gw8u1a\\cmTC_d3f58.vcxproj”(默认目标)的操作。
         
         已成功生成。
             0 个警告
             0 个错误
         
-        已用时间 00:00:00.63
+        已用时间 00:00:00.62
         
       exitCode: 0
 ...

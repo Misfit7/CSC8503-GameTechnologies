@@ -197,12 +197,13 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <PrecompiledHeaderOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CSC8503.dir/Release/cmake_pch.pch</PrecompiledHeaderOutputFile>
       <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceforModuleDependencies>
     </ClCompile>
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\CourseWork.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\GameTechRenderer.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\GameTechVulkanRenderer.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\NetworkPlayer.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\NetworkedGame.h" />
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\PlayerCamera.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\StateGameObject.h" />
-    <ClInclude Include="CourseWork.h" />
     <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\GameTechRenderer.cpp">
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CMakeFiles/CSC8503.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceforModuleDependencies>
@@ -233,7 +234,13 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CMakeFiles/CSC8503.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceforModuleDependencies>
     </ClCompile>
-    <ClCompile Include="CourseWork.cpp">
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\CourseWork.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CMakeFiles/CSC8503.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceforModuleDependencies>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CMakeFiles/CSC8503.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceforModuleDependencies>
+    </ClCompile>
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\PlayerCamera.cpp">
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CMakeFiles/CSC8503.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceforModuleDependencies>
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CMakeFiles/CSC8503.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>

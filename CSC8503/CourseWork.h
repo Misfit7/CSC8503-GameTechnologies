@@ -9,6 +9,12 @@
 
 #include "StateGameObject.h"
 
+#include "PushdownMachine.h"
+#include "PushdownState.h"
+#include "BehaviourAction.h"
+#include "BehaviourSequence.h"
+#include "BehaviourSelector.h"
+
 namespace NCL {
     namespace CSC8503 {
         class CourseWork {
@@ -17,8 +23,16 @@ namespace NCL {
             ~CourseWork();
 
             virtual void UpdateGame(float dt);
+            int GetCurrentGame() { return currentGame; }
+            void SetGameState(int value);
 
         protected:
+            Window* window;
+            void Menu(const std::string& text = "", const Vector4& colour = Debug::WHITE);
+            int currentGame = 0;
+            void GameOneRunning(float dt);
+            void GameTwoRunning(float dt);
+
             void InitialiseAssets();
 
             void InitCamera();
@@ -40,14 +54,12 @@ namespace NCL {
             void DebugObjectMovement();
             void LockedObjectMovement();
 
-            void LoadGameOne();
             void UpdateLinkObject();
-
-            void LoadGameTwo();
 
             GameObject* AddFloorToWorld(const Vector3& position);
             GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
             GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
+            GameObject* AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass = 10.0f);
 
             GameObject* AddPlayerToWorld(const Vector3& position);
             GameObject* AddEnemyToWorld(const Vector3& position);
@@ -66,7 +78,7 @@ namespace NCL {
 
             KeyboardMouseController controller;
 
-            bool useGravity;
+            bool useGravity = true;
             bool inSelectionMode;
 
             float		forceMagnitude;
@@ -95,5 +107,59 @@ namespace NCL {
             GameObject* objClosest = nullptr;
         };
     }
+
+    class MainMenu : public PushdownState {
+    public:
+        MainMenu(CourseWork* g) {
+            this->game = g;
+        }
+        ~MainMenu() {
+        }
+        PushdownResult OnUpdate(float dt, PushdownState** newState) override {
+            if (game->GetCurrentGame() != 0) {
+                minChoice = 0;
+                maxChoice = 3;
+                Debug::Print("Resume", Vector2(45.0f, 20.0f), (currentChoice == 0) ? Debug::BLACK : Debug::WHITE);
+                Debug::Print("SinglePlayer Game", Vector2(35.0f, 40.0f), (currentChoice == 1) ? Debug::BLACK : Debug::WHITE);
+                Debug::Print("MultiPlayer Game", Vector2(36.0f, 60.0f), (currentChoice == 2) ? Debug::BLACK : Debug::WHITE);
+                Debug::Print("Quit", Vector2(47.0f, 80.0f), (currentChoice == 3) ? Debug::BLACK : Debug::WHITE);
+            }
+            else {
+                minChoice = 1;
+                maxChoice = 3;
+                Debug::Print("SinglePlayer Game", Vector2(35.0f, 30.0f), (currentChoice == 1) ? Debug::BLACK : Debug::WHITE);
+                Debug::Print("MultiPlayer Game", Vector2(36.0f, 50.0f), (currentChoice == 2) ? Debug::BLACK : Debug::WHITE);
+                Debug::Print("Quit", Vector2(47.0f, 70.0f), (currentChoice == 3) ? Debug::BLACK : Debug::WHITE);
+            }
+
+            if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE) && game->GetCurrentGame() != 0) {
+                return PushdownResult::Pop;
+            }
+            if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP)) {
+                currentChoice = (currentChoice > minChoice) ? (currentChoice - 1) : maxChoice;
+            }
+            if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN)) {
+                currentChoice = (currentChoice < maxChoice) ? (currentChoice + 1) : minChoice;
+            }
+            if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
+                if (currentChoice == 0 && game->GetCurrentGame() != 0) {
+                    return PushdownResult::Pop;
+                }
+                game->SetGameState(currentChoice);
+                return PushdownResult::Pop;
+            }
+            return PushdownResult::NoChange;
+        };
+
+        void OnAwake() override {
+            currentChoice = (game->GetCurrentGame() == 0) ? 1 : 0;
+        }
+
+    private:
+        CourseWork* game;
+        int currentChoice;
+        int minChoice;
+        int maxChoice;
+    };
 }
 

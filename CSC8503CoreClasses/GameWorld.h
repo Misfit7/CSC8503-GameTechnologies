@@ -5,70 +5,75 @@
 #include "CollisionDetection.h"
 #include "QuadTree.h"
 namespace NCL {
-		class Camera;
-		using Maths::Ray;
-	namespace CSC8503 {
-		class GameObject;
-		class Constraint;
+    class Camera;
+    using Maths::Ray;
+    namespace CSC8503 {
+        class GameObject;
+        class Constraint;
 
-		typedef std::function<void(GameObject*)> GameObjectFunc;
-		typedef std::vector<GameObject*>::const_iterator GameObjectIterator;
+        typedef std::function<void(GameObject*)> GameObjectFunc;
+        typedef std::vector<GameObject*>::const_iterator GameObjectIterator;
 
-		class GameWorld	{
-		public:
-			GameWorld();
-			~GameWorld();
+        class GameWorld {
+        public:
+            GameWorld();
+            ~GameWorld();
 
-			void Clear();
-			void ClearAndErase();
+            void Clear();
+            void ClearAndErase();
 
-			void AddGameObject(GameObject* o);
-			void RemoveGameObject(GameObject* o, bool andDelete = false);
+            void AddGameObject(GameObject* o);
+            void RemoveGameObject(GameObject* o, bool andDelete = false);
 
-			void AddConstraint(Constraint* c);
-			void RemoveConstraint(Constraint* c, bool andDelete = false);
+            void AddConstraint(Constraint* c);
+            void RemoveConstraint(Constraint* c, bool andDelete = false);
 
-			PerspectiveCamera& GetMainCamera()  {
-				return mainCamera;
-			}
+            PerspectiveCamera& GetMainCamera() {
+                return mainCamera;
+            }
 
-			void ShuffleConstraints(bool state) {
-				shuffleConstraints = state;
-			}
+            void SetMainCamera(PerspectiveCamera newCamera)
+            {
+                mainCamera = newCamera;
+            }
 
-			void ShuffleObjects(bool state) {
-				shuffleObjects = state;
-			}
+            void ShuffleConstraints(bool state) {
+                shuffleConstraints = state;
+            }
 
-			bool Raycast(Ray& r, RayCollision& closestCollision, bool closestObject = false, GameObject* ignore = nullptr) const;
+            void ShuffleObjects(bool state) {
+                shuffleObjects = state;
+            }
 
-			virtual void UpdateWorld(float dt);
+            bool Raycast(Ray& r, RayCollision& closestCollision, bool closestObject = false, GameObject* ignore = nullptr) const;
 
-			void OperateOnContents(GameObjectFunc f);
+            virtual void UpdateWorld(float dt);
 
-			void GetObjectIterators(
-				GameObjectIterator& first,
-				GameObjectIterator& last) const;
+            void OperateOnContents(GameObjectFunc f);
 
-			void GetConstraintIterators(
-				std::vector<Constraint*>::const_iterator& first,
-				std::vector<Constraint*>::const_iterator& last) const;
+            void GetObjectIterators(
+                GameObjectIterator& first,
+                GameObjectIterator& last) const;
 
-			int GetWorldStateID() const {
-				return worldStateCounter;
-			}
+            void GetConstraintIterators(
+                std::vector<Constraint*>::const_iterator& first,
+                std::vector<Constraint*>::const_iterator& last) const;
 
-		protected:
-			std::vector<GameObject*> gameObjects;
-			std::vector<Constraint*> constraints;
+            int GetWorldStateID() const {
+                return worldStateCounter;
+            }
 
-			PerspectiveCamera mainCamera;
+        protected:
+            std::vector<GameObject*> gameObjects;
+            std::vector<Constraint*> constraints;
 
-			bool shuffleConstraints;
-			bool shuffleObjects;
-			int		worldIDCounter;
-			int		worldStateCounter;
-		};
-	}
+            PerspectiveCamera mainCamera;
+
+            bool shuffleConstraints;
+            bool shuffleObjects;
+            int		worldIDCounter;
+            int		worldStateCounter;
+        };
+    }
 }
 

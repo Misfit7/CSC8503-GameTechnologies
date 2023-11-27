@@ -135,10 +135,10 @@ CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO:STRING=/debug /INCREMENTAL
 
 //If set, runtime paths are not added when installing shared libraries,
 // but are added when building.
-CMAKE_SKIP_INSTALL_RPATH:BOOL=NO
+CMAKE_SKIP_INSTALL_RPATH:BOOL=OFF
 
 //If set, runtime paths are not added when using shared libraries.
-CMAKE_SKIP_RPATH:BOOL=NO
+CMAKE_SKIP_RPATH:BOOL=OFF
 
 //Flags used by the linker during the creation of static libraries
 // during all build types.
@@ -166,7 +166,7 @@ CMAKE_SYSTEM_VERSION:STRING=10.0
 // .SILENT directive, and all commands will be echoed to the console
 // during the make.  This is useful for debugging only. With Visual
 // Studio IDE projects all commands are done without /nologo.
-CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
+CMAKE_VERBOSE_MAKEFILE:BOOL=OFF
 
 //Value Computed by CMake
 CSC8503_BINARY_DIR:STATIC=C:/Users/84251/Desktop/C++/GameTechnologies
@@ -178,7 +178,7 @@ CSC8503_IS_TOP_LEVEL:STATIC=ON
 CSC8503_SOURCE_DIR:STATIC=C:/Users/84251/Desktop/C++/GameTechnologies
 
 //FORCE
-USE_VULKAN:BOOL=
+USE_VULKAN:BOOL=OFF
 
 
 ########################

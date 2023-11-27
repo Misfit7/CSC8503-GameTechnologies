@@ -20,7 +20,8 @@ set(Source_Files
     "NetworkedGame.cpp"
     "NetworkPlayer.cpp"
     "StateGameObject.cpp"
-    "TutorialGame.cpp"
+    "CourseWork.cpp"
+    "PlayerCamera.cpp"
 )
 
 if(USE_VULKAN)

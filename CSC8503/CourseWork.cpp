@@ -15,6 +15,7 @@ using namespace CSC8503;
 
 CourseWork::CourseWork() : controller(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse()) {
     world = new GameWorld();
+    window = Window::GetWindow();
 #ifdef USEVULKAN
     renderer = new GameTechVulkanRenderer(*world);
     renderer->Init();
@@ -26,7 +27,6 @@ CourseWork::CourseWork() : controller(*Window::GetWindow()->GetKeyboard(), *Wind
     physics = new PhysicsSystem(*world);
 
     forceMagnitude = 10.0f;
-    useGravity = false;
     inSelectionMode = false;
 
     world->GetMainCamera().SetController(controller);
@@ -59,8 +59,7 @@ void CourseWork::InitialiseAssets() {
     basicTex = renderer->LoadTexture("checkerboard.png");
     basicShader = renderer->LoadShader("scene.vert", "scene.frag");
 
-    InitCamera();
-    InitGameOne();
+    Menu();
 }
 
 CourseWork::~CourseWork() {
@@ -79,68 +78,26 @@ CourseWork::~CourseWork() {
 }
 
 void CourseWork::UpdateGame(float dt) {
-    if (!inSelectionMode) {
-        world->GetMainCamera().UpdateCamera(dt);
-    }
-    if (lockedObject != nullptr) {
-        Vector3 objPos = lockedObject->GetTransform().GetPosition();
-        Vector3 camPos = objPos + lockedOffset;
-
-        Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
-
-        Matrix4 modelMat = temp.Inverse();
-
-        Quaternion q(modelMat);
-        Vector3 angles = q.ToEuler(); //nearly there now!
-
-        world->GetMainCamera().SetPosition(camPos);
-        world->GetMainCamera().SetPitch(angles.x);
-        world->GetMainCamera().SetYaw(angles.y);
-    }
-
     UpdateKeys();
-
-    if (useGravity) {
-        Debug::Print("(G)ravity on", Vector2(5, 95), Debug::RED);
-    }
-    else {
-        Debug::Print("(G)ravity off", Vector2(5, 95), Debug::RED);
-    }
-
-    RayCollision closestCollision;
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::K) && selectionObject) {
-        Vector3 rayPos;
-        Vector3 rayDir;
-
-        rayDir = selectionObject->GetTransform().GetOrientation() * Vector3(0, 0, -1);
-
-        rayPos = selectionObject->GetTransform().GetPosition();
-
-        Ray r = Ray(rayPos, rayDir);
-
-        if (world->Raycast(r, closestCollision, true, selectionObject)) {
-            if (objClosest) {
-                objClosest->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
-            }
-            objClosest = (GameObject*)closestCollision.node;
-
-            objClosest->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
-        }
-    }
-
-    Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
-
-    SelectObject();
-    MoveSelectedObject();
 
     world->UpdateWorld(dt);
     renderer->Update(dt);
     physics->Update(dt);
 
+    if (currentGame == 1) {
+        GameOneRunning(dt);
+    }
+    if (currentGame == 2) {
+        GameTwoRunning(dt);
+    }
+
     renderer->Render();
     Debug::UpdateRenderables(dt);
 
-    UpdateLinkObject();
+    // Display main menu
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE)) {
+        Menu();
+    }
 }
 
 void CourseWork::UpdateLinkObject() {
@@ -161,10 +118,6 @@ void CourseWork::UpdateKeys() {
         InitCamera(); //F2 will reset the camera to a specific default place
     }
 
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::G)) {
-        useGravity = !useGravity; //Toggle gravity!
-        physics->UseGravity(useGravity);
-    }
     //Running certain physics updates in a consistent order might cause some
     //bias in the calculations - the same objects might keep 'winning' the constraint
     //allowing the other one to stretch too much etc. Shuffling the order so that it
@@ -267,8 +220,11 @@ void CourseWork::InitCamera() {
 }
 
 void CourseWork::InitGameOne() {
+    currentGame = 1;
     world->ClearAndErase();
     physics->Clear();
+    physics->UseGravity(useGravity);
+    InitCamera();
 
     InitDefaultFloor();
     InitGameOneObject();
@@ -348,6 +304,32 @@ GameObject* CourseWork::AddCubeToWorld(const Vector3& position, Vector3 dimensio
     world->AddGameObject(cube);
 
     return cube;
+}
+
+GameObject* CourseWork::AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass)
+{
+    GameObject* Board = new GameObject();
+    OBBVolume* volume = new OBBVolume(boardSize);
+    Board->SetBoundingVolume((CollisionVolume*)volume);
+    Board->GetTransform()
+        .SetScale(boardSize * 2)
+        .SetPosition(position)
+        .SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(1.0f, 0.0f, 0.0f), rotation.x) *
+            Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), rotation.y) *
+            Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 0.0f, 1.0f), rotation.z));
+
+    Board->SetRenderObject(new RenderObject(&Board->GetTransform(), cubeMesh, basicTex, basicShader));
+    Board->GetRenderObject()->SetColour(Vector4(0.0, 0, 0.7, 1));
+    Board->SetPhysicsObject(new PhysicsObject(&Board->GetTransform(), Board->GetBoundingVolume()));
+
+    Board->GetPhysicsObject()->SetInverseMass(inverseMass);
+    Board->GetPhysicsObject()->InitCubeInertia();
+
+    Board->SetLockFlags(AxisLock::ANGULAR_X | AxisLock::ANGULAR_Z | AxisLock::LINEAR_X | AxisLock::LINEAR_Y | AxisLock::LINEAR_Z);
+    Board->SetUsesGravity(false);
+
+    world->AddGameObject(Board);
+    return Board;
 }
 
 GameObject* CourseWork::AddConstraintSphereToWorld(const Vector3& position, float radius, float inverseMass, int linkNum, int impulseNum) {
@@ -447,7 +429,7 @@ GameObject* CourseWork::AddBonusToWorld(const Vector3& position) {
 }
 
 void CourseWork::InitDefaultFloor() {
-    AddFloorToWorld(Vector3(0, -20, 0));
+    AddFloorToWorld(Vector3(0, 0, 0));
 }
 
 void CourseWork::InitGameOneObject() {
@@ -455,6 +437,7 @@ void CourseWork::InitGameOneObject() {
     AddEnemyToWorld(Vector3(-5, 5, 0));
     AddBonusToWorld(Vector3(-15, 5, 0));
     LinkImpulseObject = AddConstraintSphereToWorld(Vector3(-20, 30, 0), 1, 2, 6, 6);
+    AddBoardToWorld(Vector3(-25, 7, 0), Vector3(0, 0, 0), Vector3(5, 5, 1));
 }
 
 /*
@@ -547,4 +530,85 @@ void CourseWork::MoveSelectedObject() {
     }
 }
 
+void CourseWork::Menu(const std::string& text, const Vector4& colour) {
+    PushdownMachine machine(new MainMenu(this));
 
+    while (window->UpdateWindow()) {
+        float dt = window->GetTimer().GetTimeDeltaSeconds();
+        Debug::Print(text, Vector2(50.0f - text.length(), 20.0f), colour);
+        if (!machine.Update(dt)) {
+            return;
+        }
+        renderer->Update(dt);
+        renderer->Render();
+        Debug::UpdateRenderables(dt);
+    }
+}
+
+void CourseWork::GameOneRunning(float dt)
+{
+    UpdateLinkObject();
+
+    if (!inSelectionMode) {
+        world->GetMainCamera().UpdateCamera(dt);
+    }
+    if (lockedObject != nullptr) {
+        Vector3 objPos = lockedObject->GetTransform().GetPosition();
+        Vector3 camPos = objPos + lockedOffset;
+
+        Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
+
+        Matrix4 modelMat = temp.Inverse();
+
+        Quaternion q(modelMat);
+        Vector3 angles = q.ToEuler(); //nearly there now!
+
+        world->GetMainCamera().SetPosition(camPos);
+        world->GetMainCamera().SetPitch(angles.x);
+        world->GetMainCamera().SetYaw(angles.y);
+    }
+
+    RayCollision closestCollision;
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::K) && selectionObject) {
+        Vector3 rayPos;
+        Vector3 rayDir;
+
+        rayDir = selectionObject->GetTransform().GetOrientation() * Vector3(0, 0, -1);
+
+        rayPos = selectionObject->GetTransform().GetPosition();
+
+        Ray r = Ray(rayPos, rayDir);
+
+        if (world->Raycast(r, closestCollision, true, selectionObject)) {
+            if (objClosest) {
+                objClosest->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
+            }
+            objClosest = (GameObject*)closestCollision.node;
+
+            objClosest->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
+        }
+    }
+
+    Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
+
+    SelectObject();
+    MoveSelectedObject();
+}
+
+void CourseWork::GameTwoRunning(float dt)
+{
+
+}
+
+void CourseWork::SetGameState(int value) {
+    if (value == 1) {
+        InitGameOne();
+    }
+    else if (value == 2) {
+        InitGameOne();
+    }
+    else if (value == 3) {
+        Window::DestroyGameWindow();
+        exit(0);
+    }
+}
