@@ -84,7 +84,6 @@ namespace NCL::CSC8503 {
         }
 
         bool GetBroadphaseAABB(Vector3& outsize) const;
-
         void UpdateBroadphaseAABB();
 
         bool GetUsesGravity() const { return useGravity; }
