@@ -101,14 +101,6 @@ void CourseWork::UpdateGame(float dt) {
     }
 }
 
-void CourseWork::UpdateLinkObject() {
-    int x;
-    if (LinkImpulseObject->GetTransform().GetPosition().y < 30 - LinkMaxDistance + 2) {
-        rand() % 2 ? x = 1 : x = -1;
-        LinkImpulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, 20.0f * x));
-    }
-}
-
 void CourseWork::UpdateKeys() {
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::Y)) { //switch Camera
         switchCamera = !switchCamera;
@@ -518,9 +510,76 @@ void CourseWork::Menu(const std::string& text, const Vector4& colour) {
     }
 }
 
+void CourseWork::UpdateLinkConstraintObject() {
+    int x;
+    if (LinkImpulseObject->GetTransform().GetPosition().y < 30 - LinkMaxDistance + 2) {
+        rand() % 2 ? x = 1 : x = -1;
+        LinkImpulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, 20.0f * x));
+    }
+}
+
+void CourseWork::ShowUI() {
+
+    return;
+}
+
+void CourseWork::PlayerUpdate(float dt) {
+    if (!switchCamera) {
+        Vector3 playerPos = player->GetTransform().GetPosition();
+        Vector3 linearImpulse;
+
+        //check isStand
+        Ray yRay = Ray(playerPos, Vector3(0, -1, 0));
+        RayCollision floorCollision;
+        if (world->Raycast(yRay, floorCollision, true, player))
+        {
+            float distance = (floorCollision.collidedAt - playerPos).Length();
+            isStand = (distance <= 6.0f);
+        }
+
+        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::W)) {
+            linearImpulse.z = -1.0f;
+            //player->GetPhysicsObject()->AddForce(Vector3(0.0f, 0.0f, -10.0f));
+        }
+        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::S)) {
+            linearImpulse.z = 1.0f;
+
+        }
+        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::A)) {
+            linearImpulse.x = -1.0f;
+
+        }
+        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::D)) {
+            linearImpulse.x = 1.0f;
+
+        }
+        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::LSHIFT)) {
+
+        }
+        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::LMENU)) {
+
+        }
+        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::SPACE) && isStand) {
+            player->GetPhysicsObject()->AddForce(Vector3(0, 1, 0) * 200);
+        }
+        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::PLUS)) {
+
+        }
+        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::MINUS)) {
+
+        }
+
+        //calculate move forward angle
+    }
+}
+
 void CourseWork::GameOneRunning(float dt)
 {
-    UpdateLinkObject();
+    ShowUI();
+
+    PlayerUpdate(dt);
+
+    UpdateLinkConstraintObject();
 
     if (!inSelectionMode) {
         world->GetMainCamera().UpdateCamera(dt);

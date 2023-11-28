@@ -28,8 +28,10 @@ namespace NCL {
             void SetGameState(int value);
 
         protected:
+            //Game One
             Window* window;
             void Menu(const std::string& text = "", const Vector4& colour = Debug::WHITE);
+            void ShowUI();
             int currentGame = 0;
             void GameOneRunning(float dt);
             void GameTwoRunning(float dt);
@@ -41,7 +43,14 @@ namespace NCL {
             PlayerCamera* playerCamera;
             PerspectiveCamera* mainCamera;
             bool switchCamera = false;
+            bool isStand;
 
+            GameObject* player;
+            GameObject* LinkImpulseObject;
+            float LinkMaxDistance;
+
+            void UpdateLinkConstraintObject();
+            void PlayerUpdate(float dt);
             void UpdateKeys();
 
             void InitGameOne();
@@ -51,15 +60,13 @@ namespace NCL {
             in the module. Feel free to mess around with them to see different objects being created in different
             test scenarios (constraints, collision types, and so on).
             */
-            void InitGameOneObject();
-
             void InitDefaultFloor();
+
+            void InitGameOneObject();
 
             bool SelectObject();
             void MoveSelectedObject();
             void DebugObjectMovement();
-
-            void UpdateLinkObject();
 
             GameObject* AddFloorToWorld(const Vector3& position);
             GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
@@ -70,10 +77,6 @@ namespace NCL {
             GameObject* AddEnemyToWorld(const Vector3& position);
             GameObject* AddBonusToWorld(const Vector3& position);
             GameObject* AddConstraintSphereToWorld(const Vector3& position, float radius, float inverseMass, int linkNum, int impulseNum);
-
-            GameObject* player;
-            GameObject* LinkImpulseObject;
-            float LinkMaxDistance;
 #ifdef USEVULKAN
             GameTechVulkanRenderer* renderer;
 #else

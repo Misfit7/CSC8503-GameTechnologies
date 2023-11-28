@@ -5,39 +5,35 @@
 using namespace NCL::CSC8503;
 using namespace NCL::Maths;
 
-PlayerCamera::PlayerCamera(GameWorld& w, GameObject& o) : world(w), followTarget(o)
-{
-}
-
 void PlayerCamera::UpdateCamera(float dt)
 {
-    v -= (Window::GetMouse()->GetRelativePosition().y);
-    v = Clamp(v, -60.0f, 60.0f);
+    y -= (Window::GetMouse()->GetRelativePosition().y);
+    y = Clamp(y, -60.0f, 89.0f);
 
-    h -= (Window::GetMouse()->GetRelativePosition().x);
-    if (h < 0) h += 360.0f;
-    if (h > 360.0f) h -= 360.0f;
+    p -= (Window::GetMouse()->GetRelativePosition().x);
+    if (p < 0) p += 360.0f;
+    if (p > 360.0f) p -= 360.0f;
 
-    Matrix4 yawMat = Matrix4::Rotation(h, Vector3(0, 1, 0));
-    Matrix4 pitchMat = Matrix4::Rotation(v, yawMat * Vector3(-1, 0, 0));
+    Matrix4 yawMat = Matrix4::Rotation(p, Vector3(0, 1, 0));
+    Matrix4 pitchMat = Matrix4::Rotation(y, yawMat * Vector3(-1, 0, 0));
     Matrix4 finalRotMat = pitchMat * yawMat;
 
-    Vector3 focusPoint = followTarget.GetTransform().GetPosition();
+    Vector3 focusPoint = player.GetTransform().GetPosition();
     Vector3 lookDirection = finalRotMat * Vector3(0, 0, -1);
     Vector3 upDirection = finalRotMat * Vector3(0, -1, 0);
-    position = focusPoint - lookDirection * distanceOffset;
+    position = focusPoint - lookDirection * camDistance;
 
-    Ray collisionRay = Ray(focusPoint, -lookDirection);
-    RayCollision collisionRayData;
-    if (world.Raycast(collisionRay, collisionRayData, true, &followTarget))
+    Ray groundRay = Ray(focusPoint, -lookDirection);
+    RayCollision rayData;
+    if (world.Raycast(groundRay, rayData, true, &player))
     {
-        if (collisionRayData.rayDistance < distanceOffset)
-            position = focusPoint - lookDirection * (collisionRayData.rayDistance - 1.0f);
+        if (rayData.rayDistance < camDistance)
+            position = focusPoint - lookDirection * (rayData.rayDistance - 1.0f);
     }
 
-    Matrix4 viewMatrix = Matrix4::BuildViewMatrix(position, followTarget.GetTransform().GetPosition(), Vector3(0, 1, 0)).Inverse();
+    Matrix4 viewMatrix = Matrix4::BuildViewMatrix(position, player.GetTransform().GetPosition(), Vector3(0, 1, 0)).Inverse();
     Quaternion q(viewMatrix);
-    pitch = q.ToEuler().x + pitchOffset;
+    pitch = q.ToEuler().x;
     yaw = q.ToEuler().y;
 
     Matrix4 rotation = Matrix4::Rotation(yaw, Vector3(0, 1, 0)) * Matrix4::Rotation(pitch, Vector3(1, 0, 0));
