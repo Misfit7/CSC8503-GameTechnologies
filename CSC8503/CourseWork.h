@@ -14,6 +14,7 @@
 #include "BehaviourAction.h"
 #include "BehaviourSequence.h"
 #include "BehaviourSelector.h"
+#include "PlayerCamera.h"
 
 namespace NCL {
     namespace CSC8503 {
@@ -35,7 +36,12 @@ namespace NCL {
 
             void InitialiseAssets();
 
-            void InitCamera();
+            void InitMainCamera();
+            void InitPlayerCamera();
+            PlayerCamera* playerCamera;
+            PerspectiveCamera* mainCamera;
+            bool switchCamera = false;
+
             void UpdateKeys();
 
             void InitGameOne();
@@ -52,7 +58,6 @@ namespace NCL {
             bool SelectObject();
             void MoveSelectedObject();
             void DebugObjectMovement();
-            void LockedObjectMovement();
 
             void UpdateLinkObject();
 
@@ -66,6 +71,7 @@ namespace NCL {
             GameObject* AddBonusToWorld(const Vector3& position);
             GameObject* AddConstraintSphereToWorld(const Vector3& position, float radius, float inverseMass, int linkNum, int impulseNum);
 
+            GameObject* player;
             GameObject* LinkImpulseObject;
             float LinkMaxDistance;
 #ifdef USEVULKAN
@@ -98,11 +104,6 @@ namespace NCL {
             Mesh* bonusMesh = nullptr;
 
             //Coursework Additional functionality	
-            GameObject* lockedObject = nullptr;
-            Vector3 lockedOffset = Vector3(0, 14, 20);
-            void LockCameraToObject(GameObject* o) {
-                lockedObject = o;
-            }
 
             GameObject* objClosest = nullptr;
         };

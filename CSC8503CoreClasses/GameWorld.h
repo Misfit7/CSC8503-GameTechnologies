@@ -29,10 +29,10 @@ namespace NCL {
             void RemoveConstraint(Constraint* c, bool andDelete = false);
 
             PerspectiveCamera& GetMainCamera() {
-                return mainCamera;
+                return *mainCamera;
             }
 
-            void SetMainCamera(PerspectiveCamera newCamera)
+            void SetMainCamera(PerspectiveCamera* newCamera)
             {
                 mainCamera = newCamera;
             }
@@ -67,7 +67,7 @@ namespace NCL {
             std::vector<GameObject*> gameObjects;
             std::vector<Constraint*> constraints;
 
-            PerspectiveCamera mainCamera;
+            PerspectiveCamera* mainCamera;
 
             bool shuffleConstraints;
             bool shuffleObjects;

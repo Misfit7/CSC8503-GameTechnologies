@@ -29,6 +29,7 @@ CourseWork::CourseWork() : controller(*Window::GetWindow()->GetKeyboard(), *Wind
     forceMagnitude = 10.0f;
     inSelectionMode = false;
 
+    InitMainCamera();
     world->GetMainCamera().SetController(controller);
 
     controller.MapAxis(0, "Sidestep");
@@ -109,13 +110,10 @@ void CourseWork::UpdateLinkObject() {
 }
 
 void CourseWork::UpdateKeys() {
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::F1)) {
-        InitGameOne(); //We can reset the simulation at any time with F1
-        selectionObject = nullptr;
-    }
-
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::F2)) {
-        InitCamera(); //F2 will reset the camera to a specific default place
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::Y)) { //switch Camera
+        switchCamera = !switchCamera;
+        if (switchCamera) { InitMainCamera(); }
+        else if (!switchCamera) { InitPlayerCamera(); }
     }
 
     //Running certain physics updates in a consistent order might cause some
@@ -136,40 +134,7 @@ void CourseWork::UpdateKeys() {
         world->ShuffleObjects(false);
     }
 
-    if (lockedObject) {
-        LockedObjectMovement();
-    }
-    else {
-        DebugObjectMovement();
-    }
-}
-
-void CourseWork::LockedObjectMovement() {
-    Matrix4 view = world->GetMainCamera().BuildViewMatrix();
-    Matrix4 camWorld = view.Inverse();
-
-    Vector3 rightAxis = Vector3(camWorld.GetColumn(0)); //view is inverse of model!
-
-    //forward is more tricky -  camera forward is 'into' the screen...
-    //so we can take a guess, and use the cross of straight up, and
-    //the right axis, to hopefully get a vector that's good enough!
-
-    Vector3 fwdAxis = Vector3::Cross(Vector3(0, 1, 0), rightAxis);
-    fwdAxis.y = 0.0f;
-    fwdAxis.Normalise();
-
-
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::UP)) {
-        selectionObject->GetPhysicsObject()->AddForce(fwdAxis);
-    }
-
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::DOWN)) {
-        selectionObject->GetPhysicsObject()->AddForce(-fwdAxis);
-    }
-
-    if (Window::GetKeyboard()->KeyDown(KeyCodes::NEXT)) {
-        selectionObject->GetPhysicsObject()->AddForce(Vector3(0, -10, 0));
-    }
+    DebugObjectMovement();
 }
 
 void CourseWork::DebugObjectMovement() {
@@ -210,13 +175,29 @@ void CourseWork::DebugObjectMovement() {
     }
 }
 
-void CourseWork::InitCamera() {
+void CourseWork::InitMainCamera() {
+    mainCamera = new PerspectiveCamera();
+    world->SetMainCamera(mainCamera);
+    world->GetMainCamera().SetController(controller);
+
     world->GetMainCamera().SetNearPlane(0.1f);
     world->GetMainCamera().SetFarPlane(500.0f);
     world->GetMainCamera().SetPitch(-15.0f);
     world->GetMainCamera().SetYaw(315.0f);
     world->GetMainCamera().SetPosition(Vector3(-60, 40, 60));
-    lockedObject = nullptr;
+
+}
+
+void CourseWork::InitPlayerCamera() {
+    playerCamera = new PlayerCamera(*world, *player);
+    world->SetMainCamera(playerCamera);
+    world->GetMainCamera().SetController(controller);
+
+    world->GetMainCamera().SetNearPlane(0.1f);
+    world->GetMainCamera().SetFarPlane(1500.0f);
+    world->GetMainCamera().SetPitch(0.0f);
+    world->GetMainCamera().SetYaw(0.0f);
+
 }
 
 void CourseWork::InitGameOne() {
@@ -224,10 +205,12 @@ void CourseWork::InitGameOne() {
     world->ClearAndErase();
     physics->Clear();
     physics->UseGravity(useGravity);
-    InitCamera();
 
     InitDefaultFloor();
     InitGameOneObject();
+
+    InitPlayerCamera();
+
 }
 
 /*
@@ -433,7 +416,7 @@ void CourseWork::InitDefaultFloor() {
 }
 
 void CourseWork::InitGameOneObject() {
-    AddPlayerToWorld(Vector3(-10, 5, 0));
+    player = AddPlayerToWorld(Vector3(-10, 5, 0));
     AddEnemyToWorld(Vector3(-5, 5, 0));
     AddBonusToWorld(Vector3(-15, 5, 0));
     LinkImpulseObject = AddConstraintSphereToWorld(Vector3(-20, 30, 0), 1, 2, 6, 6);
@@ -448,7 +431,7 @@ letting you move the camera around.
 
 */
 bool CourseWork::SelectObject() {
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::E)) {
         inSelectionMode = !inSelectionMode;
         if (inSelectionMode) {
             Window::GetWindow()->ShowOSPointer(true);
@@ -460,7 +443,7 @@ bool CourseWork::SelectObject() {
         }
     }
     if (inSelectionMode) {
-        Debug::Print("Press Q to change to camera mode!", Vector2(5, 85));
+        Debug::Print("Press E to change to camera mode!", Vector2(5, 85));
 
         if (Window::GetMouse()->ButtonDown(NCL::MouseButtons::Left)) {
             if (selectionObject) {	//set colour to deselected;
@@ -486,19 +469,9 @@ bool CourseWork::SelectObject() {
                 return false;
             }
         }
-        if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::L)) {
-            if (selectionObject) {
-                if (lockedObject == selectionObject) {
-                    lockedObject = nullptr;
-                }
-                else {
-                    lockedObject = selectionObject;
-                }
-            }
-        }
     }
     else {
-        Debug::Print("Press Q to change to select mode!", Vector2(5, 85));
+        Debug::Print("Press E to change to select mode!", Vector2(5, 85));
     }
     return false;
 }
@@ -551,21 +524,6 @@ void CourseWork::GameOneRunning(float dt)
 
     if (!inSelectionMode) {
         world->GetMainCamera().UpdateCamera(dt);
-    }
-    if (lockedObject != nullptr) {
-        Vector3 objPos = lockedObject->GetTransform().GetPosition();
-        Vector3 camPos = objPos + lockedOffset;
-
-        Matrix4 temp = Matrix4::BuildViewMatrix(camPos, objPos, Vector3(0, 1, 0));
-
-        Matrix4 modelMat = temp.Inverse();
-
-        Quaternion q(modelMat);
-        Vector3 angles = q.ToEuler(); //nearly there now!
-
-        world->GetMainCamera().SetPosition(camPos);
-        world->GetMainCamera().SetPitch(angles.x);
-        world->GetMainCamera().SetYaw(angles.y);
     }
 
     RayCollision closestCollision;
