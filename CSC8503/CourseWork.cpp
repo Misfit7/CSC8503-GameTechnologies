@@ -543,15 +543,12 @@ void CourseWork::PlayerUpdate(float dt) {
         }
         if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::S)) {
             linearImpulse.z = 1.0f;
-
         }
         if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::A)) {
             linearImpulse.x = -1.0f;
-
         }
         if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::D)) {
             linearImpulse.x = 1.0f;
-
         }
         if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::LSHIFT)) {
 
@@ -570,6 +567,17 @@ void CourseWork::PlayerUpdate(float dt) {
         }
 
         //calculate move forward angle
+        if (linearImpulse.Length() >= 0.1f)
+        {
+            float targetAngle = atan2(-linearImpulse.x, -linearImpulse.z);
+            targetAngle = RadiansToDegrees(targetAngle) + world->GetMainCamera().GetYaw();
+
+            Quaternion newRot = Quaternion::EulerAnglesToQuaternion(0, targetAngle, 0);
+            player->GetTransform().SetOrientation(Quaternion::Slerp(player->GetTransform().GetOrientation(), newRot, 5 * dt));
+
+            Vector3 moveDir = newRot * Vector3(0, 0, -1.0f);
+            player->GetPhysicsObject()->AddForce(moveDir.Normalised() * 15);
+        }
     }
 }
 

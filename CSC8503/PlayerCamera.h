@@ -18,7 +18,9 @@ namespace NCL::CSC8503
         GameObject& player;
         Matrix4 BuildProjectionMatrix(float aspectRatio = 1.0f) const override;
 
-        float camDistance = 10.0f;
+        Matrix4 pitchMat;
+
+        float camDistance = 7.5f;
         float p = 0.0f;
         float y = 0.0f;
     };
