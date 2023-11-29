@@ -23,22 +23,22 @@ RotationBoard::RotationBoard(CourseWork& g, const Vector3& position, const Vecto
     renderObject = new RenderObject(&transform, mesh, basicTex, basicShader);
     renderObject->SetColour(Vector4(0.0, 0, 0.7, 1));
 
-    physicsObject = new PhysicsObject(&transform, boundingVolume);
+    physicsObject = new PhysicsObject(&transform, GetBoundingVolume());
     physicsObject->SetInverseMass(inverseMass);
     physicsObject->InitCubeInertia();
 
     SetLockFlags(AxisLock::ANGULAR_X | AxisLock::ANGULAR_Z | AxisLock::LINEAR_X | AxisLock::LINEAR_Y | AxisLock::LINEAR_Z);
-    SetUsesGravity(false);
 }
 
 void RotationBoard::update()
 {
-    Vector3 o = game.GetPlayer()->GetTransform().GetOrientation().ToEuler();
-    Ray oRay = Ray(game.GetPlayer()->GetTransform().GetPosition(), o);
+    Ray ray = CollisionDetection::BuildRayFromMouse(game.GetWorld()->GetMainCamera());
 
-    RayCollision oCollision;
-    oCollision.rayDistance = 10.0f;
-    if (game.GetWorld()->Raycast(oRay, oCollision, true, game.GetPlayer())) {
-        this->GetPhysicsObject()->AddForceAtPosition(game.GetPlayer()->GetTransform().GetOrientation().ToEuler() * 10, oCollision.collidedAt);
+    RayCollision closestCollision;
+    closestCollision.rayDistance = 1.25f;
+    if (game.GetWorld()->Raycast(ray, closestCollision, true, game.GetPlayer())) {
+        if (closestCollision.node == this) {
+            this->GetPhysicsObject()->AddTorque(Vector3(0, 100.0f / physicsObject->GetInverseMass(), 0));
+        }
     }
 }

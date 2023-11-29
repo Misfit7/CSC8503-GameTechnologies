@@ -9,7 +9,7 @@ using namespace CSC8503;
 SpringBoard::SpringBoard(CourseWork& g, const Vector3& position, const Vector3& rotation, const Vector3& boardSize,
     Mesh* mesh, Texture* basicTex, Shader* basicShader, float inverseMass) :game(g)
 {
-    OBBVolume* volume = new OBBVolume(boardSize);
+    AABBVolume* volume = new AABBVolume(boardSize);
     SetBoundingVolume((CollisionVolume*)volume);
 
     transform
@@ -30,5 +30,5 @@ SpringBoard::SpringBoard(CourseWork& g, const Vector3& position, const Vector3& 
 void SpringBoard::OnCollisionBegin(GameObject* otherObject)
 {
     if (otherObject == game.GetPlayer())
-        otherObject->GetPhysicsObject()->ApplyLinearImpulse(transform.GetUp() * 50.0f);
+        otherObject->GetPhysicsObject()->ApplyLinearImpulse(transform.GetUp() * 25.0f);
 }

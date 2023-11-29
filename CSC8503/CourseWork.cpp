@@ -331,7 +331,7 @@ GameObject* CourseWork::AddConstraintSphereToWorld(const Vector3& position, floa
 
 GameObject* CourseWork::AddPlayerToWorld(const Vector3& position) {
     float meshSize = 1.0f;
-    float inverseMass = 0.4f;
+    float inverseMass = 1.0f;
 
     GameObject* character = new GameObject();
     SphereVolume* volume = new SphereVolume(1.0f);
@@ -405,8 +405,6 @@ void CourseWork::InitDefaultFloor() {
     AddFloorToWorld(Vector3(0, 0, 0));
 }
 
-class SpringBoard;
-
 void CourseWork::InitGameOneObject() {
     player = AddPlayerToWorld(Vector3(-10, 5, 0));
     AddEnemyToWorld(Vector3(-5, 5, 0));
@@ -414,8 +412,8 @@ void CourseWork::InitGameOneObject() {
     LinkImpulseObject = AddConstraintSphereToWorld(Vector3(-20, 30, 0), 1, 2, 6, 6);
     //AddBoardToWorld(Vector3(-25, 7, 0), Vector3(0, 0, 0), Vector3(5, 5, 1));
 
-    rotationBoard = new RotationBoard(*this, Vector3(-25, 7, 0), Vector3(0, 0, 0), Vector3(5, 5, 1),
-        cubeMesh, basicTex, basicShader, 10.0f);
+    rotationBoard = new RotationBoard(*this, Vector3(-24, 6, 0), Vector3(0, 0, 0), Vector3(5, 5, 1),
+        cubeMesh, basicTex, basicShader, 0.1f);
     world->AddGameObject(rotationBoard);
 
     springBoard = new SpringBoard(*this, Vector3(-35, 3, 0), Vector3(0, 0, 0), Vector3(5, 1, 5),
@@ -585,11 +583,11 @@ void CourseWork::PlayerUpdate(float dt) {
         }
         if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::SPACE)) {
             if (isStand) {
-                player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 40);
+                player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 20);
                 ++jumpCount;
             }
             else if (jumpCount < 2) {
-                player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 30);
+                player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 15);
                 ++jumpCount;
             }
         }
