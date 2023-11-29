@@ -284,7 +284,7 @@ GameObject* CourseWork::AddCubeToWorld(const Vector3& position, Vector3 dimensio
 GameObject* CourseWork::AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass)
 {
     GameObject* Board = new GameObject();
-    OBBVolume* volume = new OBBVolume(boardSize);
+    AABBVolume* volume = new AABBVolume(boardSize);
     Board->SetBoundingVolume((CollisionVolume*)volume);
     Board->GetTransform()
         .SetScale(boardSize * 2)
@@ -333,7 +333,7 @@ GameObject* CourseWork::AddConstraintSphereToWorld(const Vector3& position, floa
 
 GameObject* CourseWork::AddPlayerToWorld(const Vector3& position) {
     float meshSize = 1.0f;
-    float inverseMass = 0.5f;
+    float inverseMass = 0.4f;
 
     GameObject* character = new GameObject();
     SphereVolume* volume = new SphereVolume(1.0f);
@@ -534,8 +534,11 @@ void CourseWork::PlayerUpdate(float dt) {
         if (world->Raycast(yRay, floorCollision, true, player))
         {
             float distance = (floorCollision.collidedAt - playerPos).Length();
-            isStand = (distance <= 6.0f);
+            distance <= 1.0f ? isStand = 1 : isStand = 0;
         }
+        //clear elasticity
+        Vector3 playerLV = player->GetPhysicsObject()->GetLinearVelocity();
+        if (isStand) player->GetPhysicsObject()->SetLinearVelocity(Vector3(playerLV.x, 0, playerLV.z));
 
         if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::W)) {
             linearImpulse.z = -1.0f;
@@ -550,15 +553,38 @@ void CourseWork::PlayerUpdate(float dt) {
         if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::D)) {
             linearImpulse.x = 1.0f;
         }
-        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::LSHIFT)) {
+        //calculate move forward angle
+        if (linearImpulse.Length() != 0.0f)
+        {
+            float newOrientation = RadiansToDegrees(atan2(-linearImpulse.x, -linearImpulse.z)) + world->GetMainCamera().GetYaw();
+            Quaternion newOrientationQ = Quaternion::EulerAnglesToQuaternion(0, newOrientation, 0);
+
+            player->GetTransform().SetOrientation(Quaternion::Slerp(player->GetTransform().GetOrientation(), newOrientationQ, 5 * dt));
+            player->GetPhysicsObject()->AddForce(newOrientationQ * Vector3(0, 0, -1.0f).Normalised() * 20);
+        }
+
+        if (Window::GetKeyboard()->KeyHeld(NCL::KeyCodes::LSHIFT)) {
 
         }
-        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::LMENU)) {
+        if (Window::GetKeyboard()->KeyHeld(NCL::KeyCodes::LMENU)) {
 
         }
-        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::SPACE) && isStand) {
-            player->GetPhysicsObject()->AddForce(Vector3(0, 1, 0) * 200);
+
+        // double jump
+        if (jumpCount >= 1 && isStand)
+            jumpCount = 0;
+        if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::SPACE)) {
+            if (isStand) {
+                player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 40);
+                ++jumpCount;
+            }
+            else if (jumpCount < 2) {
+                player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 30);
+                ++jumpCount;
+            }
         }
+        cout << jumpCount << endl;
+
         if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::PLUS)) {
 
         }
@@ -566,18 +592,7 @@ void CourseWork::PlayerUpdate(float dt) {
 
         }
 
-        //calculate move forward angle
-        if (linearImpulse.Length() >= 0.1f)
-        {
-            float targetAngle = atan2(-linearImpulse.x, -linearImpulse.z);
-            targetAngle = RadiansToDegrees(targetAngle) + world->GetMainCamera().GetYaw();
 
-            Quaternion newRot = Quaternion::EulerAnglesToQuaternion(0, targetAngle, 0);
-            player->GetTransform().SetOrientation(Quaternion::Slerp(player->GetTransform().GetOrientation(), newRot, 5 * dt));
-
-            Vector3 moveDir = newRot * Vector3(0, 0, -1.0f);
-            player->GetPhysicsObject()->AddForce(moveDir.Normalised() * 15);
-        }
     }
 }
 

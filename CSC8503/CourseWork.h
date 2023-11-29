@@ -44,6 +44,7 @@ namespace NCL {
             PerspectiveCamera* mainCamera;
             bool switchCamera = false;
             bool isStand;
+            int jumpCount = 0;
 
             GameObject* player;
             GameObject* LinkImpulseObject;
