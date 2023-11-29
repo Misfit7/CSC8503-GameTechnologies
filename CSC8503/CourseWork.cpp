@@ -8,8 +8,6 @@
 #include "OrientationConstraint.h"
 #include "StateGameObject.h"
 
-
-
 using namespace NCL;
 using namespace CSC8503;
 
@@ -379,7 +377,7 @@ GameObject* CourseWork::AddEnemyToWorld(const Vector3& position) {
     return character;
 }
 
-GameObject* CourseWork::AddBonusToWorld(const Vector3& position) {
+GameObject* CourseWork::AddKeyToWorld(const Vector3& position) {
     float meshSize = 1.0f;
     float inverseMass = 0.5f;
 
@@ -407,12 +405,22 @@ void CourseWork::InitDefaultFloor() {
     AddFloorToWorld(Vector3(0, 0, 0));
 }
 
+class SpringBoard;
+
 void CourseWork::InitGameOneObject() {
     player = AddPlayerToWorld(Vector3(-10, 5, 0));
     AddEnemyToWorld(Vector3(-5, 5, 0));
-    AddBonusToWorld(Vector3(-15, 5, 0));
+    AddKeyToWorld(Vector3(-15, 5, 0));
     LinkImpulseObject = AddConstraintSphereToWorld(Vector3(-20, 30, 0), 1, 2, 6, 6);
-    AddBoardToWorld(Vector3(-25, 7, 0), Vector3(0, 0, 0), Vector3(5, 5, 1));
+    //AddBoardToWorld(Vector3(-25, 7, 0), Vector3(0, 0, 0), Vector3(5, 5, 1));
+
+    rotationBoard = new RotationBoard(*this, Vector3(-25, 7, 0), Vector3(0, 0, 0), Vector3(5, 5, 1),
+        cubeMesh, basicTex, basicShader, 10.0f);
+    world->AddGameObject(rotationBoard);
+
+    springBoard = new SpringBoard(*this, Vector3(-35, 3, 0), Vector3(0, 0, 0), Vector3(5, 1, 5),
+        cubeMesh, basicTex, basicShader);
+    world->AddGameObject(springBoard);
 }
 
 /*
@@ -536,9 +544,6 @@ void CourseWork::PlayerUpdate(float dt) {
             float distance = (floorCollision.collidedAt - playerPos).Length();
             distance <= 1.0f ? isStand = 1 : isStand = 0;
         }
-        //clear elasticity
-        Vector3 playerLV = player->GetPhysicsObject()->GetLinearVelocity();
-        if (isStand) player->GetPhysicsObject()->SetLinearVelocity(Vector3(playerLV.x, 0, playerLV.z));
 
         if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::W)) {
             linearImpulse.z = -1.0f;
@@ -572,7 +577,12 @@ void CourseWork::PlayerUpdate(float dt) {
 
         // double jump
         if (jumpCount >= 1 && isStand)
+        {
+            //clear elasticity
+            Vector3 playerLV = player->GetPhysicsObject()->GetLinearVelocity();
+            player->GetPhysicsObject()->SetLinearVelocity(Vector3(playerLV.x, 0, playerLV.z));
             jumpCount = 0;
+        }
         if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::SPACE)) {
             if (isStand) {
                 player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 40);
@@ -583,7 +593,7 @@ void CourseWork::PlayerUpdate(float dt) {
                 ++jumpCount;
             }
         }
-        cout << jumpCount << endl;
+        //cout << jumpCount << endl;
 
         if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::PLUS)) {
 
@@ -603,6 +613,7 @@ void CourseWork::GameOneRunning(float dt)
     PlayerUpdate(dt);
 
     UpdateLinkConstraintObject();
+    rotationBoard->update();
 
     if (!inSelectionMode) {
         world->GetMainCamera().UpdateCamera(dt);

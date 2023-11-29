@@ -22,6 +22,8 @@ set(Source_Files
     "StateGameObject.cpp"
     "CourseWork.cpp"
     "PlayerCamera.cpp"
+    "RotationBoard.cpp"
+    "SpringBoard.cpp"
 )
 
 if(USE_VULKAN)

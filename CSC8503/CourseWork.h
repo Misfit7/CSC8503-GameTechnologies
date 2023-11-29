@@ -14,10 +14,17 @@
 #include "BehaviourAction.h"
 #include "BehaviourSequence.h"
 #include "BehaviourSelector.h"
+
 #include "PlayerCamera.h"
+#include "SpringBoard.h"
+#include "RotationBoard.h"
 
 namespace NCL {
     namespace CSC8503 {
+        class PlayerCamera;
+        class SpringBoard;
+        class RotationBoard;
+
         class CourseWork {
         public:
             CourseWork();
@@ -27,6 +34,8 @@ namespace NCL {
             int GetCurrentGame() { return currentGame; }
             void SetGameState(int value);
 
+            GameObject* GetPlayer() { return player; }
+            GameWorld* GetWorld() { return world; }
         protected:
             //Game One
             Window* window;
@@ -48,6 +57,8 @@ namespace NCL {
 
             GameObject* player;
             GameObject* LinkImpulseObject;
+            GameObject* springBoard;
+            RotationBoard* rotationBoard;
             float LinkMaxDistance;
 
             void UpdateLinkConstraintObject();
@@ -74,9 +85,10 @@ namespace NCL {
             GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
             GameObject* AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass = 10.0f);
 
+
             GameObject* AddPlayerToWorld(const Vector3& position);
             GameObject* AddEnemyToWorld(const Vector3& position);
-            GameObject* AddBonusToWorld(const Vector3& position);
+            GameObject* AddKeyToWorld(const Vector3& position);
             GameObject* AddConstraintSphereToWorld(const Vector3& position, float radius, float inverseMass, int linkNum, int impulseNum);
 #ifdef USEVULKAN
             GameTechVulkanRenderer* renderer;

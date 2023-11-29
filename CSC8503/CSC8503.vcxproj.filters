@@ -25,6 +25,12 @@
     <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\PlayerCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\RotationBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\SpringBoard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\CourseWork.h">
@@ -43,6 +49,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\PlayerCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\RotationBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\SpringBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\StateGameObject.h">
