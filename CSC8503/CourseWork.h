@@ -15,12 +15,14 @@
 #include "BehaviourSequence.h"
 #include "BehaviourSelector.h"
 
+#include "Player.h"
 #include "PlayerCamera.h"
 #include "SpringBoard.h"
 #include "RotationBoard.h"
 
 namespace NCL {
     namespace CSC8503 {
+        class Player;
         class PlayerCamera;
         class SpringBoard;
         class RotationBoard;
@@ -33,8 +35,9 @@ namespace NCL {
             virtual void UpdateGame(float dt);
             int GetCurrentGame() { return currentGame; }
             void SetGameState(int value);
+            bool GetSwitchCamera() { return switchCamera; }
 
-            GameObject* GetPlayer() { return player; }
+            Player* GetPlayer() { return player; }
             GameWorld* GetWorld() { return world; }
         protected:
             //Game One
@@ -55,9 +58,9 @@ namespace NCL {
             bool isStand;
             int jumpCount = 0;
 
-            GameObject* player;
+            Player* player;
             GameObject* LinkImpulseObject;
-            GameObject* springBoard;
+            SpringBoard* springBoard;
             RotationBoard* rotationBoard;
             float LinkMaxDistance;
 

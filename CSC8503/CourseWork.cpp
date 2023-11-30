@@ -329,30 +329,6 @@ GameObject* CourseWork::AddConstraintSphereToWorld(const Vector3& position, floa
     return impulseObject;
 }
 
-GameObject* CourseWork::AddPlayerToWorld(const Vector3& position) {
-    float meshSize = 1.0f;
-    float inverseMass = 1.0f;
-
-    GameObject* character = new GameObject();
-    SphereVolume* volume = new SphereVolume(1.0f);
-
-    character->SetBoundingVolume((CollisionVolume*)volume);
-
-    character->GetTransform()
-        .SetScale(Vector3(meshSize, meshSize, meshSize))
-        .SetPosition(position);
-
-    character->SetRenderObject(new RenderObject(&character->GetTransform(), charMesh, nullptr, basicShader));
-    character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-
-    character->GetPhysicsObject()->SetInverseMass(inverseMass);
-    character->GetPhysicsObject()->InitSphereInertia();
-
-    world->AddGameObject(character);
-
-    return character;
-}
-
 GameObject* CourseWork::AddEnemyToWorld(const Vector3& position) {
     float meshSize = 3.0f;
     float inverseMass = 0.5f;
@@ -406,7 +382,7 @@ void CourseWork::InitDefaultFloor() {
 }
 
 void CourseWork::InitGameOneObject() {
-    player = AddPlayerToWorld(Vector3(-10, 5, 0));
+    player = new Player(*this, Vector3(-10, 5, 0), charMesh, nullptr, basicShader);
     AddEnemyToWorld(Vector3(-5, 5, 0));
     AddKeyToWorld(Vector3(-15, 5, 0));
     LinkImpulseObject = AddConstraintSphereToWorld(Vector3(-20, 30, 0), 1, 2, 6, 6);
@@ -529,88 +505,87 @@ void CourseWork::ShowUI() {
     return;
 }
 
-void CourseWork::PlayerUpdate(float dt) {
-    if (!switchCamera) {
-        Vector3 playerPos = player->GetTransform().GetPosition();
-        Vector3 linearImpulse;
-
-        //check isStand
-        Ray yRay = Ray(playerPos, Vector3(0, -1, 0));
-        RayCollision floorCollision;
-        if (world->Raycast(yRay, floorCollision, true, player))
-        {
-            float distance = (floorCollision.collidedAt - playerPos).Length();
-            distance <= 1.0f ? isStand = 1 : isStand = 0;
-        }
-
-        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::W)) {
-            linearImpulse.z = -1.0f;
-            //player->GetPhysicsObject()->AddForce(Vector3(0.0f, 0.0f, -10.0f));
-        }
-        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::S)) {
-            linearImpulse.z = 1.0f;
-        }
-        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::A)) {
-            linearImpulse.x = -1.0f;
-        }
-        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::D)) {
-            linearImpulse.x = 1.0f;
-        }
-        //calculate move forward angle
-        if (linearImpulse.Length() != 0.0f)
-        {
-            float newOrientation = RadiansToDegrees(atan2(-linearImpulse.x, -linearImpulse.z)) + world->GetMainCamera().GetYaw();
-            Quaternion newOrientationQ = Quaternion::EulerAnglesToQuaternion(0, newOrientation, 0);
-
-            player->GetTransform().SetOrientation(Quaternion::Slerp(player->GetTransform().GetOrientation(), newOrientationQ, 5 * dt));
-            player->GetPhysicsObject()->AddForce(newOrientationQ * Vector3(0, 0, -1.0f).Normalised() * 20);
-        }
-
-        if (Window::GetKeyboard()->KeyHeld(NCL::KeyCodes::LSHIFT)) {
-
-        }
-        if (Window::GetKeyboard()->KeyHeld(NCL::KeyCodes::LMENU)) {
-
-        }
-
-        // double jump
-        if (jumpCount >= 1 && isStand)
-        {
-            //clear elasticity
-            Vector3 playerLV = player->GetPhysicsObject()->GetLinearVelocity();
-            player->GetPhysicsObject()->SetLinearVelocity(Vector3(playerLV.x, 0, playerLV.z));
-            jumpCount = 0;
-        }
-        if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::SPACE)) {
-            if (isStand) {
-                player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 20);
-                ++jumpCount;
-            }
-            else if (jumpCount < 2) {
-                player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 15);
-                ++jumpCount;
-            }
-        }
-        //cout << jumpCount << endl;
-
-        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::PLUS)) {
-
-        }
-        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::MINUS)) {
-
-        }
-
-
-    }
-}
+//void CourseWork::PlayerUpdate(float dt) {
+//    if (!switchCamera) {
+//        Vector3 playerPos = player->GetTransform().GetPosition();
+//        Vector3 linearImpulse;
+//
+//        //check isStand
+//        Ray yRay = Ray(playerPos, Vector3(0, -1, 0));
+//        RayCollision floorCollision;
+//        if (world->Raycast(yRay, floorCollision, true, player))
+//        {
+//            float distance = (floorCollision.collidedAt - playerPos).Length();
+//            distance <= 1.0f ? isStand = 1 : isStand = 0;
+//        }
+//
+//        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::W)) {
+//            linearImpulse.z = -1.0f;
+//            //player->GetPhysicsObject()->AddForce(Vector3(0.0f, 0.0f, -10.0f));
+//        }
+//        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::S)) {
+//            linearImpulse.z = 1.0f;
+//        }
+//        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::A)) {
+//            linearImpulse.x = -1.0f;
+//        }
+//        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::D)) {
+//            linearImpulse.x = 1.0f;
+//        }
+//        //calculate move forward angle
+//        if (linearImpulse.Length() != 0.0f)
+//        {
+//            float newOrientation = RadiansToDegrees(atan2(-linearImpulse.x, -linearImpulse.z)) + world->GetMainCamera().GetYaw();
+//            Quaternion newOrientationQ = Quaternion::EulerAnglesToQuaternion(0, newOrientation, 0);
+//
+//            player->GetTransform().SetOrientation(Quaternion::Slerp(player->GetTransform().GetOrientation(), newOrientationQ, 5 * dt));
+//            player->GetPhysicsObject()->AddForce(newOrientationQ * Vector3(0, 0, -1.0f).Normalised() * 20);
+//        }
+//
+//        if (Window::GetKeyboard()->KeyHeld(NCL::KeyCodes::LSHIFT)) {
+//
+//        }
+//        if (Window::GetKeyboard()->KeyHeld(NCL::KeyCodes::LMENU)) {
+//
+//        }
+//
+//        // double jump
+//        if (jumpCount >= 1 && isStand)
+//        {
+//            //clear elasticity
+//            Vector3 playerLV = player->GetPhysicsObject()->GetLinearVelocity();
+//            player->GetPhysicsObject()->SetLinearVelocity(Vector3(playerLV.x, 0, playerLV.z));
+//            jumpCount = 0;
+//        }
+//        if (Window::GetKeyboard()->KeyPressed(NCL::KeyCodes::SPACE)) {
+//            if (isStand) {
+//                player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 20);
+//                ++jumpCount;
+//            }
+//            else if (jumpCount < 2) {
+//                player->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0, 1, 0) * 15);
+//                ++jumpCount;
+//            }
+//        }
+//        //cout << jumpCount << endl;
+//
+//        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::PLUS)) {
+//
+//        }
+//        if (Window::GetKeyboard()->KeyDown(NCL::KeyCodes::MINUS)) {
+//
+//        }
+//
+//
+//    }
+//}
 
 void CourseWork::GameOneRunning(float dt)
 {
     ShowUI();
 
-    PlayerUpdate(dt);
-
     UpdateLinkConstraintObject();
+    player->Update(dt);
     rotationBoard->update();
 
     if (!inSelectionMode) {

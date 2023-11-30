@@ -32,13 +32,5 @@ RotationBoard::RotationBoard(CourseWork& g, const Vector3& position, const Vecto
 
 void RotationBoard::update()
 {
-    Ray ray = CollisionDetection::BuildRayFromMouse(game.GetWorld()->GetMainCamera());
-
-    RayCollision closestCollision;
-    closestCollision.rayDistance = 1.25f;
-    if (game.GetWorld()->Raycast(ray, closestCollision, true, game.GetPlayer())) {
-        if (closestCollision.node == this) {
-            this->GetPhysicsObject()->AddTorque(Vector3(0, 100.0f / physicsObject->GetInverseMass(), 0));
-        }
-    }
+    physicsObject->AddTorque(Vector3(0, -90.0f / physicsObject->GetInverseMass(), 0));
 }

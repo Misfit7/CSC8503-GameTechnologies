@@ -21,9 +21,12 @@ set(Source_Files
     "NetworkPlayer.cpp"
     "StateGameObject.cpp"
     "CourseWork.cpp"
+    "Player.cpp"
     "PlayerCamera.cpp"
     "RotationBoard.cpp"
     "SpringBoard.cpp"
+    "Bridge.cpp"
+    "DamageObject.cpp"
 )
 
 if(USE_VULKAN)
