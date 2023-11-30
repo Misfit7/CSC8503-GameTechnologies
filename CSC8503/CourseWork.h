@@ -19,6 +19,7 @@
 #include "PlayerCamera.h"
 #include "SpringBoard.h"
 #include "RotationBoard.h"
+#include "DamageObject.h"
 
 namespace NCL {
     namespace CSC8503 {
@@ -26,6 +27,7 @@ namespace NCL {
         class PlayerCamera;
         class SpringBoard;
         class RotationBoard;
+        class DamageObject;
 
         class CourseWork {
         public:
@@ -39,6 +41,8 @@ namespace NCL {
 
             Player* GetPlayer() { return player; }
             GameWorld* GetWorld() { return world; }
+
+            GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
         protected:
             //Game One
             Window* window;
@@ -55,17 +59,12 @@ namespace NCL {
             PlayerCamera* playerCamera;
             PerspectiveCamera* mainCamera;
             bool switchCamera = false;
-            bool isStand;
-            int jumpCount = 0;
 
             Player* player;
-            GameObject* LinkImpulseObject;
+            DamageObject* DamageLinkSphere;
             SpringBoard* springBoard;
             RotationBoard* rotationBoard;
-            float LinkMaxDistance;
 
-            void UpdateLinkConstraintObject();
-            void PlayerUpdate(float dt);
             void UpdateKeys();
 
             void InitGameOne();
@@ -84,12 +83,9 @@ namespace NCL {
             void DebugObjectMovement();
 
             GameObject* AddFloorToWorld(const Vector3& position);
-            GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
             GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
             GameObject* AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass = 10.0f);
 
-
-            GameObject* AddPlayerToWorld(const Vector3& position);
             GameObject* AddEnemyToWorld(const Vector3& position);
             GameObject* AddKeyToWorld(const Vector3& position);
             GameObject* AddConstraintSphereToWorld(const Vector3& position, float radius, float inverseMass, int linkNum, int impulseNum);

@@ -28,6 +28,8 @@ RotationBoard::RotationBoard(CourseWork& g, const Vector3& position, const Vecto
     physicsObject->InitCubeInertia();
 
     SetLockFlags(AxisLock::ANGULAR_X | AxisLock::ANGULAR_Z | AxisLock::LINEAR_X | AxisLock::LINEAR_Y | AxisLock::LINEAR_Z);
+
+    game.GetWorld()->AddGameObject(this);
 }
 
 void RotationBoard::update()

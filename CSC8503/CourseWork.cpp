@@ -305,30 +305,6 @@ GameObject* CourseWork::AddBoardToWorld(const Vector3& position, const Vector3& 
     return Board;
 }
 
-GameObject* CourseWork::AddConstraintSphereToWorld(const Vector3& position, float radius, float inverseMass, int linkNum, int impulseNum) {
-    if (linkNum < 2) return nullptr;
-    if (impulseNum < 2 || impulseNum>linkNum) impulseNum = 2;
-    float sphereSize = radius;
-
-    float maxDistance = 3 * radius; // constraint distance
-    float sphereDistance = 2 * radius; // distance between links
-
-    GameObject* linkStart = AddSphereToWorld(position + Vector3(0.0f, 0.0f, 0.0f), sphereSize, 0.0f);
-    GameObject* previous = linkStart;
-
-    GameObject* impulseObject = new GameObject;
-
-    for (int i = 2; i <= linkNum; ++i) {
-        GameObject* sphere = AddSphereToWorld(position + Vector3(0.0f, i * -sphereDistance, 0.0f), sphereSize, inverseMass);
-        PositionConstraint* constraint = new PositionConstraint(previous, sphere, maxDistance);
-        world->AddConstraint(constraint);
-        previous = sphere;
-        if (i == impulseNum) impulseObject = sphere;
-    }
-    LinkMaxDistance = (linkNum - 1) * maxDistance;
-    return impulseObject;
-}
-
 GameObject* CourseWork::AddEnemyToWorld(const Vector3& position) {
     float meshSize = 3.0f;
     float inverseMass = 0.5f;
@@ -385,16 +361,14 @@ void CourseWork::InitGameOneObject() {
     player = new Player(*this, Vector3(-10, 5, 0), charMesh, nullptr, basicShader);
     AddEnemyToWorld(Vector3(-5, 5, 0));
     AddKeyToWorld(Vector3(-15, 5, 0));
-    LinkImpulseObject = AddConstraintSphereToWorld(Vector3(-20, 30, 0), 1, 2, 6, 6);
+    DamageLinkSphere = new  DamageObject(*this, Vector3(-20, 30, 0), 1, 6, 6);
     //AddBoardToWorld(Vector3(-25, 7, 0), Vector3(0, 0, 0), Vector3(5, 5, 1));
 
     rotationBoard = new RotationBoard(*this, Vector3(-24, 6, 0), Vector3(0, 0, 0), Vector3(5, 5, 1),
         cubeMesh, basicTex, basicShader, 0.1f);
-    world->AddGameObject(rotationBoard);
 
     springBoard = new SpringBoard(*this, Vector3(-35, 3, 0), Vector3(0, 0, 0), Vector3(5, 1, 5),
         cubeMesh, basicTex, basicShader);
-    world->AddGameObject(springBoard);
 }
 
 /*
@@ -492,14 +466,6 @@ void CourseWork::Menu(const std::string& text, const Vector4& colour) {
     }
 }
 
-void CourseWork::UpdateLinkConstraintObject() {
-    int x;
-    if (LinkImpulseObject->GetTransform().GetPosition().y < 30 - LinkMaxDistance + 2) {
-        rand() % 2 ? x = 1 : x = -1;
-        LinkImpulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, 20.0f * x));
-    }
-}
-
 void CourseWork::ShowUI() {
 
     return;
@@ -584,8 +550,8 @@ void CourseWork::GameOneRunning(float dt)
 {
     ShowUI();
 
-    UpdateLinkConstraintObject();
     player->Update(dt);
+    DamageLinkSphere->Update();
     rotationBoard->update();
 
     if (!inSelectionMode) {

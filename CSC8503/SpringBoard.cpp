@@ -25,6 +25,8 @@ SpringBoard::SpringBoard(CourseWork& g, const Vector3& position, const Vector3& 
     physicsObject = new PhysicsObject(&transform, boundingVolume);
     physicsObject->SetInverseMass(inverseMass);
     SetUsesGravity(false);
+
+    game.GetWorld()->AddGameObject(this);
 }
 
 void SpringBoard::OnCollisionBegin(GameObject* otherObject)
