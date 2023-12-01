@@ -25,6 +25,9 @@
     <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\Enemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\PlayerCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -49,6 +52,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\DamageObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\Enemy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\GameTechRenderer.h">

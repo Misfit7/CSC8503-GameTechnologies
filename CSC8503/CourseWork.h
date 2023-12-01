@@ -16,6 +16,7 @@
 #include "BehaviourSelector.h"
 
 #include "Player.h"
+#include "Enemy.h"
 #include "PlayerCamera.h"
 #include "SpringBoard.h"
 #include "RotationBoard.h"
@@ -25,6 +26,7 @@
 namespace NCL {
     namespace CSC8503 {
         class Player;
+        class Enemy;
         class PlayerCamera;
         class SpringBoard;
         class RotationBoard;
@@ -64,6 +66,7 @@ namespace NCL {
             bool switchCamera = false;
 
             Player* player;
+            Enemy* enemy;
             DamageObject* DamageLinkSphere;
             SpringBoard* springBoard;
             RotationBoard* rotationBoard;
@@ -90,7 +93,6 @@ namespace NCL {
             GameObject* AddFloorToWorld(const Vector3& position);
             GameObject* AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass = 10.0f);
 
-            GameObject* AddEnemyToWorld(const Vector3& position);
             GameObject* AddCapsuleToWorld(const Vector3& position);
             GameObject* AddConstraintSphereToWorld(const Vector3& position, float radius, float inverseMass, int linkNum, int impulseNum);
 #ifdef USEVULKAN

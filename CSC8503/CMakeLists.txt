@@ -22,6 +22,7 @@ set(Source_Files
     "StateGameObject.cpp"
     "CourseWork.cpp"
     "Player.cpp"
+    "Enemy.cpp"
     "PlayerCamera.cpp"
     "RotationBoard.cpp"
     "SpringBoard.cpp"

@@ -305,30 +305,6 @@ GameObject* CourseWork::AddBoardToWorld(const Vector3& position, const Vector3& 
     return Board;
 }
 
-GameObject* CourseWork::AddEnemyToWorld(const Vector3& position) {
-    float meshSize = 3.0f;
-    float inverseMass = 0.5f;
-
-    GameObject* character = new GameObject();
-
-    AABBVolume* volume = new AABBVolume(Vector3(0.3f, 0.9f, 0.3f) * meshSize);
-    character->SetBoundingVolume((CollisionVolume*)volume);
-
-    character->GetTransform()
-        .SetScale(Vector3(meshSize, meshSize, meshSize))
-        .SetPosition(position);
-
-    character->SetRenderObject(new RenderObject(&character->GetTransform(), enemyMesh, nullptr, basicShader));
-    character->SetPhysicsObject(new PhysicsObject(&character->GetTransform(), character->GetBoundingVolume()));
-
-    character->GetPhysicsObject()->SetInverseMass(inverseMass);
-    character->GetPhysicsObject()->InitSphereInertia();
-
-    world->AddGameObject(character);
-
-    return character;
-}
-
 GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
     float meshSize = 1.0f;
     float inverseMass = 0.5f;
@@ -360,7 +336,7 @@ void CourseWork::InitDefaultFloor() {
 void CourseWork::InitGameOneObject() {
     player = new Player(*this, Vector3(-10, 5, 0), charMesh, nullptr, basicShader);
 
-    AddEnemyToWorld(Vector3(-5, 5, 0));
+    enemy = new Enemy(*this, Vector3(-5, 5, 0), enemyMesh, nullptr, basicShader);
 
     key = AddCapsuleToWorld(Vector3(-15, 5, 0));
     //AddBoardToWorld(Vector3(-25, 7, 0), Vector3(0, 0, 0), Vector3(5, 5, 1));
@@ -556,6 +532,7 @@ void CourseWork::GameOneRunning(float dt)
     ShowUI();
 
     player->Update(dt);
+    enemy->Update(dt);
     DamageLinkSphere->Update();
     rotationBoard->update();
 

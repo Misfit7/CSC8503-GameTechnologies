@@ -200,6 +200,7 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\Bridge.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\CourseWork.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\DamageObject.h" />
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\Enemy.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\GameTechRenderer.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\GameTechVulkanRenderer.h" />
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\NetworkPlayer.h" />
@@ -246,6 +247,12 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceforModuleDependencies>
     </ClCompile>
     <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\Player.cpp">
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CMakeFiles/CSC8503.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceforModuleDependencies>
+      <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CMakeFiles/CSC8503.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ScanSourceforModuleDependencies>
+    </ClCompile>
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\Enemy.cpp">
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CMakeFiles/CSC8503.dir/Debug/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <ScanSourceforModuleDependencies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ScanSourceforModuleDependencies>
       <ForcedIncludeFiles Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:/Users/84251/Desktop/C++/GameTechnologies/CSC8503/CMakeFiles/CSC8503.dir/Release/cmake_pch.hxx;%(ForcedIncludeFiles)</ForcedIncludeFiles>

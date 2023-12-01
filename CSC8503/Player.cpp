@@ -25,8 +25,7 @@ Player::Player(CourseWork& g, const Vector3& position,
     physicsObject->SetInverseMass(inverseMass);
     physicsObject->InitSphereInertia();
 
-    game.GetWorld()->AddGameObject(this);
-
+    world->AddGameObject(this);
 }
 
 void Player::Update(float dt)
