@@ -17,7 +17,7 @@ DamageObject::DamageObject(CourseWork& g, const Vector3& position,
     float maxDistance = 3 * radius; // constraint distance
     float sphereDistance = 2 * radius; // distance between links
 
-    GameObject* linkStart = game.AddSphereToWorld(position + Vector3(0.0f, 0.0f, 0.0f), sphereSize, 0.0f);
+    GameObject* linkStart = game.AddSphereToWorld(position, sphereSize, 0.0f);
     GameObject* previous = linkStart;
 
     impulseObject = new GameObject;

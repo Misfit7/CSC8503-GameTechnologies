@@ -20,6 +20,7 @@
 #include "SpringBoard.h"
 #include "RotationBoard.h"
 #include "DamageObject.h"
+#include "Bridge.h"
 
 namespace NCL {
     namespace CSC8503 {
@@ -28,6 +29,7 @@ namespace NCL {
         class SpringBoard;
         class RotationBoard;
         class DamageObject;
+        class Bridge;
 
         class CourseWork {
         public:
@@ -43,6 +45,7 @@ namespace NCL {
             GameWorld* GetWorld() { return world; }
 
             GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
+            GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
         protected:
             //Game One
             Window* window;
@@ -64,6 +67,8 @@ namespace NCL {
             DamageObject* DamageLinkSphere;
             SpringBoard* springBoard;
             RotationBoard* rotationBoard;
+            Bridge* bridge;
+            GameObject* key;
 
             void UpdateKeys();
 
@@ -83,11 +88,10 @@ namespace NCL {
             void DebugObjectMovement();
 
             GameObject* AddFloorToWorld(const Vector3& position);
-            GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
             GameObject* AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass = 10.0f);
 
             GameObject* AddEnemyToWorld(const Vector3& position);
-            GameObject* AddKeyToWorld(const Vector3& position);
+            GameObject* AddCapsuleToWorld(const Vector3& position);
             GameObject* AddConstraintSphereToWorld(const Vector3& position, float radius, float inverseMass, int linkNum, int impulseNum);
 #ifdef USEVULKAN
             GameTechVulkanRenderer* renderer;

@@ -52,7 +52,7 @@ void CourseWork::InitialiseAssets() {
     sphereMesh = renderer->LoadMesh("sphere.msh");
     charMesh = renderer->LoadMesh("goat.msh");
     enemyMesh = renderer->LoadMesh("Keeper.msh");
-    bonusMesh = renderer->LoadMesh("Cylinder.msh");
+    bonusMesh = renderer->LoadMesh("coin.msh");
     capsuleMesh = renderer->LoadMesh("capsule.msh");
 
     basicTex = renderer->LoadTexture("checkerboard.png");
@@ -329,28 +329,28 @@ GameObject* CourseWork::AddEnemyToWorld(const Vector3& position) {
     return character;
 }
 
-GameObject* CourseWork::AddKeyToWorld(const Vector3& position) {
+GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
     float meshSize = 1.0f;
     float inverseMass = 0.5f;
 
-    GameObject* bonus = new GameObject();
+    GameObject* Capsule = new GameObject();
 
-    SphereVolume* volume = new SphereVolume(0.5f * meshSize);
-    bonus->SetBoundingVolume((CollisionVolume*)volume);
+    CapsuleVolume* volume = new CapsuleVolume(meshSize, meshSize * 0.5f);
+    Capsule->SetBoundingVolume((CollisionVolume*)volume);
 
-    bonus->GetTransform()
+    Capsule->GetTransform()
         .SetScale(Vector3(meshSize, meshSize, meshSize))
         .SetPosition(position);
 
-    bonus->SetRenderObject(new RenderObject(&bonus->GetTransform(), bonusMesh, basicTex, basicShader));
-    bonus->SetPhysicsObject(new PhysicsObject(&bonus->GetTransform(), bonus->GetBoundingVolume()));
+    Capsule->SetRenderObject(new RenderObject(&Capsule->GetTransform(), capsuleMesh, basicTex, basicShader));
+    Capsule->SetPhysicsObject(new PhysicsObject(&Capsule->GetTransform(), Capsule->GetBoundingVolume()));
 
-    bonus->GetPhysicsObject()->SetInverseMass(inverseMass);
-    bonus->GetPhysicsObject()->InitSphereInertia();
+    Capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
+    Capsule->GetPhysicsObject()->InitSphereInertia();
 
-    world->AddGameObject(bonus);
+    world->AddGameObject(Capsule);
 
-    return bonus;
+    return Capsule;
 }
 
 void CourseWork::InitDefaultFloor() {
@@ -359,10 +359,15 @@ void CourseWork::InitDefaultFloor() {
 
 void CourseWork::InitGameOneObject() {
     player = new Player(*this, Vector3(-10, 5, 0), charMesh, nullptr, basicShader);
+
     AddEnemyToWorld(Vector3(-5, 5, 0));
-    AddKeyToWorld(Vector3(-15, 5, 0));
-    DamageLinkSphere = new  DamageObject(*this, Vector3(-20, 30, 0), 1, 6, 6);
+
+    key = AddCapsuleToWorld(Vector3(-15, 5, 0));
     //AddBoardToWorld(Vector3(-25, 7, 0), Vector3(0, 0, 0), Vector3(5, 5, 1));
+
+    bridge = new Bridge(*this, Vector3(-10, 30, 0), Vector3(3, 1, 3), 6);
+
+    DamageLinkSphere = new  DamageObject(*this, Vector3(-20, 30, 0), 1, 6, 6);
 
     rotationBoard = new RotationBoard(*this, Vector3(-24, 6, 0), Vector3(0, 0, 0), Vector3(5, 5, 1),
         cubeMesh, basicTex, basicShader, 0.1f);

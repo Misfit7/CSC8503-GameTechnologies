@@ -41,7 +41,7 @@ void Player::Update(float dt)
         if (world->Raycast(yRay, floorCollision, true, this))
         {
             float distance = (floorCollision.collidedAt - playerPos).Length();
-            distance <= 1.0f ? isStand = 1 : isStand = 0;
+            distance <= 1.01f ? isStand = 1 : isStand = 0;
         }
 
         if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
@@ -67,13 +67,6 @@ void Player::Update(float dt)
             physicsObject->AddForce(newOrientationQ * Vector3(0, 0, -1.0f).Normalised() * 20);
         }
 
-        if (Window::GetKeyboard()->KeyHeld(KeyCodes::LSHIFT)) {
-
-        }
-        if (Window::GetKeyboard()->KeyHeld(KeyCodes::LMENU)) {
-
-        }
-
         // double jump
         if (jumpCount >= 1 && isStand)
         {
@@ -94,13 +87,26 @@ void Player::Update(float dt)
         }
         //cout << jumpCount << endl;
 
+        //interact
+        if (Window::GetKeyboard()->KeyHeld(KeyCodes::E)) {
+
+        }
+
+        //move mode
+        if (Window::GetKeyboard()->KeyHeld(KeyCodes::LSHIFT)) {
+
+        }
+        if (Window::GetKeyboard()->KeyHeld(KeyCodes::LMENU)) {
+
+        }
+
+        //scale
         if (Window::GetKeyboard()->KeyDown(KeyCodes::PLUS)) {
 
         }
         if (Window::GetKeyboard()->KeyDown(KeyCodes::MINUS)) {
 
         }
-
 
     }
 }
