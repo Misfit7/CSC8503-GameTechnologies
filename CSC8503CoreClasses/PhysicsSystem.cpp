@@ -357,8 +357,12 @@ void PhysicsSystem::IntegrateAccel(float dt) {
 
         if (applyGravity && inverseMass > 0 && (*i)->GetUsesGravity()) {
             accel += gravity; //don move infinitely heavy things
+            linearVel += accel * dt; // integrate accel!
         }
-        linearVel += accel * dt; // integrate accel!
+        else if (applyGravity && inverseMass < 0 && (*i)->GetUsesGravity()) {
+            accel -= gravity; //don move infinitely heavy things
+            linearVel += accel * dt; // integrate accel!
+        }
         object->SetLinearVelocity(linearVel); // previous code
         (*i)->ConstrainLinearVelocity();
 

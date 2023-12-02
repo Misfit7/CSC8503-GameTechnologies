@@ -39,13 +39,13 @@ void Enemy::GenerateStateMachine()
     stateMachine = new StateMachine();
     State* wander = new State([&](float dt)-> void
         {
-            cout << "now is wandering" << endl;
+            //cout << "now is wandering" << endl;
             this->Wander(dt);
         }
     );
     State* chase = new State([&](float dt)-> void
         {
-            cout << "now is chasing" << endl;
+            //cout << "now is chasing" << endl;
             this->ChasePlayer(dt);;
         }
     );
@@ -87,20 +87,20 @@ void Enemy::Wander(float dt)
         transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), 180.0f));
     }
     if (moveDirection == "forward") {
-        cout << "im walking forward" << endl;
+        //cout << "im walking forward" << endl;
         aliveTime += dt;
         Vector3 newPos = transform.GetPosition();
         newPos.z -= 0.1;
         transform.SetPosition(newPos);
     }
     else if (moveDirection == "back") {
-        cout << "im walking back" << endl;
+        //cout << "im walking back" << endl;
         aliveTime -= dt;
         Vector3 newPos = transform.GetPosition();
         newPos.z += 0.1;
         transform.SetPosition(newPos);
     }
-    cout << aliveTime << endl;
+    //cout << aliveTime << endl;
 }
 
 void Enemy::ChasePlayer(float dt)

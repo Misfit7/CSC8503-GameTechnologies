@@ -13,12 +13,19 @@ namespace NCL::CSC8503
 
         virtual void UpdateCamera(float dt) override;
 
+        void SetDU(float d, float u) { down = d; up = u; }
+        void SetViewMat(float x, float y) { xAixs = x; yAixs = y; }
+
     protected:
         GameWorld& world;
         GameObject& player;
         Matrix4 BuildProjectionMatrix(float aspectRatio = 1.0f) const override;
 
         Matrix4 pitchMat;
+
+        float xAixs;
+        float yAixs;
+        float down, up;
 
         float camDistance = 7.5f;
         float p = 0.0f;

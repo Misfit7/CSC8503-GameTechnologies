@@ -331,6 +331,7 @@ GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
 
 void CourseWork::InitDefaultFloor() {
     AddFloorToWorld(Vector3(0, 0, 0));
+    AddFloorToWorld(Vector3(0, 40, 0));
 }
 
 void CourseWork::InitGameOneObject() {

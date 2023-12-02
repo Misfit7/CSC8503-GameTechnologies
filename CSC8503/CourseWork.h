@@ -41,6 +41,7 @@ namespace NCL {
             virtual void UpdateGame(float dt);
             int GetCurrentGame() { return currentGame; }
             void SetGameState(int value);
+            PlayerCamera* GetPlayerCamera() { return playerCamera; }
             bool GetSwitchCamera() { return switchCamera; }
 
             Player* GetPlayer() { return player; }

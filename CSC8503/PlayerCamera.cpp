@@ -8,13 +8,12 @@ using namespace NCL::Maths;
 void PlayerCamera::UpdateCamera(float dt)
 {
     p -= (Window::GetMouse()->GetRelativePosition().y);
-    p = Clamp(p, -60.0f, 89.0f);
 
     y -= (Window::GetMouse()->GetRelativePosition().x);
     y = fmod(y, 360.0f);
 
-    Matrix4 yawMat = Matrix4::Rotation(y, Vector3(0, 1, 0));
-    Matrix4 pitchMat = Matrix4::Rotation(p, yawMat * Vector3(-1, 0, 0));
+    Matrix4 yawMat = Matrix4::Rotation(y, Vector3(0, yAixs, 0));
+    Matrix4 pitchMat = Matrix4::Rotation(p, yawMat * Vector3(xAixs, 0, 0));
     Matrix4 finalRotMat = pitchMat * yawMat;
     //cout << finalRotMat;
 
@@ -29,19 +28,19 @@ void PlayerCamera::UpdateCamera(float dt)
         if (rayData.rayDistance < camDistance)
             position = focusPoint - lookDirection * (rayData.rayDistance - 1.0f);
 
-    Matrix4 viewMatrix = Matrix4::BuildViewMatrix(position, player.GetTransform().GetPosition(), Vector3(0, 1, 0)).Inverse();
+    Matrix4 viewMatrix = Matrix4::BuildViewMatrix(position, player.GetTransform().GetPosition(), Vector3(0, yAixs, 0)).Inverse();
 
     Quaternion q(viewMatrix);
-    if (finalRotMat.GetDiagonal().x > -0.9999f)
-        pitch = q.ToEuler().x;
-    else
-        pitch = pitch;
+    //if (finalRotMat.GetDiagonal().x > -0.9999f)
+    pitch = q.ToEuler().x;
+    //else
+    //    pitch = pitch;
     //cout << pitch << endl;
     yaw = q.ToEuler().y;
 
 }
 
-Matrix4 NCL::CSC8503::PlayerCamera::BuildProjectionMatrix(float currentAspect) const
+Matrix4 PlayerCamera::BuildProjectionMatrix(float currentAspect) const
 {
     return Matrix4::Perspective(nearPlane, farPlane, currentAspect, fov);
 }

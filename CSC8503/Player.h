@@ -21,7 +21,9 @@ namespace NCL {
             CourseWork& game;
             GameWorld* world;
 
+            float iMass;
             bool isStand;
+            bool switchOrientation = false;
             int jumpCount = 0;
         };
     }
