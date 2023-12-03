@@ -34,7 +34,7 @@ void Player::Update(float dt)
     Vector3 playerPos = transform.GetPosition();
     Ray yRay = Ray(playerPos, Vector3(0, -1, 0));
 
-    if (transform.GetPosition().y >= 20.0f && !isStand) {
+    if (transform.GetPosition().y >= 30.0f && !isStand) {
         //game.GetPlayerCamera()->SetDU(60.0f, -89.0f);
         game.GetPlayerCamera()->SetViewMat(-1, -1);
         yRay = Ray(playerPos, Vector3(0, 1, 0));
@@ -45,7 +45,7 @@ void Player::Update(float dt)
             transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 0.0f, 1.0f), 180.0f));
         }
     }
-    else if (transform.GetPosition().y <= 20.0f && !isStand) {
+    else if (transform.GetPosition().y <= 30.0f && !isStand) {
         //game.GetPlayerCamera()->SetDU(-60.0f, 89.0f);
         game.GetPlayerCamera()->SetViewMat(1, 1);
         yRay = Ray(playerPos, Vector3(0, -1, 0));
@@ -57,11 +57,11 @@ void Player::Update(float dt)
         }
     }
 
+    RayCollision floorCollision;
     if (!game.GetSwitchCamera()) {
         Vector3 linearImpulse;
 
         //check isStand
-        RayCollision floorCollision;
         if (world->Raycast(yRay, floorCollision, true, this))
         {
             float distance = (floorCollision.collidedAt - playerPos).Length();
@@ -132,16 +132,41 @@ void Player::Update(float dt)
         }
         //cout << jumpCount << endl;
 
+        Debug::Print("O", Vector2(49.5f, 49.5f), Debug::RED);
         //interact
-        if (Window::GetKeyboard()->KeyHeld(KeyCodes::E)) {
+        RayCollision grabCollision;
+        if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
+            isGrab = !isGrab;
+            if (isGrab)
+            {
+                Ray camRay = Ray(game.GetPlayerCamera()->GetPosition(), game.GetPlayerCamera()->GetFoward());
+
+                if (world->Raycast(camRay, grabCollision, true, this))
+                {
+                    Vector3 grabDistance = transform.GetPosition() - grabCollision.collidedAt;
+                    Vector3 force;
+                    float forceDegree = 0.5;
+                    if (!switchOrientation)
+                    {
+                        force = grabDistance * -forceDegree;
+                    }
+                    else if (switchOrientation)
+                    {
+                        force = grabDistance * forceDegree;
+                    }
+
+                    physicsObject->ApplyLinearImpulse(force);
+                    Debug::DrawLine(transform.GetPosition(), grabCollision.collidedAt, Debug::BLACK, 0.5f);
+                }
+                isGrab = !isGrab;
+            }
+        }
+        if (Window::GetKeyboard()->KeyDown(KeyCodes::F)) {
 
         }
 
         //move mode
         if (Window::GetKeyboard()->KeyHeld(KeyCodes::LSHIFT)) {
-
-        }
-        if (Window::GetKeyboard()->KeyHeld(KeyCodes::LMENU)) {
 
         }
 

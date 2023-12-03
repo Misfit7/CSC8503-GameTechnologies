@@ -31,10 +31,30 @@ using namespace CSC8503;
 #include <thread>
 #include <sstream>
 
+vector <Vector3> testNodes;
 void TestPathfinding() {
+    NavigationGrid grid("TestGrid1.txt");
+
+    NavigationPath outPath;
+
+    Vector3 startPos(80, 0, 10);
+    Vector3 endPos(80, 0, 80);
+
+    bool found = grid.FindPath(startPos, endPos, outPath);
+
+    Vector3 pos;
+    while (outPath.PopWaypoint(pos)) {
+        testNodes.push_back(pos);
+    }
 }
 
 void DisplayPathfinding() {
+    for (int i = 1; i < testNodes.size(); ++i) {
+        Vector3 a = testNodes[i - 1];
+        Vector3 b = testNodes[i];
+
+        Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+    }
 }
 
 /*
@@ -61,6 +81,9 @@ int main() {
 
     CourseWork* g = new CourseWork();
     w->GetTimer().GetTimeDeltaSeconds(); //Clear the timer so we don't get a larget first dt!
+
+    TestPathfinding();
+
     while (w->UpdateWindow()) {
         float dt = w->GetTimer().GetTimeDeltaSeconds();
         if (dt > 0.1f) {
@@ -81,6 +104,8 @@ int main() {
         w->SetTitle("Gametech frame time:" + std::to_string(1000.0f * dt));
 
         g->UpdateGame(dt);
+
+        DisplayPathfinding();
     }
     Window::DestroyGameWindow();
 }

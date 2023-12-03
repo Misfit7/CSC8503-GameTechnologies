@@ -14,11 +14,11 @@ void PlayerCamera::UpdateCamera(float dt)
 
     Matrix4 yawMat = Matrix4::Rotation(y, Vector3(0, yAixs, 0));
     Matrix4 pitchMat = Matrix4::Rotation(p, yawMat * Vector3(xAixs, 0, 0));
-    Matrix4 finalRotMat = pitchMat * yawMat;
+    Matrix4 RotationMat = pitchMat * yawMat;
     //cout << finalRotMat;
 
     Vector3 focusPoint = player.GetTransform().GetPosition();
-    Vector3 lookDirection = finalRotMat * Vector3(0, 0, -1);
+    Vector3 lookDirection = RotationMat * Vector3(0, 0, -1);
     position = focusPoint - lookDirection * camDistance;
     //cout << position;
 
@@ -38,6 +38,7 @@ void PlayerCamera::UpdateCamera(float dt)
     //cout << pitch << endl;
     yaw = q.ToEuler().y;
 
+    forward = Matrix4::Rotation(yaw, Vector3(0, 1, 0)) * Matrix4::Rotation(pitch, Vector3(1, 0, 0)) * Vector3(0, 0, -1);
 }
 
 Matrix4 PlayerCamera::BuildProjectionMatrix(float currentAspect) const

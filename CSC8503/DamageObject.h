@@ -23,7 +23,7 @@ namespace NCL {
             GameWorld* world;
             GameObject* impulseObject;
             float LinkMaxDistance;
-
+            bool bImpulse = false;
         };
     }
 }

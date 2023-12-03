@@ -91,11 +91,10 @@ namespace NCL {
             void MoveSelectedObject();
             void DebugObjectMovement();
 
-            GameObject* AddFloorToWorld(const Vector3& position);
+            GameObject* AddFloorToWorld(const Vector3& position, float fSize);
             GameObject* AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass = 10.0f);
 
             GameObject* AddCapsuleToWorld(const Vector3& position);
-            GameObject* AddConstraintSphereToWorld(const Vector3& position, float radius, float inverseMass, int linkNum, int impulseNum);
 #ifdef USEVULKAN
             GameTechVulkanRenderer* renderer;
 #else
@@ -143,8 +142,8 @@ namespace NCL {
                 minChoice = 0;
                 maxChoice = 3;
                 Debug::Print("Resume", Vector2(45.0f, 20.0f), (currentChoice == 0) ? Debug::BLACK : Debug::WHITE);
-                Debug::Print("SinglePlayer Game", Vector2(35.0f, 40.0f), (currentChoice == 1) ? Debug::BLACK : Debug::WHITE);
-                Debug::Print("MultiPlayer Game", Vector2(36.0f, 60.0f), (currentChoice == 2) ? Debug::BLACK : Debug::WHITE);
+                Debug::Print("Restart Game One", Vector2(36.0f, 40.0f), (currentChoice == 1) ? Debug::BLACK : Debug::WHITE);
+                Debug::Print("Restart Game Two", Vector2(36.0f, 60.0f), (currentChoice == 2) ? Debug::BLACK : Debug::WHITE);
                 Debug::Print("Quit", Vector2(47.0f, 80.0f), (currentChoice == 3) ? Debug::BLACK : Debug::WHITE);
             }
             else {
@@ -156,18 +155,24 @@ namespace NCL {
             }
 
             if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE) && game->GetCurrentGame() != 0) {
+                Window::GetWindow()->ShowOSPointer(false);
+                Window::GetWindow()->LockMouseToWindow(true);
                 return PushdownResult::Pop;
             }
             if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP)) {
-                currentChoice = (currentChoice > minChoice) ? (currentChoice - 1) : maxChoice;
+                currentChoice = std::max(currentChoice - 1, minChoice);
             }
             if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN)) {
-                currentChoice = (currentChoice < maxChoice) ? (currentChoice + 1) : minChoice;
+                currentChoice = std::min(currentChoice + 1, maxChoice);
             }
             if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
                 if (currentChoice == 0 && game->GetCurrentGame() != 0) {
+                    Window::GetWindow()->ShowOSPointer(false);
+                    Window::GetWindow()->LockMouseToWindow(true);
                     return PushdownResult::Pop;
                 }
+                Window::GetWindow()->ShowOSPointer(false);
+                Window::GetWindow()->LockMouseToWindow(true);
                 game->SetGameState(currentChoice);
                 return PushdownResult::Pop;
             }
@@ -175,7 +180,7 @@ namespace NCL {
         };
 
         void OnAwake() override {
-            currentChoice = (game->GetCurrentGame() == 0) ? 1 : 0;
+            currentChoice = game->GetCurrentGame() ? 0 : 1;
         }
 
     private:

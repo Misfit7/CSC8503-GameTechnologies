@@ -95,6 +95,8 @@ void CourseWork::UpdateGame(float dt) {
 
     // Display main menu
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE)) {
+        Window::GetWindow()->ShowOSPointer(true);
+        Window::GetWindow()->LockMouseToWindow(false);
         Menu();
     }
 }
@@ -208,10 +210,10 @@ void CourseWork::InitGameOne() {
 A single function to add a large immoveable cube to the bottom of our world
 
 */
-GameObject* CourseWork::AddFloorToWorld(const Vector3& position) {
+GameObject* CourseWork::AddFloorToWorld(const Vector3& position, float fSize) {
     GameObject* floor = new GameObject();
 
-    Vector3 floorSize = Vector3(200, 2, 200);
+    Vector3 floorSize = Vector3(fSize, 2, fSize);
     AABBVolume* volume = new AABBVolume(floorSize);
     floor->SetBoundingVolume((CollisionVolume*)volume);
     floor->GetTransform()
@@ -330,8 +332,8 @@ GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
 }
 
 void CourseWork::InitDefaultFloor() {
-    AddFloorToWorld(Vector3(0, 0, 0));
-    AddFloorToWorld(Vector3(0, 40, 0));
+    AddFloorToWorld(Vector3(0, 0, 0), 200);
+    AddFloorToWorld(Vector3(0, 60, 0), 100);
 }
 
 void CourseWork::InitGameOneObject() {

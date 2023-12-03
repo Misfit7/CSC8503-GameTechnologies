@@ -34,10 +34,16 @@ DamageObject::DamageObject(CourseWork& g, const Vector3& position,
 
 void DamageObject::Update()
 {
-    int x;
-    if (transform.GetPosition().y < 30 - LinkMaxDistance + 2) {
-        rand() % 2 ? x = 1 : x = -1;
-        impulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, 20.0f * x));
+    if (impulseObject->GetTransform().GetPosition().y < (30 - LinkMaxDistance + 0.75f) && !bImpulse)
+    {
+        impulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, 200.0f));
+        bImpulse = true;
+        //cout << bImpulse << endl;
+    }
+    if (impulseObject->GetTransform().GetPosition().y > 30 && bImpulse)
+    {
+        bImpulse = false;
+        //cout << bImpulse << endl;
     }
 }
 

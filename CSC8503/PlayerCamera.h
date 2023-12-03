@@ -15,6 +15,7 @@ namespace NCL::CSC8503
 
         void SetDU(float d, float u) { down = d; up = u; }
         void SetViewMat(float x, float y) { xAixs = x; yAixs = y; }
+        Vector3& GetFoward() { return forward; }
 
     protected:
         GameWorld& world;
@@ -22,6 +23,8 @@ namespace NCL::CSC8503
         Matrix4 BuildProjectionMatrix(float aspectRatio = 1.0f) const override;
 
         Matrix4 pitchMat;
+
+        Vector3 forward;
 
         float xAixs;
         float yAixs;
