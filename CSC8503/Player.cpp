@@ -185,4 +185,31 @@ void Player::Update(float dt)
         }
 
     }
+
+    Pathfinding();
+}
+
+void Player::Pathfinding() {
+    Vector3 startPos = transform.GetPosition();
+    Vector3 endPos = game.GetFinalTreasurePos();
+
+    outPath.Clear();
+    pathNodes.clear();
+    bool found = game.GetGrid()->FindPath(startPos, endPos, outPath);
+
+    Vector3 pos;
+    while (outPath.PopWaypoint(pos)) {
+        pathNodes.push_back(pos);
+    }
+
+    DisplayPathfinding();
+}
+
+void Player::DisplayPathfinding() {
+    for (int i = 1; i < pathNodes.size(); ++i) {
+        Vector3 a = pathNodes[i - 1];
+        Vector3 b = pathNodes[i];
+
+        Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+    }
 }

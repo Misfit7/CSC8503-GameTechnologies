@@ -31,6 +31,12 @@ namespace NCL {
 
             Vector3 grabPoint;
 
+            //pathfind
+            NavigationPath outPath;
+            vector<Vector3> pathNodes;
+            void Pathfinding();
+            void DisplayPathfinding();
+
         private:
             static int playerNum;
         };

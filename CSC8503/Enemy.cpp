@@ -46,7 +46,7 @@ void Enemy::GenerateStateMachine()
     State* wander = new State([&](float dt)-> void
         {
             //cout << "now is wandering" << endl;
-            //this->Wander(dt);
+            this->Wander(dt);
         }
     );
     State* chase = new State([&](float dt)-> void
@@ -82,31 +82,46 @@ void Enemy::GenerateStateMachine()
 
 void Enemy::Wander(float dt)
 {
-    if (aliveTime < 0.0f)
-    {
-        moveDirection = "forward";
-        transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), 180.0f));
-    }
-    else if (aliveTime > 3.0f)
-    {
-        moveDirection = "back";
-        transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), 0.0f));
-    }
-    if (moveDirection == "forward") {
-        //cout << "im walking forward" << endl;
-        aliveTime += dt;
-        Vector3 newPos = transform.GetPosition();
-        newPos.z += 0.1;
-        transform.SetPosition(newPos);
-    }
-    else if (moveDirection == "back") {
-        //cout << "im walking back" << endl;
-        aliveTime -= dt;
-        Vector3 newPos = transform.GetPosition();
-        newPos.z -= 0.1;
-        transform.SetPosition(newPos);
-    }
+    //if (aliveTime < 0.0f)
+    //{
+    //    moveDirection = "forward";
+    //    transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), 180.0f));
+    //}
+    //else if (aliveTime > 3.0f)
+    //{
+    //    moveDirection = "back";
+    //    transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), 0.0f));
+    //}
+    //if (moveDirection == "forward") {
+    //    //cout << "im walking forward" << endl;
+    //    aliveTime += dt;
+    //    Vector3 newPos = transform.GetPosition();
+    //    newPos.z += 0.1;
+    //    transform.SetPosition(newPos);
+    //}
+    //else if (moveDirection == "back") {
+    //    //cout << "im walking back" << endl;
+    //    aliveTime -= dt;
+    //    Vector3 newPos = transform.GetPosition();
+    //    newPos.z -= 0.1;
+    //    transform.SetPosition(newPos);
+    //}
     //cout << aliveTime << endl;
+
+    if (pathNodes.size())
+    {
+        //DebugDisplayPath(pathList);
+        float nodeDistance = (pathNodes[currentDestinationIndex] - transform.GetPosition()).Length();
+        if (nodeDistance <= 15)
+        {
+            currentDestinationIndex++;
+            if (currentDestinationIndex >= (int)pathNodes.size() - 1)
+                FindRandomPatrolPoint();
+        }
+
+        MoveTowards(pathNodes[currentDestinationIndex], dt, true);
+        RotateTowards(pathNodes[currentDestinationIndex], 5.0f, dt);
+    }
 }
 
 void Enemy::ChasePlayer(float dt)
@@ -121,15 +136,12 @@ void Enemy::Respawn()
 void Enemy::Update(float dt)
 {
     Pathfinding();
-    DisplayPathfinding();
     stateMachine->Update(dt);
 }
 
 void Enemy::Pathfinding() {
-    Vector3 startPos = transform.GetPosition();
-    //Vector3 startPos(game.GetFinalTreasurePos().x, 0, game.GetFinalTreasurePos().z);
+    Vector3 startPos = game.GetFinalTreasurePos();
     Vector3 endPos = game.GetPlayer()->GetTransform().GetPosition();
-    //Vector3 endPos(5, 0, 5);
 
     pathNodes.clear();
     bool found = grid->FindPath(startPos, endPos, outPath);
@@ -138,6 +150,8 @@ void Enemy::Pathfinding() {
     while (outPath.PopWaypoint(pos)) {
         pathNodes.push_back(pos);
     }
+
+    DisplayPathfinding();
 }
 
 void Enemy::DisplayPathfinding() {

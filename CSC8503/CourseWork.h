@@ -55,6 +55,7 @@ namespace NCL {
             Player* GetPlayer() { return player; }
             GameWorld* GetWorld() { return world; }
             NavigationGrid* GetGrid() { return grid; }
+            vector<Vector3> GetKeysPos() { return keysPos; }
 
             GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
             GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
@@ -82,6 +83,7 @@ namespace NCL {
             vector<RotationBoard*> rotationBoard;
             Bridge* bridge;
             vector<GameObject*> keys;
+            vector<Vector3> keysPos;
             Vector3 finalTreasurePos;
             GameObject* finalTreasure;
 

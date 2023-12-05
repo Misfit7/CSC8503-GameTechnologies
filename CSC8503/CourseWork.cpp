@@ -444,6 +444,7 @@ void CourseWork::InitGameOneObject() {
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'E')
             {
                 finalTreasurePos = Vector3(x * grid->GetNodeSize(), 0, y * grid->GetNodeSize());
+                keysPos.emplace_back(finalTreasurePos);
                 finalTreasure = AddCapsuleToWorld(Vector3(x * grid->GetNodeSize(), 2, y * grid->GetNodeSize()));
                 finalTreasure->SetColour(Vector4(0, 0, 0, 1));
                 keys.emplace_back(finalTreasure);
@@ -459,6 +460,7 @@ void CourseWork::InitGameOneObject() {
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'T')
             {
                 keys.emplace_back(AddCapsuleToWorld(Vector3(x * grid->GetNodeSize(), 2, y * grid->GetNodeSize())));
+                keysPos.emplace_back(Vector3(x * grid->GetNodeSize(), 0, y * grid->GetNodeSize()));
             }
         }
     }
