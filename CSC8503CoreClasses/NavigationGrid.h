@@ -37,6 +37,21 @@ namespace NCL {
 
             bool FindPath(const Vector3& from, const Vector3& to, NavigationPath& outPath) override;
 
+            void PrintAllNodes() {
+                for (int y = 0; y < gridHeight; ++y) {
+                    for (int x = 0; x < gridWidth; ++x) {
+                        std::cout << char(allNodes[(gridWidth * y) + x].type);
+                    }
+                    std::cout << std::endl;
+                }
+            }
+
+            int GetNodeSize() { return nodeSize; }
+            int GetGridHeight() { return gridHeight; }
+            int GetGridWidth() { return gridWidth; }
+
+            GridNode* GetAllNodes() { return allNodes; }
+
         protected:
             bool		NodeInList(GridNode* n, std::vector<GridNode*>& list) const;
             GridNode* RemoveBestNode(std::vector<GridNode*>& list) const;

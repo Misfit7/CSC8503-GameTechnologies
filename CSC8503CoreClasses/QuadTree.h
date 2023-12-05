@@ -121,6 +121,7 @@ namespace NCL {
         class QuadTree
         {
         public:
+            QuadTree() { }
             QuadTree(Vector2 size, int maxDepth = 6, int maxSize = 5) {
                 root = QuadTreeNode<T>(Vector2(), size);
                 this->maxDepth = maxDepth;

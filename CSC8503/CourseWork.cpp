@@ -8,12 +8,104 @@
 #include "OrientationConstraint.h"
 #include "StateGameObject.h"
 
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+
 using namespace NCL;
 using namespace CSC8503;
+
+using namespace std;
+
+const int blocksize = 5;
+const int n = 20; //row
+const int m = 20; //col
+
+const int RATE_KEEP_DIR = 000;
+const int TWIST_RATE = 10;
+const int RETURN_RATE = 100;
+
+int  Sx, Sy, Tx, Ty, Max;
+char Map[n][m];
+typedef pair<int, int> PII;
+const int dx[4] = { -1,0,1,0 }, dy[4] = { 0,1,0,-1 };
+const int Dx[4] = { -2,0,2,0 }, Dy[4] = { 0,2,0,-2 };
+
+mt19937 RND(time(0));
+
+//Check if (x,y) has a neighbour can go.
+bool Check(const int x, const int y)
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        int nx = x + dx[i], ny = y + dy[i], Nx = x + Dx[i], Ny = y + Dy[i];
+        if (Nx >= 0 && Nx < n && Ny >= 0 && Ny < m && (Map[Nx][Ny] == 'x' && Map[nx][ny] == 'x'))return true;
+    } return false;
+}
+
+void Dfs(const int x, const int y, const int depth, int Lim, const int last_dir)
+{
+    if (depth > Max)Tx = x, Ty = y, Max = depth;
+    if (depth > Lim) return;
+    Map[x][y] = '.';
+    while (Check(x, y))
+    {
+        int t = RND() % 4;
+        if (RND() % 1000 < RATE_KEEP_DIR) t = last_dir;
+        int nx = x + dx[t], ny = y + dy[t], Nx = x + Dx[t], Ny = y + Dy[t];
+        if (nx<0 || nx>n - 1 || ny<0 || ny>m - 1 || Map[nx][ny] != 'x')continue;
+        if (Nx<0 || Nx>n - 1 || Ny<0 || Ny>m - 1 || Map[Nx][Ny] != 'x')continue;
+        if (Nx == 0 || Nx == n - 1 || Ny == 0 || Ny == m - 1) {
+            if ((int)(RND() % 1000) <= 75)  Map[nx][ny] = 'O';
+            else if ((int)(RND() % 1000) >= 925) Map[nx][ny] = 'T';
+            else Map[nx][ny] = '.';
+            continue;
+        }
+        if ((int)(RND() % 1000) <= 75)  Map[nx][ny] = 'O';
+        else if ((int)(RND() % 1000) >= 925) Map[nx][ny] = 'T';
+        else { Map[nx][ny] = '.'; Map[Nx][Ny] = '.'; }
+        Dfs(Nx, Ny, depth + 1, Lim, t);
+
+        if ((int)(RND() % 1000) < (min(n, m) < 100 ? 0 : RETURN_RATE)) return;
+
+        Lim = depth + max(min(n, m) / TWIST_RATE, 5);
+    }
+    return;
+}
+
+void saveMazeToFile(const std::string& filename) {
+    std::ofstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Error opening file for writing." << std::endl;
+        return;
+    }
+
+    file << blocksize << '\n';
+    file << m << '\n'; //col
+    file << n << '\n'; //row
+
+    for (int i = 0; i < n; ++i) for (int j = 0; j < m; ++j) Map[i][j] = 'x';
+    Sx = 1, Sy = 1;
+    Dfs(Sx, Sy, 0, max(min(n, m) / TWIST_RATE, 5), 2);
+    //set starting and ending points.
+    Map[Sx][Sy] = 'S';
+    Map[Tx][Ty] = 'E';
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j)
+            file << Map[i][j];
+        file << '\n';
+    }
+
+    std::cout << "Maze saved to " << filename << std::endl;
+    file.close();
+}
 
 CourseWork::CourseWork() : controller(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse()) {
     world = new GameWorld();
     window = Window::GetWindow();
+
 #ifdef USEVULKAN
     renderer = new GameTechVulkanRenderer(*world);
     renderer->Init();
@@ -28,7 +120,6 @@ CourseWork::CourseWork() : controller(*Window::GetWindow()->GetKeyboard(), *Wind
     inSelectionMode = false;
 
     InitMainCamera();
-    world->GetMainCamera().SetController(controller);
 
     controller.MapAxis(0, "Sidestep");
     controller.MapAxis(1, "UpDown");
@@ -99,6 +190,8 @@ void CourseWork::UpdateGame(float dt) {
         Window::GetWindow()->LockMouseToWindow(false);
         Menu();
     }
+
+    //cout << world->GetMainCamera().GetPosition() << endl;
 }
 
 void CourseWork::UpdateKeys() {
@@ -194,11 +287,14 @@ void CourseWork::InitPlayerCamera() {
 
 void CourseWork::InitGameOne() {
     currentGame = 1;
+    rotationBoard.clear();
+    saveMazeToFile("../Assets/Data/maze.txt");
+    grid = new NavigationGrid("maze.txt");
     world->ClearAndErase();
     physics->Clear();
     physics->UseGravity(useGravity);
 
-    InitDefaultFloor();
+    InitFloor();
     InitGameOneObject();
 
     InitPlayerCamera();
@@ -213,12 +309,12 @@ A single function to add a large immoveable cube to the bottom of our world
 GameObject* CourseWork::AddFloorToWorld(const Vector3& position, float fSize) {
     GameObject* floor = new GameObject();
 
-    Vector3 floorSize = Vector3(fSize, 2, fSize);
+    Vector3 floorSize = Vector3(fSize, 1, fSize);
     AABBVolume* volume = new AABBVolume(floorSize);
     floor->SetBoundingVolume((CollisionVolume*)volume);
     floor->GetTransform()
         .SetScale(floorSize * 2)
-        .SetPosition(position);
+        .SetPosition(Vector3(position.x + fSize, position.y, position.z + fSize));
 
     floor->SetRenderObject(new RenderObject(&floor->GetTransform(), cubeMesh, basicTex, basicShader));
     floor->SetPhysicsObject(new PhysicsObject(&floor->GetTransform(), floor->GetBoundingVolume()));
@@ -284,23 +380,22 @@ GameObject* CourseWork::AddCubeToWorld(const Vector3& position, Vector3 dimensio
 GameObject* CourseWork::AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass)
 {
     GameObject* Board = new GameObject();
-    AABBVolume* volume = new AABBVolume(boardSize);
+    AABBVolume* volume = new AABBVolume(boardSize * 2.5);
     Board->SetBoundingVolume((CollisionVolume*)volume);
     Board->GetTransform()
-        .SetScale(boardSize * 2)
+        .SetScale(boardSize * 5)
         .SetPosition(position)
         .SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(1.0f, 0.0f, 0.0f), rotation.x) *
             Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), rotation.y) *
             Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 0.0f, 1.0f), rotation.z));
 
     Board->SetRenderObject(new RenderObject(&Board->GetTransform(), cubeMesh, basicTex, basicShader));
-    Board->GetRenderObject()->SetColour(Vector4(0.0, 0, 0.7, 1));
+    //Board->GetRenderObject()->SetColour(Vector4(0.0, 0, 0.7, 1));
     Board->SetPhysicsObject(new PhysicsObject(&Board->GetTransform(), Board->GetBoundingVolume()));
 
     Board->GetPhysicsObject()->SetInverseMass(inverseMass);
-    Board->GetPhysicsObject()->InitCubeInertia();
+    //Board->GetPhysicsObject()->InitCubeInertia();
 
-    Board->SetLockFlags(AxisLock::ANGULAR_X | AxisLock::ANGULAR_Z | AxisLock::LINEAR_X | AxisLock::LINEAR_Y | AxisLock::LINEAR_Z);
     Board->SetUsesGravity(false);
 
     world->AddGameObject(Board);
@@ -321,6 +416,7 @@ GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
         .SetPosition(position);
 
     Capsule->SetRenderObject(new RenderObject(&Capsule->GetTransform(), capsuleMesh, basicTex, basicShader));
+    Capsule->GetRenderObject()->SetColour(Vector4(1, 1, 0, 1));
     Capsule->SetPhysicsObject(new PhysicsObject(&Capsule->GetTransform(), Capsule->GetBoundingVolume()));
 
     Capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
@@ -331,28 +427,48 @@ GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
     return Capsule;
 }
 
-void CourseWork::InitDefaultFloor() {
-    AddFloorToWorld(Vector3(0, 0, 0), 200);
-    AddFloorToWorld(Vector3(0, 60, 0), 100);
+void CourseWork::InitFloor() {
+    AddFloorToWorld(Vector3(-2.5, 0, -2.5), 50);
+    AddFloorToWorld(Vector3(-2.5, 100, -2.5), 50);
 }
 
 void CourseWork::InitGameOneObject() {
-    player = new Player(*this, Vector3(-10, 5, 0), charMesh, nullptr, basicShader);
+    for (int y = 0; y < grid->GetGridHeight(); ++y) {
+        for (int x = 0; x < grid->GetGridWidth(); ++x) {
+            if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'x')
+                AddBoardToWorld(
+                    Vector3(grid->GetNodeSize() * x, grid->GetNodeSize() + 1, grid->GetNodeSize() * y),
+                    Vector3(0, 0, 0), Vector3(1, 2, 1));
+            else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'S')
+                player = new Player(*this, Vector3(x * grid->GetNodeSize(), 2, y * grid->GetNodeSize()), charMesh, nullptr, basicShader);
+            else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'E')
+            {
+                finalTreasurePos = Vector3(x * grid->GetNodeSize(), 0, y * grid->GetNodeSize());
+                finalTreasure = AddCapsuleToWorld(Vector3(x * grid->GetNodeSize(), 2, y * grid->GetNodeSize()));
+                finalTreasure->SetColour(Vector4(0, 0, 0, 1));
+                keys.emplace_back(finalTreasure);
+                enemy = new Enemy(*this, Vector3(x * grid->GetNodeSize(), 4, y * grid->GetNodeSize()),
+                    enemyMesh, nullptr, basicShader);
+            }
+            else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'O')
+            {
+                rotationBoard.emplace_back(new RotationBoard(*this, Vector3(x * grid->GetNodeSize(), 5, y * grid->GetNodeSize()),
+                    Vector3(0, 0, 0), Vector3(2.4f, 4.0f, 0.25f),
+                    cubeMesh, basicTex, basicShader, 0.1f));
+            }
+            else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'T')
+            {
+                keys.emplace_back(AddCapsuleToWorld(Vector3(x * grid->GetNodeSize(), 2, y * grid->GetNodeSize())));
+            }
+        }
+    }
 
-    enemy = new Enemy(*this, Vector3(-5, 5, 0), enemyMesh, nullptr, basicShader);
+    //bridge = new Bridge(*this, Vector3(10, 30, 5), Vector3(3, 1, 3), 6);
 
-    key = AddCapsuleToWorld(Vector3(-15, 5, 0));
-    //AddBoardToWorld(Vector3(-25, 7, 0), Vector3(0, 0, 0), Vector3(5, 5, 1));
+    DamageLinkSphere = new  DamageObject(*this, Vector3(20, 30, 5), 1, 6, 6);
 
-    bridge = new Bridge(*this, Vector3(-10, 30, 0), Vector3(3, 1, 3), 6);
-
-    DamageLinkSphere = new  DamageObject(*this, Vector3(-20, 30, 0), 1, 6, 6);
-
-    rotationBoard = new RotationBoard(*this, Vector3(-24, 6, 0), Vector3(0, 0, 0), Vector3(5, 5, 1),
-        cubeMesh, basicTex, basicShader, 0.1f);
-
-    springBoard = new SpringBoard(*this, Vector3(-35, 3, 0), Vector3(0, 0, 0), Vector3(5, 1, 5),
-        cubeMesh, basicTex, basicShader);
+    //springBoard = new SpringBoard(*this, Vector3(35, 3, 5), Vector3(0, 0, 0), Vector3(5, 1, 5),
+    //    cubeMesh, basicTex, basicShader);
 }
 
 /*
@@ -533,38 +649,17 @@ void CourseWork::ShowUI() {
 void CourseWork::GameOneRunning(float dt)
 {
     ShowUI();
-
+    Debug::DrawLine(finalTreasurePos, Vector3(finalTreasurePos.x, 25, finalTreasurePos.z), Debug::BLUE);
     player->Update(dt);
     enemy->Update(dt);
     DamageLinkSphere->Update();
-    rotationBoard->update();
+    for (auto& i : rotationBoard) i->update();
 
     if (!inSelectionMode) {
         world->GetMainCamera().UpdateCamera(dt);
     }
 
-    RayCollision closestCollision;
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::K) && selectionObject) {
-        Vector3 rayPos;
-        Vector3 rayDir;
-
-        rayDir = selectionObject->GetTransform().GetOrientation() * Vector3(0, 0, -1);
-
-        rayPos = selectionObject->GetTransform().GetPosition();
-
-        Ray r = Ray(rayPos, rayDir);
-
-        if (world->Raycast(r, closestCollision, true, selectionObject)) {
-            if (objClosest) {
-                objClosest->GetRenderObject()->SetColour(Vector4(1, 1, 1, 1));
-            }
-            objClosest = (GameObject*)closestCollision.node;
-
-            objClosest->GetRenderObject()->SetColour(Vector4(1, 0, 1, 1));
-        }
-    }
-
-    Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
+    //Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
 
     SelectObject();
     MoveSelectedObject();

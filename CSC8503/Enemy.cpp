@@ -8,11 +8,15 @@
 #include "StateMachine.h"
 #include "State.h"
 
+
 using namespace NCL;
 using namespace CSC8503;
 
-Enemy::Enemy(CourseWork& g, const Vector3& position, Mesh* mesh, Texture* basicTex, Shader* basicShader) :game(g), world(g.GetWorld())
+Enemy::Enemy(CourseWork& g, const Vector3& position, Mesh* mesh, Texture* basicTex, Shader* basicShader)
+    :game(g), world(g.GetWorld()), grid(g.GetGrid())
 {
+    grid->PrintAllNodes();
+
     float meshSize = 3.0f;
     float inverseMass = 0.5f;
 
@@ -21,9 +25,11 @@ Enemy::Enemy(CourseWork& g, const Vector3& position, Mesh* mesh, Texture* basicT
 
     transform
         .SetScale(Vector3(meshSize, meshSize, meshSize))
-        .SetPosition(position);
+        .SetPosition(position)
+        .SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), 180.0f));
 
     renderObject = new RenderObject(&transform, mesh, nullptr, basicShader);
+    renderObject->SetColour(Vector4(1, 0, 0, 1));
 
     physicsObject = new PhysicsObject(&transform, GetBoundingVolume());
     physicsObject->SetInverseMass(inverseMass);
@@ -40,7 +46,7 @@ void Enemy::GenerateStateMachine()
     State* wander = new State([&](float dt)-> void
         {
             //cout << "now is wandering" << endl;
-            this->Wander(dt);
+            //this->Wander(dt);
         }
     );
     State* chase = new State([&](float dt)-> void
@@ -79,25 +85,25 @@ void Enemy::Wander(float dt)
     if (aliveTime < 0.0f)
     {
         moveDirection = "forward";
-        transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), 0.0f));
+        transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), 180.0f));
     }
     else if (aliveTime > 3.0f)
     {
         moveDirection = "back";
-        transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), 180.0f));
+        transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), 0.0f));
     }
     if (moveDirection == "forward") {
         //cout << "im walking forward" << endl;
         aliveTime += dt;
         Vector3 newPos = transform.GetPosition();
-        newPos.z -= 0.1;
+        newPos.z += 0.1;
         transform.SetPosition(newPos);
     }
     else if (moveDirection == "back") {
         //cout << "im walking back" << endl;
         aliveTime -= dt;
         Vector3 newPos = transform.GetPosition();
-        newPos.z += 0.1;
+        newPos.z -= 0.1;
         transform.SetPosition(newPos);
     }
     //cout << aliveTime << endl;
@@ -114,5 +120,31 @@ void Enemy::Respawn()
 
 void Enemy::Update(float dt)
 {
+    Pathfinding();
+    DisplayPathfinding();
     stateMachine->Update(dt);
+}
+
+void Enemy::Pathfinding() {
+    Vector3 startPos = transform.GetPosition();
+    //Vector3 startPos(game.GetFinalTreasurePos().x, 0, game.GetFinalTreasurePos().z);
+    Vector3 endPos = game.GetPlayer()->GetTransform().GetPosition();
+    //Vector3 endPos(5, 0, 5);
+
+    pathNodes.clear();
+    bool found = grid->FindPath(startPos, endPos, outPath);
+
+    Vector3 pos;
+    while (outPath.PopWaypoint(pos)) {
+        pathNodes.push_back(pos);
+    }
+}
+
+void Enemy::DisplayPathfinding() {
+    for (int i = 1; i < pathNodes.size(); ++i) {
+        Vector3 a = pathNodes[i - 1];
+        Vector3 b = pathNodes[i];
+
+        Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+    }
 }

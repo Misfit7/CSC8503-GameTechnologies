@@ -91,13 +91,16 @@ void PhysicsSystem::Update(float dt) {
         UpdateObjectAABBs();
     }
     int iteratorCount = 0;
-    while (dTOffset > realDT) {
+    while (dTOffset > realDT)
+    {
         IntegrateAccel(realDT); //Update accelerations from external forces
-        if (useBroadPhase) {
+        if (useBroadPhase)
+        {
             BroadPhase();
             NarrowPhase();
         }
-        else {
+        else
+        {
             BasicCollisionDetection();
         }
 
@@ -105,7 +108,8 @@ void PhysicsSystem::Update(float dt) {
         //we just run things multiple times, slowly moving things forward
         //and then rechecking that the constraints have been met		
         float constraintDt = realDT / (float)constraintIterationCount;
-        for (int i = 0; i < constraintIterationCount; ++i) {
+        for (int i = 0; i < constraintIterationCount; ++i)
+        {
             UpdateConstraints(constraintDt);
         }
         IntegrateVelocity(realDT); //update positions from new velocity changes
@@ -122,12 +126,14 @@ void PhysicsSystem::Update(float dt) {
     float updateTime = t.GetTimeDeltaSeconds();
 
     //Uh oh, physics is taking too long...
-    if (updateTime > realDT) {
+    if (updateTime > realDT)
+    {
         realHZ /= 2;
         realDT *= 2;
         std::cout << "Dropping iteration count due to long physics time...(now " << realHZ << ")\n";
     }
-    else if (dt * 2 < realDT) { //we have plenty of room to increase iteration count!
+    else if (dt * 2 < realDT)
+    { //we have plenty of room to increase iteration count!
         int temp = realHZ;
         realHZ *= 2;
         realDT /= 2;
@@ -283,7 +289,7 @@ compare the collisions that we absolutely need to.
 */
 void PhysicsSystem::BroadPhase() {
     broadphaseCollisions.clear();
-    QuadTree < GameObject* > tree(Vector2(1024, 1024), 7, 6);
+    tree = QuadTree<GameObject*>(Vector2(1024, 1024), 7, 6);
 
     std::vector < GameObject* >::const_iterator first;
     std::vector < GameObject* >::const_iterator last;
@@ -364,7 +370,7 @@ void PhysicsSystem::IntegrateAccel(float dt) {
             linearVel += accel * dt; // integrate accel!
         }
         object->SetLinearVelocity(linearVel); // previous code
-        (*i)->ConstrainLinearVelocity();
+        //(*i)->ConstrainLinearVelocity();
 
         // Angular stuff
         Vector3 torque = object->GetTorque();
@@ -376,7 +382,7 @@ void PhysicsSystem::IntegrateAccel(float dt) {
 
         angVel += angAccel * dt; // integrate angular accel!
         object->SetAngularVelocity(angVel);
-        (*i)->ConstrainAngularVelocity();
+        //(*i)->ConstrainAngularVelocity();
     }
 }
 
@@ -406,7 +412,7 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
         // Linear Damping
         linearVel = linearVel * frameLinearDamping;
         object->SetLinearVelocity(linearVel);
-        (*i)->ConstrainLinearVelocity();
+        //(*i)->ConstrainLinearVelocity();
 
         // Orientation Stuff
         Quaternion orientation = transform.GetOrientation();
@@ -422,7 +428,7 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
         float frameAngularDamping = 1.0f - (globalDamping * dt);
         angVel = angVel * frameAngularDamping;
         object->SetAngularVelocity(angVel);
-        (*i)->ConstrainAngularVelocity();
+        //(*i)->ConstrainAngularVelocity();
     }
 }
 

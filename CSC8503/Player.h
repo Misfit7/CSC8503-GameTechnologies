@@ -30,6 +30,9 @@ namespace NCL {
             int jumpCount = 0;
 
             Vector3 grabPoint;
+
+        private:
+            static int playerNum;
         };
     }
 }

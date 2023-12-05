@@ -59,7 +59,9 @@ NavigationGrid::NavigationGrid(const std::string& filename) : NavigationGrid() {
             }
             for (int i = 0; i < 4; ++i) {
                 if (n.connected[i]) {
-                    if (n.connected[i]->type == '.') {
+                    if (n.connected[i]->type == '.' || n.connected[i]->type == 'S' ||
+                        n.connected[i]->type == 'E' || n.connected[i]->type == 'T' ||
+                        n.connected[i]->type == 'O') {
                         n.costs[i] = 1;
                     }
                     if (n.connected[i]->type == 'x') {

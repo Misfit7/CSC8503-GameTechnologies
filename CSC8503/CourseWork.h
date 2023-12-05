@@ -9,6 +9,8 @@
 
 #include "StateGameObject.h"
 
+#include "NavigationGrid.h"
+
 #include "PushdownMachine.h"
 #include "PushdownState.h"
 #include "BehaviourAction.h"
@@ -22,6 +24,10 @@
 #include "RotationBoard.h"
 #include "DamageObject.h"
 #include "Bridge.h"
+
+#include <vector>
+
+using namespace std;
 
 namespace NCL {
     namespace CSC8503 {
@@ -44,8 +50,11 @@ namespace NCL {
             PlayerCamera* GetPlayerCamera() { return playerCamera; }
             bool GetSwitchCamera() { return switchCamera; }
 
+            Vector3 GetFinalTreasurePos() { return finalTreasurePos; }
+
             Player* GetPlayer() { return player; }
             GameWorld* GetWorld() { return world; }
+            NavigationGrid* GetGrid() { return grid; }
 
             GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
             GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
@@ -70,9 +79,11 @@ namespace NCL {
             Enemy* enemy;
             DamageObject* DamageLinkSphere;
             SpringBoard* springBoard;
-            RotationBoard* rotationBoard;
+            vector<RotationBoard*> rotationBoard;
             Bridge* bridge;
-            GameObject* key;
+            vector<GameObject*> keys;
+            Vector3 finalTreasurePos;
+            GameObject* finalTreasure;
 
             void UpdateKeys();
 
@@ -83,7 +94,7 @@ namespace NCL {
             in the module. Feel free to mess around with them to see different objects being created in different
             test scenarios (constraints, collision types, and so on).
             */
-            void InitDefaultFloor();
+            void InitFloor();
 
             void InitGameOneObject();
 
@@ -92,7 +103,7 @@ namespace NCL {
             void DebugObjectMovement();
 
             GameObject* AddFloorToWorld(const Vector3& position, float fSize);
-            GameObject* AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass = 10.0f);
+            GameObject* AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass = 0.0f);
 
             GameObject* AddCapsuleToWorld(const Vector3& position);
 #ifdef USEVULKAN
@@ -127,6 +138,9 @@ namespace NCL {
             //Coursework Additional functionality	
 
             GameObject* objClosest = nullptr;
+
+            //Map
+            NavigationGrid* grid;
         };
     }
 

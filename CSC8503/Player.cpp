@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "NetworkObject.h"
 #include "..\CSC8503CoreClasses\PhysicsObject.h"
 #include "..\CSC8503CoreClasses\RenderObject.h"
 #include "..\NCLCoreClasses\Quaternion.h"
@@ -6,9 +7,14 @@
 using namespace NCL;
 using namespace CSC8503;
 
+int Player::playerNum = 0;
+
 Player::Player(CourseWork& g, const Vector3& position,
     Mesh* mesh, Texture* basicTex, Shader* basicShader) :game(g), world(g.GetWorld())
 {
+    playerNum++;
+    networkObject = new NetworkObject(*this, playerNum);
+
     float meshSize = 1.0f;
     float inverseMass = 1.0f;
     iMass = inverseMass;

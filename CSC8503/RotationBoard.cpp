@@ -26,6 +26,7 @@ RotationBoard::RotationBoard(CourseWork& g, const Vector3& position, const Vecto
     physicsObject = new PhysicsObject(&transform, GetBoundingVolume());
     physicsObject->SetInverseMass(inverseMass);
     physicsObject->InitCubeInertia();
+    SetUsesGravity(false);
 
     SetLockFlags(AxisLock::ANGULAR_X | AxisLock::ANGULAR_Z | AxisLock::LINEAR_X | AxisLock::LINEAR_Y | AxisLock::LINEAR_Z);
 
@@ -34,5 +35,5 @@ RotationBoard::RotationBoard(CourseWork& g, const Vector3& position, const Vecto
 
 void RotationBoard::update()
 {
-    physicsObject->AddTorque(Vector3(0, -90.0f / physicsObject->GetInverseMass(), 0));
+    physicsObject->AddTorque(Vector3(0, -15.0f / physicsObject->GetInverseMass(), 0));
 }

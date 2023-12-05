@@ -1,8 +1,14 @@
 #pragma once
 
+#include <sstream>
+#include <string>
+
 #include "CourseWork.h"
 #include "..\CSC8503CoreClasses\GameObject.h"
 #include "..\CSC8503\GameTechRenderer.h"
+
+#include "NavigationGrid.h"
+#include "NavigationMesh.h"
 
 namespace NCL {
     namespace CSC8503
@@ -24,15 +30,15 @@ namespace NCL {
             Enemy(CourseWork& g, const Vector3& position,
                 Mesh* mesh, Texture* basicTex, Shader* basicShader);
 
-            ~Enemy(void) { delete stateMachine; delete grid; }
+            ~Enemy(void) { delete stateMachine; }
             void Update(float dt);
 
         protected:
             CourseWork& game;
             GameWorld* world;
-            float aliveTime = 0;
-
             NavigationGrid* grid;
+
+            float aliveTime = 0;
             StateMachine* stateMachine;
 
             void GenerateStateMachine();
@@ -40,6 +46,13 @@ namespace NCL {
             string moveDirection = "forward";
             void ChasePlayer(float dt);
             void Respawn();
+
+            //
+            NavigationPath outPath;
+            vector<Vector3> pathNodes;
+            void Pathfinding();
+            void DisplayPathfinding();
+
         };
 
     }
