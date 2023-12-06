@@ -44,7 +44,7 @@ void PositionConstraint::UpdateConstraint(float dt) {
         float constraintMass = physA->GetInverseMass() +
             physB->GetInverseMass();
 
-        if (constraintMass > 0.0f) {
+        if (constraintMass != 0.0f) {
             // how much of their relative force is affecting the constraint
             float velocityDot = Vector3::Dot(relativeVelocity, offsetDir);
             float biasFactor = 0.01f;

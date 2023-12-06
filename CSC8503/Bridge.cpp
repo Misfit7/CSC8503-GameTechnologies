@@ -21,10 +21,11 @@ Bridge::Bridge(CourseWork& g, const Vector3& position,
     GameObject* previous = linkStart;
 
     for (int i = 2; i <= linkNum - 1; ++i) {
-        GameObject* sphere = game.AddCubeToWorld(position + Vector3(i * cubeDistance, 0.0f, 0.0f), boardSize, inverseMass);
-        PositionConstraint* constraint = new PositionConstraint(previous, sphere, maxDistance);
+        GameObject* cube = game.AddCubeToWorld(position + Vector3(i * cubeDistance, 0.0f, 0.0f),
+            boardSize, inverseMass);
+        PositionConstraint* constraint = new PositionConstraint(previous, cube, maxDistance);
         world->AddConstraint(constraint);
-        previous = sphere;
+        previous = cube;
     }
 
     GameObject* linkEnd = game.AddCubeToWorld(position + Vector3(linkNum * cubeDistance, 0.0f, 0.0f), boardSize, 0.0f);

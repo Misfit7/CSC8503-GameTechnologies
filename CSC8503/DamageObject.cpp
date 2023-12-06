@@ -23,24 +23,26 @@ DamageObject::DamageObject(CourseWork& g, const Vector3& position,
     impulseObject = new GameObject;
 
     for (int i = 2; i <= linkNum; ++i) {
-        GameObject* sphere = game.AddSphereToWorld(position + Vector3(0.0f, i * -sphereDistance, 0.0f), sphereSize, inverseMass);
+        GameObject* sphere = game.AddSphereToWorld(position + Vector3(0.0f, i * sphereDistance, 0.0f),
+            sphereSize, inverseMass);
         PositionConstraint* constraint = new PositionConstraint(previous, sphere, maxDistance);
         world->AddConstraint(constraint);
         previous = sphere;
         if (i == impulseNum) impulseObject = sphere;
     }
     LinkMaxDistance = (linkNum - 1) * maxDistance;
+
 }
 
 void DamageObject::Update()
 {
-    if (impulseObject->GetTransform().GetPosition().y < (30 - LinkMaxDistance + 0.75f) && !bImpulse)
+    if (impulseObject->GetTransform().GetPosition().y < (87.5 + LinkMaxDistance - 0.75f) && !bImpulse)
     {
-        impulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, 200.0f));
+        impulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, -4.0f));
         bImpulse = true;
         //cout << bImpulse << endl;
     }
-    if (impulseObject->GetTransform().GetPosition().y > 30 && bImpulse)
+    if (impulseObject->GetTransform().GetPosition().y > 87.5 && bImpulse)
     {
         bImpulse = false;
         //cout << bImpulse << endl;

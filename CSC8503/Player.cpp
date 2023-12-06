@@ -40,7 +40,7 @@ void Player::Update(float dt)
     Vector3 playerPos = transform.GetPosition();
     Ray yRay = Ray(playerPos, Vector3(0, -1, 0));
 
-    if (transform.GetPosition().y >= 30.0f && !isStand) {
+    if (transform.GetPosition().y >= 50.0f && !isStand) {
         //game.GetPlayerCamera()->SetDU(60.0f, -89.0f);
         game.GetPlayerCamera()->SetViewMat(-1, -1);
         yRay = Ray(playerPos, Vector3(0, 1, 0));
@@ -51,7 +51,7 @@ void Player::Update(float dt)
             transform.SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 0.0f, 1.0f), 180.0f));
         }
     }
-    else if (transform.GetPosition().y <= 30.0f && !isStand) {
+    else if (transform.GetPosition().y <= 50.0f && !isStand) {
         //game.GetPlayerCamera()->SetDU(-60.0f, 89.0f);
         game.GetPlayerCamera()->SetViewMat(1, 1);
         yRay = Ray(playerPos, Vector3(0, -1, 0));
@@ -186,7 +186,19 @@ void Player::Update(float dt)
 
     }
 
-    Pathfinding();
+    if (!switchOrientation)
+        Pathfinding();
+
+    if (!health || playerPos.y > 120.0f || playerPos.y < -10.0f) Respawn();
+}
+
+void Player::Respawn()
+{
+    health = 2;
+    if (transform.GetPosition().y < 50.0f)
+        transform.SetPosition(Vector3(game.GetGrid()->GetNodeSize(), 2, game.GetGrid()->GetNodeSize()));
+    else if (transform.GetPosition().y > 50.0f)
+        transform.SetPosition(Vector3(game.GetGrid()->GetNodeSize(), 98, game.GetGrid()->GetNodeSize()));
 }
 
 void Player::Pathfinding() {

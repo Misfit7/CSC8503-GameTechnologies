@@ -23,6 +23,8 @@ namespace NCL {
             CourseWork& game;
             GameWorld* world;
 
+            void Respawn();
+
             float iMass;
             bool isStand;
             bool isGrab = false;
@@ -39,6 +41,7 @@ namespace NCL {
 
         private:
             static int playerNum;
+            int health = 2;
         };
     }
 }

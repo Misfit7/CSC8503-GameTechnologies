@@ -23,6 +23,7 @@ set(Source_Files
     "CourseWork.cpp"
     "Player.cpp"
     "Enemy.cpp"
+    "AIEnemy.cpp"
     "PlayerCamera.cpp"
     "RotationBoard.cpp"
     "SpringBoard.cpp"

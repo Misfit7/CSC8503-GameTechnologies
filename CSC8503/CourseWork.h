@@ -63,7 +63,8 @@ namespace NCL {
             //Game One
             Window* window;
             void Menu(const std::string& text = "", const Vector4& colour = Debug::WHITE);
-            void ShowUI();
+            void ShowUIOne();
+            void ShowUITwo();
             int currentGame = 0;
             void GameOneRunning(float dt);
             void GameTwoRunning(float dt);

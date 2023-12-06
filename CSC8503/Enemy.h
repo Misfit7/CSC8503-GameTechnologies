@@ -43,15 +43,9 @@ namespace NCL {
 
             void GenerateStateMachine();
             void Wander(float dt);
-            //string moveDirection = "forward";
+            string moveDirection = "forward";
             void ChasePlayer(float dt);
             void Respawn();
-
-            //pathfind
-            NavigationPath outPath;
-            vector<Vector3> pathNodes;
-            void Pathfinding();
-            void DisplayPathfinding();
 
         };
 

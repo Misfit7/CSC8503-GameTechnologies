@@ -28,6 +28,9 @@
     <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\Enemy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\AIEnemy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\PlayerCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -45,6 +48,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\AIEnemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\84251\Desktop\C++\GameTechnologies\CSC8503\Bridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>

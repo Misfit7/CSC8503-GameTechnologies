@@ -380,10 +380,10 @@ GameObject* CourseWork::AddCubeToWorld(const Vector3& position, Vector3 dimensio
 GameObject* CourseWork::AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass)
 {
     GameObject* Board = new GameObject();
-    AABBVolume* volume = new AABBVolume(boardSize * 2.5);
+    AABBVolume* volume = new AABBVolume(boardSize * 2.499f);
     Board->SetBoundingVolume((CollisionVolume*)volume);
     Board->GetTransform()
-        .SetScale(boardSize * 5)
+        .SetScale(boardSize * 4.999f)
         .SetPosition(position)
         .SetOrientation(Quaternion::AxisAngleToQuaterion(Vector3(1.0f, 0.0f, 0.0f), rotation.x) *
             Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 1.0f, 0.0f), rotation.y) *
@@ -404,7 +404,7 @@ GameObject* CourseWork::AddBoardToWorld(const Vector3& position, const Vector3& 
 
 GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
     float meshSize = 1.0f;
-    float inverseMass = 0.5f;
+    float inverseMass = 0.0f;
 
     GameObject* Capsule = new GameObject();
 
@@ -420,7 +420,7 @@ GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
     Capsule->SetPhysicsObject(new PhysicsObject(&Capsule->GetTransform(), Capsule->GetBoundingVolume()));
 
     Capsule->GetPhysicsObject()->SetInverseMass(inverseMass);
-    Capsule->GetPhysicsObject()->InitSphereInertia();
+    //Capsule->GetPhysicsObject()->InitSphereInertia();
 
     world->AddGameObject(Capsule);
 
@@ -429,48 +429,53 @@ GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
 
 void CourseWork::InitFloor() {
     AddFloorToWorld(Vector3(-2.5, 0, -2.5), 50);
-    AddFloorToWorld(Vector3(-2.5, 100, -2.5), 50);
+    AddFloorToWorld(Vector3(-2.5, 110, -2.5), 50);
 }
 
 void CourseWork::InitGameOneObject() {
+    float nodeSize = grid->GetNodeSize();
+    //PartB area
     for (int y = 0; y < grid->GetGridHeight(); ++y) {
         for (int x = 0; x < grid->GetGridWidth(); ++x) {
             if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'x')
-                AddBoardToWorld(
-                    Vector3(grid->GetNodeSize() * x, grid->GetNodeSize() + 1, grid->GetNodeSize() * y),
+                AddBoardToWorld(Vector3(nodeSize * x, nodeSize + 1, nodeSize * y),
                     Vector3(0, 0, 0), Vector3(1, 2, 1));
-            else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'S')
-                player = new Player(*this, Vector3(x * grid->GetNodeSize(), 2, y * grid->GetNodeSize()), charMesh, nullptr, basicShader);
+            else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'S');
+            //player = new Player(*this, Vector3(x * nodeSize, 2, y * nodeSize), charMesh, nullptr, basicShader);
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'E')
             {
-                finalTreasurePos = Vector3(x * grid->GetNodeSize(), 0, y * grid->GetNodeSize());
+                finalTreasurePos = Vector3(x * nodeSize, 0, y * nodeSize);
                 keysPos.emplace_back(finalTreasurePos);
-                finalTreasure = AddCapsuleToWorld(Vector3(x * grid->GetNodeSize(), 2, y * grid->GetNodeSize()));
+                finalTreasure = AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize));
                 finalTreasure->SetColour(Vector4(0, 0, 0, 1));
                 keys.emplace_back(finalTreasure);
-                enemy = new Enemy(*this, Vector3(x * grid->GetNodeSize(), 4, y * grid->GetNodeSize()),
+                enemy = new Enemy(*this, Vector3(x * nodeSize, 4, y * nodeSize),
                     enemyMesh, nullptr, basicShader);
             }
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'O')
             {
-                rotationBoard.emplace_back(new RotationBoard(*this, Vector3(x * grid->GetNodeSize(), 5, y * grid->GetNodeSize()),
+                rotationBoard.emplace_back(new RotationBoard(*this, Vector3(x * nodeSize, 5, y * nodeSize),
                     Vector3(0, 0, 0), Vector3(2.4f, 4.0f, 0.25f),
                     cubeMesh, basicTex, basicShader, 0.1f));
             }
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'T')
             {
-                keys.emplace_back(AddCapsuleToWorld(Vector3(x * grid->GetNodeSize(), 2, y * grid->GetNodeSize())));
-                keysPos.emplace_back(Vector3(x * grid->GetNodeSize(), 0, y * grid->GetNodeSize()));
+                keys.emplace_back(AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize)));
+                keysPos.emplace_back(Vector3(x * nodeSize, 0, y * nodeSize));
             }
         }
     }
+    //enemy->SetKeysPos(keysPos);
 
-    //bridge = new Bridge(*this, Vector3(10, 30, 5), Vector3(3, 1, 3), 6);
+    //PartA area
+    AddBoardToWorld(Vector3(nodeSize, 100, nodeSize), Vector3(0, 0, 0), Vector3(1, 0.25, 1));
+    player = new Player(*this, Vector3(nodeSize, 98, nodeSize), charMesh, nullptr, basicShader);
+    bridge = new Bridge(*this, Vector3(nodeSize * 2, 100, nodeSize), Vector3(2.5, 0.5, 2.5), 6, -1.0f);
+    DamageLinkSphere = new  DamageObject(*this, Vector3(nodeSize * 5, 87.5, nodeSize), 1, 6, 6, -1.0f);
 
-    DamageLinkSphere = new  DamageObject(*this, Vector3(20, 30, 5), 1, 6, 6);
+    /*springBoard = new SpringBoard(*this, Vector3(1 * grid->GetNodeSize(), 1, 1 * grid->GetNodeSize()), Vector3(0, 0, 0), Vector3(2.5, 1, 2.5),
+        cubeMesh, basicTex, basicShader);*/
 
-    //springBoard = new SpringBoard(*this, Vector3(35, 3, 5), Vector3(0, 0, 0), Vector3(5, 1, 5),
-    //    cubeMesh, basicTex, basicShader);
 }
 
 /*
@@ -568,7 +573,12 @@ void CourseWork::Menu(const std::string& text, const Vector4& colour) {
     }
 }
 
-void CourseWork::ShowUI() {
+void CourseWork::ShowUIOne() {
+
+    return;
+}
+
+void CourseWork::ShowUITwo() {
 
     return;
 }
@@ -650,7 +660,8 @@ void CourseWork::ShowUI() {
 
 void CourseWork::GameOneRunning(float dt)
 {
-    ShowUI();
+    //ShowUIOne();
+    //ShowUITwo();
     Debug::DrawLine(finalTreasurePos, Vector3(finalTreasurePos.x, 25, finalTreasurePos.z), Debug::BLUE);
     player->Update(dt);
     enemy->Update(dt);
