@@ -11,7 +11,6 @@ public:
 protected:
     void Pathfinding(Vector3 startPos, Vector3 endPos);
     void DisplayPathfinding();
-    void Move(const Vector3& pos, float dt);
 
     //pathfind
     NavigationPath outPath;

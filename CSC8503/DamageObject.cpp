@@ -8,7 +8,8 @@ using namespace NCL;
 using namespace CSC8503;
 
 DamageObject::DamageObject(CourseWork& g, const Vector3& position,
-    float radius, int linkNum, int impulseNum, float inverseMass) :game(g), world(g.GetWorld())
+    float radius, int linkNum, int impulseNum, float inverseMass,
+    Mesh* mesh, Texture* tex, Shader* shader) :game(g), world(g.GetWorld())
 {
     if (linkNum < 2) return;
     if (impulseNum < 2 || impulseNum>linkNum) impulseNum = 2;
@@ -18,13 +19,15 @@ DamageObject::DamageObject(CourseWork& g, const Vector3& position,
     float sphereDistance = 2 * radius; // distance between links
 
     GameObject* linkStart = game.AddSphereToWorld(position, sphereSize, 0.0f);
+    spheres.emplace_back(linkStart);
     GameObject* previous = linkStart;
 
     impulseObject = new GameObject;
 
     for (int i = 2; i <= linkNum; ++i) {
-        GameObject* sphere = game.AddSphereToWorld(position + Vector3(0.0f, i * sphereDistance, 0.0f),
-            sphereSize, inverseMass);
+        GameObject* sphere = AddSphereToWorld(position + Vector3(0.0f, i * sphereDistance, 0.0f),
+            sphereSize, inverseMass, mesh, tex, shader);
+        spheres.emplace_back(sphere);
         PositionConstraint* constraint = new PositionConstraint(previous, sphere, maxDistance);
         world->AddConstraint(constraint);
         previous = sphere;
@@ -36,9 +39,9 @@ DamageObject::DamageObject(CourseWork& g, const Vector3& position,
 
 void DamageObject::Update()
 {
-    if (impulseObject->GetTransform().GetPosition().y < (87.5 + LinkMaxDistance - 0.75f) && !bImpulse)
+    if (impulseObject->GetTransform().GetPosition().y < (87.5 + LinkMaxDistance - 0.5f) && !bImpulse)
     {
-        impulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, -4.0f));
+        impulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, -6.0f));
         bImpulse = true;
         //cout << bImpulse << endl;
     }
@@ -51,5 +54,29 @@ void DamageObject::Update()
 
 void DamageObject::OnCollisionBegin(GameObject* otherObject)
 {
+    if (otherObject == game.GetPlayer())
+        game.GetPlayer()->SetHealth(game.GetPlayer()->GetHealth() - 1);
+}
 
+DamageObject* DamageObject::AddSphereToWorld(const Vector3& position, float radius, float inverseMass,
+    Mesh* mesh, Texture* tex, Shader* shader) {
+    DamageObject* sphere = new DamageObject(game);
+
+    Vector3 sphereSize = Vector3(radius, radius, radius);
+    SphereVolume* volume = new SphereVolume(radius);
+    sphere->SetBoundingVolume((CollisionVolume*)volume);
+
+    sphere->GetTransform()
+        .SetScale(sphereSize)
+        .SetPosition(position);
+
+    sphere->SetRenderObject(new RenderObject(&sphere->GetTransform(), mesh, tex, shader));
+    sphere->SetPhysicsObject(new PhysicsObject(&sphere->GetTransform(), sphere->GetBoundingVolume()));
+
+    sphere->GetPhysicsObject()->SetInverseMass(inverseMass);
+    sphere->GetPhysicsObject()->InitSphereInertia();
+
+    world->AddGameObject(sphere);
+
+    return sphere;
 }

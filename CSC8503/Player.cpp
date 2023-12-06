@@ -39,6 +39,11 @@ void Player::Update(float dt)
 {
     Vector3 playerPos = transform.GetPosition();
     Ray yRay = Ray(playerPos, Vector3(0, -1, 0));
+    speed = 1.0f;
+    //move mode
+    if (Window::GetKeyboard()->KeyHeld(KeyCodes::SHIFT)) {
+        speed = 3.0f;
+    }
 
     if (transform.GetPosition().y >= 50.0f && !isStand) {
         //game.GetPlayerCamera()->SetDU(60.0f, -89.0f);
@@ -76,25 +81,26 @@ void Player::Update(float dt)
 
         if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
             if (!switchOrientation) {
-                linearImpulse.z = -1.0f;
+                linearImpulse.z = -speed;
             }
             else
-                linearImpulse.z = 1.0f;
+                linearImpulse.z = speed;
             //player->GetPhysicsObject()->AddForce(Vector3(0.0f, 0.0f, -10.0f));
         }
         if (Window::GetKeyboard()->KeyDown(KeyCodes::S)) {
             if (!switchOrientation) {
-                linearImpulse.z = 1.0f;
+                linearImpulse.z = speed;
             }
             else
-                linearImpulse.z = -1.0f;
+                linearImpulse.z = -speed;
         }
         if (Window::GetKeyboard()->KeyDown(KeyCodes::A)) {
-            linearImpulse.x = -1.0f;
+            linearImpulse.x = -speed;
         }
         if (Window::GetKeyboard()->KeyDown(KeyCodes::D)) {
-            linearImpulse.x = 1.0f;
+            linearImpulse.x = speed;
         }
+        //cout << linearImpulse;
         //calculate move forward angle
         if (linearImpulse.Length() != 0.0f)
         {
@@ -104,7 +110,7 @@ void Player::Update(float dt)
                 newOrientationQ = Quaternion::EulerAnglesToQuaternion(0, newOrientation, 0)
                     * Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 0.0f, 1.0f), 0.0f);
                 transform.SetOrientation(Quaternion::Slerp(transform.GetOrientation(), newOrientationQ, 5 * dt));
-                physicsObject->AddForce(newOrientationQ * Vector3(0, 0, -1.0f).Normalised() * 20);
+                physicsObject->AddForce(newOrientationQ * Vector3(0, 0, -1.0f).Normalised() * 20 * speed);
 
             }
             else if (switchOrientation) {
@@ -112,7 +118,7 @@ void Player::Update(float dt)
                     * Quaternion::AxisAngleToQuaterion(Vector3(0.0f, -1.0f, 0.0f), 0.0f)
                     * Quaternion::AxisAngleToQuaterion(Vector3(0.0f, 0.0f, -1.0f), 180.0f);
                 transform.SetOrientation(Quaternion::Slerp(transform.GetOrientation(), newOrientationQ, 5 * dt));
-                physicsObject->AddForce(newOrientationQ * Vector3(0, 0, 1.0f).Normalised() * 20);
+                physicsObject->AddForce(newOrientationQ * Vector3(0, 0, 1.0f).Normalised() * 20 * speed);
 
             }
 
@@ -171,10 +177,6 @@ void Player::Update(float dt)
 
         }
 
-        //move mode
-        if (Window::GetKeyboard()->KeyHeld(KeyCodes::LSHIFT)) {
-
-        }
 
         //scale
         if (Window::GetKeyboard()->KeyDown(KeyCodes::PLUS)) {
@@ -199,6 +201,7 @@ void Player::Respawn()
         transform.SetPosition(Vector3(game.GetGrid()->GetNodeSize(), 2, game.GetGrid()->GetNodeSize()));
     else if (transform.GetPosition().y > 50.0f)
         transform.SetPosition(Vector3(game.GetGrid()->GetNodeSize(), 98, game.GetGrid()->GetNodeSize()));
+    physicsObject->SetLinearVelocity(Vector3(0, 0, 0));
 }
 
 void Player::Pathfinding() {

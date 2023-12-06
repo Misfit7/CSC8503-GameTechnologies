@@ -28,25 +28,33 @@ namespace NCL {
         {
         public:
             Enemy(CourseWork& g, const Vector3& position,
-                Mesh* mesh, Texture* basicTex, Shader* basicShader);
+                Mesh* mesh, Texture* basicTex, Shader* basicShader, float inverseMass, string t = "");
 
             ~Enemy(void) { delete stateMachine; }
             void Update(float dt);
+            void OnCollisionBegin(GameObject* otherObject) override;
 
         protected:
             CourseWork& game;
             GameWorld* world;
             NavigationGrid* grid;
 
+            Vector3 originalPos;
+
+            Quaternion ogQ;
+            bool switchOrientation = false;
+            string type;
+
             float aliveTime = 0;
             StateMachine* stateMachine;
 
             void GenerateStateMachine();
             void Wander(float dt);
-            string moveDirection = "forward";
+            string moveDirection = "";
             void ChasePlayer(float dt);
             void Respawn();
 
+            void Move(const Vector3& pos, float dt);
         };
 
     }

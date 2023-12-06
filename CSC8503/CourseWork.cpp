@@ -428,8 +428,8 @@ GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
 }
 
 void CourseWork::InitFloor() {
-    AddFloorToWorld(Vector3(-2.5, 0, -2.5), 50);
-    AddFloorToWorld(Vector3(-2.5, 110, -2.5), 50);
+    AddFloorToWorld(Vector3(-2.5f, 0, -2.5f), 50);
+    AddFloorToWorld(Vector3(-2.5f, 110, -2.5f), 50);
 }
 
 void CourseWork::InitGameOneObject() {
@@ -449,8 +449,8 @@ void CourseWork::InitGameOneObject() {
                 finalTreasure = AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize));
                 finalTreasure->SetColour(Vector4(0, 0, 0, 1));
                 keys.emplace_back(finalTreasure);
-                enemy = new Enemy(*this, Vector3(x * nodeSize, 4, y * nodeSize),
-                    enemyMesh, nullptr, basicShader);
+                /*enemy = new Enemy(*this, Vector3(x * nodeSize, 4, y * nodeSize),
+                    enemyMesh, nullptr, basicShader);*/
             }
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'O')
             {
@@ -471,11 +471,17 @@ void CourseWork::InitGameOneObject() {
     AddBoardToWorld(Vector3(nodeSize, 100, nodeSize), Vector3(0, 0, 0), Vector3(1, 0.25, 1));
     player = new Player(*this, Vector3(nodeSize, 98, nodeSize), charMesh, nullptr, basicShader);
     bridge = new Bridge(*this, Vector3(nodeSize * 2, 100, nodeSize), Vector3(2.5, 0.5, 2.5), 6, -1.0f);
-    DamageLinkSphere = new  DamageObject(*this, Vector3(nodeSize * 5, 87.5, nodeSize), 1, 6, 6, -1.0f);
-
-    /*springBoard = new SpringBoard(*this, Vector3(1 * grid->GetNodeSize(), 1, 1 * grid->GetNodeSize()), Vector3(0, 0, 0), Vector3(2.5, 1, 2.5),
-        cubeMesh, basicTex, basicShader);*/
-
+    DamageLinkSphere = new  DamageObject(*this, Vector3(nodeSize * 5, 87.5, nodeSize), 1, 6, 6, -1.0f,
+        sphereMesh, basicTex, basicShader);
+    AddBoardToWorld(Vector3(nodeSize * 8, 100, nodeSize * 3), Vector3(0, 0, 0), Vector3(1, 0.25, 3));
+    AddBoardToWorld(Vector3(nodeSize * 12, 100, nodeSize * 5.5), Vector3(0, 0, 0), Vector3(10, 0.25, 2));
+    AddBoardToWorld(Vector3(nodeSize * 8, 100, nodeSize * 10.5), Vector3(0, 0, 0), Vector3(2, 0.25, 8));
+    springBoard = new SpringBoard(*this, Vector3(7.5 * nodeSize, 97, 3 * nodeSize),
+        Vector3(0, 0, 0.0f), Vector3(0.15, 3, 7.75), cubeMesh, basicTex, basicShader);
+    enemies.emplace_back(new Enemy(*this, Vector3(7.25 * nodeSize, 97, 5.5 * nodeSize),
+        enemyMesh, nullptr, basicShader, -0.5f, "h"));
+    enemies.emplace_back(new Enemy(*this, Vector3(7.25 * nodeSize, 97, 5.5 * nodeSize),
+        enemyMesh, nullptr, basicShader, -0.5f, "v"));
 }
 
 /*
@@ -664,7 +670,7 @@ void CourseWork::GameOneRunning(float dt)
     //ShowUITwo();
     Debug::DrawLine(finalTreasurePos, Vector3(finalTreasurePos.x, 25, finalTreasurePos.z), Debug::BLUE);
     player->Update(dt);
-    enemy->Update(dt);
+    for (auto& i : enemies) i->Update(dt);
     DamageLinkSphere->Update();
     for (auto& i : rotationBoard) i->update();
 

@@ -47,18 +47,3 @@ void AIEnemy::DisplayPathfinding() {
         Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
     }
 }
-
-void AIEnemy::Move(const Vector3& pos, float dt)
-{
-    //walk
-    Vector3 v = (pos - transform.GetPosition()).Normalised();
-    v.y = 0.0f;
-    physicsObject->AddForce(v * 40.0f);
-
-    //rotate
-    Vector3  ogRotEuler = Quaternion(Matrix4::BuildViewMatrix(transform.GetPosition(), pos, Vector3(0, 1, 0)).Inverse()).ToEuler();
-    ogRotEuler.x = 0;
-    ogRotEuler.z = 0;
-    Quaternion finalRot = Quaternion::EulerAnglesToQuaternion(ogRotEuler.x, ogRotEuler.y, ogRotEuler.z);
-    transform.SetOrientation(Quaternion::Slerp(transform.GetOrientation(), finalRot, 5.0f * dt));
-}

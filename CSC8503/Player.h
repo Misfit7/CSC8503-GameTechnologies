@@ -19,12 +19,17 @@ namespace NCL {
 
             void Update(float dt);
 
+            void SetHealth(int h) { health = min(0, h); }
+            int GetHealth() { return health; }
+
+            bool GetKey() { return getKey; }
         protected:
             CourseWork& game;
             GameWorld* world;
 
             void Respawn();
 
+            float speed = 1.0f;
             float iMass;
             bool isStand;
             bool isGrab = false;
@@ -39,6 +44,7 @@ namespace NCL {
             void Pathfinding();
             void DisplayPathfinding();
 
+            bool getKey;
         private:
             static int playerNum;
             int health = 2;

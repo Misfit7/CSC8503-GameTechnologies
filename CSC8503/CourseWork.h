@@ -78,7 +78,8 @@ namespace NCL {
             bool switchCamera = false;
 
             Player* player;
-            Enemy* enemy;
+            //Enemy* enemy;
+            vector<Enemy*> enemies;
             DamageObject* DamageLinkSphere;
             SpringBoard* springBoard;
             vector<RotationBoard*> rotationBoard;
