@@ -20,6 +20,7 @@ namespace NCL {
             void OnCollisionBegin(GameObject* otherObject);
             DamageObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass,
                 Mesh* mesh, Texture* tex, Shader* shader);
+            void SetImpulse(bool i) { bImpulse = i; }
 
         protected:
             CourseWork& game;

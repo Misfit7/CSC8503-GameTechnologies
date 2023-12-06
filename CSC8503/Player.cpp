@@ -37,12 +37,18 @@ Player::Player(CourseWork& g, const Vector3& position,
 
 void Player::Update(float dt)
 {
+    if (isHit) invincible += dt;
+    if (invincible >= 1.0f) {
+        invincible = 0.0f;
+        isHit = false;
+    }
+
     Vector3 playerPos = transform.GetPosition();
     Ray yRay = Ray(playerPos, Vector3(0, -1, 0));
     speed = 1.0f;
     //move mode
     if (Window::GetKeyboard()->KeyHeld(KeyCodes::SHIFT)) {
-        speed = 3.0f;
+        speed = 2.0f;
     }
 
     if (transform.GetPosition().y >= 50.0f && !isStand) {
@@ -191,7 +197,15 @@ void Player::Update(float dt)
     if (!switchOrientation)
         Pathfinding();
 
-    if (!health || playerPos.y > 120.0f || playerPos.y < -10.0f) Respawn();
+    if (health <= 0 || playerPos.y > 120.0f || playerPos.y < -10.0f) Respawn();
+}
+
+void Player::ResetKey() {
+    world->RemoveConstraint(constraint, true);
+    game.GetKey()->GetTransform().
+        SetPosition(Vector3(12 * game.GetGrid()->GetNodeSize(), 96, 16 * game.GetGrid()->GetNodeSize()));
+    game.GetKey()->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
+    getKey = false;
 }
 
 void Player::Respawn()
@@ -202,10 +216,15 @@ void Player::Respawn()
     else if (transform.GetPosition().y > 50.0f)
         transform.SetPosition(Vector3(game.GetGrid()->GetNodeSize(), 98, game.GetGrid()->GetNodeSize()));
     physicsObject->SetLinearVelocity(Vector3(0, 0, 0));
+    if (getKey) {
+        ResetKey();
+    }
 }
 
 void Player::Pathfinding() {
     Vector3 startPos = transform.GetPosition();
+    startPos.x += 2.5f;
+    startPos.z += 2.5f;
     Vector3 endPos = game.GetFinalTreasurePos();
 
     outPath.Clear();
@@ -226,5 +245,14 @@ void Player::DisplayPathfinding() {
         Vector3 b = pathNodes[i];
 
         Debug::DrawLine(a, b, Vector4(0, 1, 0, 1));
+    }
+}
+
+void Player::OnCollisionBegin(GameObject* otherObject)
+{
+    if (otherObject->GetName() == "key" && !getKey) {
+        constraint = new PositionConstraint(otherObject, this, 2.0f);
+        world->AddConstraint(constraint);
+        getKey = true;
     }
 }

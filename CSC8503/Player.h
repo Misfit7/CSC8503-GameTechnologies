@@ -3,6 +3,7 @@
 #include "CourseWork.h"
 #include "..\CSC8503CoreClasses\GameObject.h"
 #include "..\CSC8503\GameTechRenderer.h"
+#include "PositionConstraint.h"
 #include "PlayerCamera.h"
 
 namespace NCL {
@@ -19,10 +20,18 @@ namespace NCL {
 
             void Update(float dt);
 
-            void SetHealth(int h) { health = min(0, h); }
+            void SetHealth(int h) { health = max(0, h); }
             int GetHealth() { return health; }
 
             bool GetKey() { return getKey; }
+
+            void SetIsHit(bool h) { isHit = h; }
+            bool GetIsHit() { return isHit; }
+
+            void OnCollisionBegin(GameObject* otherObject) override;
+
+            void ResetKey();
+
         protected:
             CourseWork& game;
             GameWorld* world;
@@ -33,6 +42,8 @@ namespace NCL {
             float iMass;
             bool isStand;
             bool isGrab = false;
+            bool isHit = false;
+            float invincible = 0.0f;
             bool switchOrientation = false;
             int jumpCount = 0;
 
@@ -45,6 +56,8 @@ namespace NCL {
             void DisplayPathfinding();
 
             bool getKey;
+
+            PositionConstraint* constraint = nullptr;
         private:
             static int playerNum;
             int health = 2;

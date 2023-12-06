@@ -1,5 +1,4 @@
 #pragma once
-
 #include <sstream>
 #include <string>
 
@@ -27,7 +26,7 @@ namespace NCL {
         class Enemy :public GameObject
         {
         public:
-            Enemy(CourseWork& g, const Vector3& position,
+            Enemy(CourseWork* g, const Vector3& position,
                 Mesh* mesh, Texture* basicTex, Shader* basicShader, float inverseMass, string t = "");
 
             ~Enemy(void) { delete stateMachine; }
@@ -35,7 +34,7 @@ namespace NCL {
             void OnCollisionBegin(GameObject* otherObject) override;
 
         protected:
-            CourseWork& game;
+            CourseWork* game;
             GameWorld* world;
             NavigationGrid* grid;
 

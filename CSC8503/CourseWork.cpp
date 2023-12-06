@@ -143,7 +143,7 @@ void CourseWork::InitialiseAssets() {
     sphereMesh = renderer->LoadMesh("sphere.msh");
     charMesh = renderer->LoadMesh("goat.msh");
     enemyMesh = renderer->LoadMesh("Keeper.msh");
-    bonusMesh = renderer->LoadMesh("coin.msh");
+    AIenemyMesh = renderer->LoadMesh("goose.msh");
     capsuleMesh = renderer->LoadMesh("capsule.msh");
 
     basicTex = renderer->LoadTexture("checkerboard.png");
@@ -157,7 +157,7 @@ CourseWork::~CourseWork() {
     delete sphereMesh;
     delete charMesh;
     delete enemyMesh;
-    delete bonusMesh;
+    delete AIenemyMesh;
 
     delete basicTex;
     delete basicShader;
@@ -174,10 +174,10 @@ void CourseWork::UpdateGame(float dt) {
     renderer->Update(dt);
     physics->Update(dt);
 
-    if (currentGame == 1) {
+    if (player->GetTransform().GetPosition().y > 50.0f) {
         GameOneRunning(dt);
     }
-    if (currentGame == 2) {
+    else if (player->GetTransform().GetPosition().y < 50.0f) {
         GameTwoRunning(dt);
     }
 
@@ -287,6 +287,8 @@ void CourseWork::InitPlayerCamera() {
 
 void CourseWork::InitGameOne() {
     currentGame = 1;
+    keys.clear();
+    enemies.clear();
     rotationBoard.clear();
     saveMazeToFile("../Assets/Data/maze.txt");
     grid = new NavigationGrid("maze.txt");
@@ -402,11 +404,9 @@ GameObject* CourseWork::AddBoardToWorld(const Vector3& position, const Vector3& 
     return Board;
 }
 
-GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position) {
-    float meshSize = 1.0f;
-    float inverseMass = 0.0f;
+GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position, float meshSize, const std::string& name, float inverseMass) {
 
-    GameObject* Capsule = new GameObject();
+    GameObject* Capsule = new GameObject(name);
 
     CapsuleVolume* volume = new CapsuleVolume(meshSize, meshSize * 0.5f);
     Capsule->SetBoundingVolume((CollisionVolume*)volume);
@@ -433,15 +433,16 @@ void CourseWork::InitFloor() {
 }
 
 void CourseWork::InitGameOneObject() {
-    float nodeSize = grid->GetNodeSize();
+    nodeSize = grid->GetNodeSize();
+    grid->PrintAllNodes();
     //PartB area
     for (int y = 0; y < grid->GetGridHeight(); ++y) {
         for (int x = 0; x < grid->GetGridWidth(); ++x) {
             if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'x')
                 AddBoardToWorld(Vector3(nodeSize * x, nodeSize + 1, nodeSize * y),
                     Vector3(0, 0, 0), Vector3(1, 2, 1));
-            else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'S');
-            //player = new Player(*this, Vector3(x * nodeSize, 2, y * nodeSize), charMesh, nullptr, basicShader);
+            else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'S')
+                player = new Player(*this, Vector3(x * nodeSize, 2, y * nodeSize), charMesh, nullptr, basicShader);
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'E')
             {
                 finalTreasurePos = Vector3(x * nodeSize, 0, y * nodeSize);
@@ -449,8 +450,8 @@ void CourseWork::InitGameOneObject() {
                 finalTreasure = AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize));
                 finalTreasure->SetColour(Vector4(0, 0, 0, 1));
                 keys.emplace_back(finalTreasure);
-                /*enemy = new Enemy(*this, Vector3(x * nodeSize, 4, y * nodeSize),
-                    enemyMesh, nullptr, basicShader);*/
+                aiEnemy = new AIEnemy(this, Vector3(x * nodeSize, 4, y * nodeSize),
+                    AIenemyMesh, nullptr, basicShader, 0.5f);
             }
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'O')
             {
@@ -460,7 +461,7 @@ void CourseWork::InitGameOneObject() {
             }
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'T')
             {
-                keys.emplace_back(AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize)));
+                keys.emplace_back(AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize), 0.75f));
                 keysPos.emplace_back(Vector3(x * nodeSize, 0, y * nodeSize));
             }
         }
@@ -469,19 +470,30 @@ void CourseWork::InitGameOneObject() {
 
     //PartA area
     AddBoardToWorld(Vector3(nodeSize, 100, nodeSize), Vector3(0, 0, 0), Vector3(1, 0.25, 1));
-    player = new Player(*this, Vector3(nodeSize, 98, nodeSize), charMesh, nullptr, basicShader);
+    //player = new Player(*this, Vector3(nodeSize, 98, nodeSize), charMesh, nullptr, basicShader);
     bridge = new Bridge(*this, Vector3(nodeSize * 2, 100, nodeSize), Vector3(2.5, 0.5, 2.5), 6, -1.0f);
     DamageLinkSphere = new  DamageObject(*this, Vector3(nodeSize * 5, 87.5, nodeSize), 1, 6, 6, -1.0f,
         sphereMesh, basicTex, basicShader);
+
     AddBoardToWorld(Vector3(nodeSize * 8, 100, nodeSize * 3), Vector3(0, 0, 0), Vector3(1, 0.25, 3));
     AddBoardToWorld(Vector3(nodeSize * 12, 100, nodeSize * 5.5), Vector3(0, 0, 0), Vector3(10, 0.25, 2));
     AddBoardToWorld(Vector3(nodeSize * 8, 100, nodeSize * 10.5), Vector3(0, 0, 0), Vector3(2, 0.25, 8));
-    springBoard = new SpringBoard(*this, Vector3(7.5 * nodeSize, 97, 3 * nodeSize),
+    AddBoardToWorld(Vector3(nodeSize * 16, 100, nodeSize * 10.5), Vector3(0, 0, 0), Vector3(2, 0.25, 8));
+    AddBoardToWorld(Vector3(nodeSize * 12, 100, nodeSize * 12), Vector3(0, 0, 0), Vector3(6, 0.25, 2));
+    AddBoardToWorld(Vector3(nodeSize * 12, 100, nodeSize * 15), Vector3(0, 0, 0), Vector3(2, 0.25, 4));
+
+    new SpringBoard(*this, Vector3(7.5 * nodeSize, 97, 3 * nodeSize),
         Vector3(0, 0, 0.0f), Vector3(0.15, 3, 7.75), cubeMesh, basicTex, basicShader);
-    enemies.emplace_back(new Enemy(*this, Vector3(7.25 * nodeSize, 97, 5.5 * nodeSize),
+    enemies.emplace_back(new Enemy(this, Vector3(7.5 * nodeSize, 97, 5.25 * nodeSize),
         enemyMesh, nullptr, basicShader, -0.5f, "h"));
-    enemies.emplace_back(new Enemy(*this, Vector3(7.25 * nodeSize, 97, 5.5 * nodeSize),
+    enemies.emplace_back(new Enemy(this, Vector3(7.75 * nodeSize, 97, 5.0 * nodeSize),
         enemyMesh, nullptr, basicShader, -0.5f, "v"));
+    enemies.emplace_back(new Enemy(this, Vector3(16 * nodeSize, 97, 5.0 * nodeSize),
+        enemyMesh, nullptr, basicShader, -0.5f, "v"));
+
+    key = AddCapsuleToWorld(Vector3(12 * nodeSize, 96, nodeSize * 16), 1.0f, "key", -10.0f);
+    key->SetColour(Vector4(0, 0, 0, 0.75f));
+
 }
 
 /*
@@ -580,7 +592,7 @@ void CourseWork::Menu(const std::string& text, const Vector4& colour) {
 }
 
 void CourseWork::ShowUIOne() {
-
+    Debug::Print("Current Health: " + std::to_string(player->GetHealth()), Vector2(1.5, 5));
     return;
 }
 
@@ -666,27 +678,43 @@ void CourseWork::ShowUITwo() {
 
 void CourseWork::GameOneRunning(float dt)
 {
-    //ShowUIOne();
+    ShowUIOne();
     //ShowUITwo();
-    Debug::DrawLine(finalTreasurePos, Vector3(finalTreasurePos.x, 25, finalTreasurePos.z), Debug::BLUE);
     player->Update(dt);
     for (auto& i : enemies) i->Update(dt);
+    //for (auto& i : rotationBoard) i->update();
     DamageLinkSphere->Update();
-    for (auto& i : rotationBoard) i->update();
 
-    if (!inSelectionMode) {
-        world->GetMainCamera().UpdateCamera(dt);
+
+    world->GetMainCamera().UpdateCamera(dt);
+
+    if (player->GetKey() && !springFlag) {
+        springBoard = new SpringBoard(*this, Vector3(nodeSize, 99, nodeSize),
+            Vector3(0, 0, 0.0f), Vector3(1, 0.25, 1), cubeMesh, basicTex, basicShader);
+        springFlag = true;
+    }
+    else if (!player->GetKey() && springFlag) {
+        world->RemoveGameObject(springBoard);
+        springFlag = false;
     }
 
     //Debug::DrawLine(Vector3(), Vector3(0, 100, 0), Vector4(1, 0, 0, 1));
 
-    SelectObject();
-    MoveSelectedObject();
+    /*SelectObject();
+    MoveSelectedObject();*/
 }
 
 void CourseWork::GameTwoRunning(float dt)
 {
+    ShowUIOne();
+    //ShowUITwo();
+    Debug::DrawLine(finalTreasurePos, Vector3(finalTreasurePos.x, 30, finalTreasurePos.z), Debug::BLUE);
+    player->Update(dt);
+    //for (auto& i : enemies) i->Update(dt);
+    for (auto& i : rotationBoard) i->update();
+    //DamageLinkSphere->Update();
 
+    world->GetMainCamera().UpdateCamera(dt);
 }
 
 void CourseWork::SetGameState(int value) {

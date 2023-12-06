@@ -19,6 +19,7 @@
 
 #include "Player.h"
 #include "Enemy.h"
+#include "AIEnemy.h"
 #include "PlayerCamera.h"
 #include "SpringBoard.h"
 #include "RotationBoard.h"
@@ -33,6 +34,7 @@ namespace NCL {
     namespace CSC8503 {
         class Player;
         class Enemy;
+        class AIEnemy;
         class PlayerCamera;
         class SpringBoard;
         class RotationBoard;
@@ -50,12 +52,15 @@ namespace NCL {
             PlayerCamera* GetPlayerCamera() { return playerCamera; }
             bool GetSwitchCamera() { return switchCamera; }
 
+            void SetSpringFlag(bool s) { springFlag = s; }
+
             Vector3 GetFinalTreasurePos() { return finalTreasurePos; }
 
             Player* GetPlayer() { return player; }
             GameWorld* GetWorld() { return world; }
             NavigationGrid* GetGrid() { return grid; }
             vector<Vector3> GetKeysPos() { return keysPos; }
+            GameObject* GetKey() { return key; }
 
             GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
             GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
@@ -65,6 +70,7 @@ namespace NCL {
             void Menu(const std::string& text = "", const Vector4& colour = Debug::WHITE);
             void ShowUIOne();
             void ShowUITwo();
+            float gameTime = 0.0;
             int currentGame = 0;
             void GameOneRunning(float dt);
             void GameTwoRunning(float dt);
@@ -78,16 +84,20 @@ namespace NCL {
             bool switchCamera = false;
 
             Player* player;
-            //Enemy* enemy;
+            AIEnemy* aiEnemy;
             vector<Enemy*> enemies;
             DamageObject* DamageLinkSphere;
             SpringBoard* springBoard;
             vector<RotationBoard*> rotationBoard;
             Bridge* bridge;
+            GameObject* key;
             vector<GameObject*> keys;
             vector<Vector3> keysPos;
             Vector3 finalTreasurePos;
             GameObject* finalTreasure;
+
+            bool springFlag = false;
+            float nodeSize;
 
             void UpdateKeys();
 
@@ -109,7 +119,7 @@ namespace NCL {
             GameObject* AddFloorToWorld(const Vector3& position, float fSize);
             GameObject* AddBoardToWorld(const Vector3& position, const Vector3& rotation, const Vector3& boardSize, float inverseMass = 0.0f);
 
-            GameObject* AddCapsuleToWorld(const Vector3& position);
+            GameObject* AddCapsuleToWorld(const Vector3& position, float meshSize = 1.0f, const std::string& name = "", float inverseMass = 0.0f);
 #ifdef USEVULKAN
             GameTechVulkanRenderer* renderer;
 #else
@@ -137,7 +147,7 @@ namespace NCL {
             //Coursework Meshes
             Mesh* charMesh = nullptr;
             Mesh* enemyMesh = nullptr;
-            Mesh* bonusMesh = nullptr;
+            Mesh* AIenemyMesh = nullptr;
 
             //Coursework Additional functionality	
 

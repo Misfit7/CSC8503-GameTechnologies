@@ -18,14 +18,14 @@ DamageObject::DamageObject(CourseWork& g, const Vector3& position,
     float maxDistance = 3 * radius; // constraint distance
     float sphereDistance = 2 * radius; // distance between links
 
-    GameObject* linkStart = game.AddSphereToWorld(position, sphereSize, 0.0f);
+    DamageObject* linkStart = AddSphereToWorld(position, sphereSize, 0.0f, mesh, tex, shader);
     spheres.emplace_back(linkStart);
-    GameObject* previous = linkStart;
+    DamageObject* previous = linkStart;
 
     impulseObject = new GameObject;
 
     for (int i = 2; i <= linkNum; ++i) {
-        GameObject* sphere = AddSphereToWorld(position + Vector3(0.0f, i * sphereDistance, 0.0f),
+        DamageObject* sphere = AddSphereToWorld(position + Vector3(0.0f, i * sphereDistance, 0.0f),
             sphereSize, inverseMass, mesh, tex, shader);
         spheres.emplace_back(sphere);
         PositionConstraint* constraint = new PositionConstraint(previous, sphere, maxDistance);
@@ -39,23 +39,28 @@ DamageObject::DamageObject(CourseWork& g, const Vector3& position,
 
 void DamageObject::Update()
 {
-    if (impulseObject->GetTransform().GetPosition().y < (87.5 + LinkMaxDistance - 0.5f) && !bImpulse)
+    if (impulseObject->GetTransform().GetPosition().y > (87.5 + LinkMaxDistance - 2.5f) && !bImpulse)
     {
-        impulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, -6.0f));
+        impulseObject->GetPhysicsObject()->ApplyLinearImpulse(Vector3(0.0f, 0.0f, -275.0f));
         bImpulse = true;
         //cout << bImpulse << endl;
     }
-    if (impulseObject->GetTransform().GetPosition().y > 87.5 && bImpulse)
+    else if (impulseObject->GetTransform().GetPosition().y < 87.5 - LinkMaxDistance / 2 && bImpulse)
     {
         bImpulse = false;
         //cout << bImpulse << endl;
     }
+    else if (game.GetPlayer()->GetTransform().GetPosition().y < 51.0f && bImpulse)
+        bImpulse = false;
 }
 
 void DamageObject::OnCollisionBegin(GameObject* otherObject)
 {
-    if (otherObject == game.GetPlayer())
+    if (otherObject == game.GetPlayer() && !game.GetPlayer()->GetIsHit()) {
         game.GetPlayer()->SetHealth(game.GetPlayer()->GetHealth() - 1);
+        //cout << game.GetPlayer()->GetHealth() << endl;
+        game.GetPlayer()->SetIsHit(true);
+    }
 }
 
 DamageObject* DamageObject::AddSphereToWorld(const Vector3& position, float radius, float inverseMass,

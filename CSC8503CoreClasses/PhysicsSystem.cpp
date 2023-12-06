@@ -58,7 +58,7 @@ const float idealDT = 1.0f / idealHZ;
 /*
 This is the fixed update we actually have...
 If physics takes too long it starts to kill the framerate, it'll drop the
-iteration count down until the FPS stabilises, even if that ends up
+iteration count down until the FPS stabilises, even if that ends updrop
 being at a low rate.
 */
 int realHZ = idealHZ;
@@ -130,7 +130,7 @@ void PhysicsSystem::Update(float dt) {
     {
         realHZ /= 2;
         realDT *= 2;
-        std::cout << "Dropping iteration count due to long physics time...(now " << realHZ << ")\n";
+        //std::cout << "Dropping iteration count due to long physics time...(now " << realHZ << ")\n";
     }
     else if (dt * 2 < realDT)
     { //we have plenty of room to increase iteration count!
@@ -143,7 +143,7 @@ void PhysicsSystem::Update(float dt) {
             realDT = idealDT;
         }
         if (temp != realHZ) {
-            std::cout << "Raising iteration count due to short physics time...(now " << realHZ << ")\n";
+            //std::cout << "Raising iteration count due to short physics time...(now " << realHZ << ")\n";
         }
     }
 }

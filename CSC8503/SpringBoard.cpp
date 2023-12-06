@@ -31,8 +31,10 @@ SpringBoard::SpringBoard(CourseWork& g, const Vector3& position, const Vector3& 
 
 void SpringBoard::OnCollisionBegin(GameObject* otherObject)
 {
-    if (otherObject == game.GetPlayer() && game.GetPlayer()->GetKey())
-        otherObject->GetPhysicsObject()->ApplyLinearImpulse(transform.GetUp() * 25.0f);
-    else if (otherObject == game.GetPlayer() || game.GetPlayer()->GetKey())
+    if (otherObject == game.GetPlayer() && game.GetPlayer()->GetKey()) {
+        otherObject->GetPhysicsObject()->ApplyLinearImpulse(transform.GetUp() * 200.0f);
+        game.GetPlayer()->ResetKey();
+    }
+    else if (otherObject == game.GetPlayer() && !game.GetPlayer()->GetKey())
         otherObject->GetPhysicsObject()->ApplyLinearImpulse(transform.GetRight() * 100.0f);
 }
