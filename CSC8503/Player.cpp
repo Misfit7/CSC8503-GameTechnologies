@@ -201,10 +201,18 @@ void Player::Update(float dt)
 }
 
 void Player::ResetKey() {
-    world->RemoveConstraint(constraint, true);
+    world->RemoveConstraint(constraint);
     game.GetKey()->GetTransform().
         SetPosition(Vector3(12 * game.GetGrid()->GetNodeSize(), 96, 16 * game.GetGrid()->GetNodeSize()));
     game.GetKey()->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
+    getKey = false;
+}
+
+void Player::ResetFinalTreasure() {
+    world->RemoveConstraint(constraint);
+    game.GetFinalTreasure()->GetTransform().
+        SetPosition(game.GetFinalTreasurePos());
+    game.GetFinalTreasure()->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
     getKey = false;
 }
 
@@ -218,8 +226,8 @@ void Player::Respawn()
     physicsObject->SetLinearVelocity(Vector3(0, 0, 0));
     if (getKey) {
         ResetKey();
+        ResetFinalTreasure();
     }
-    else if (getFinalTreasure);
 }
 
 void Player::Pathfinding() {

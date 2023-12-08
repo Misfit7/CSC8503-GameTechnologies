@@ -85,6 +85,7 @@ void AIEnemy::FindKeys(float dt)
 {
     float x, y, z;
     keysFound = game->GetKeysFound();
+    int count = 0;
     for (auto i : keysFound) {
         if (i.second == 0) {
             istringstream iss(i.first);
@@ -95,7 +96,11 @@ void AIEnemy::FindKeys(float dt)
             destinationPos = Vector3(x, y, z);
             break;
         }
+        ++count;
+    }
+    if (count == keysFound.size()) {
         foundAllKeys = true;
+        return;
     }
     Pathfinding(transform.GetPosition(), destinationPos);
     if (pathNodes.size() >= 2)
@@ -232,5 +237,8 @@ void AIEnemy::OnCollisionBegin(GameObject* otherObject)
         }
         physicsObject->ApplyLinearImpulse(
             Vector3(rand() % 50 < 25 ? 10 : -10, 0, rand() % 50 < 25 ? 10 : -10));
+    }
+    if (otherObject == game->GetPlayer()) {
+        game->GetPlayer()->SetHealth(0);
     }
 }

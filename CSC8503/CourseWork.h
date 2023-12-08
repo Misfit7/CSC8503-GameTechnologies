@@ -54,6 +54,7 @@ namespace NCL {
 
             void SetSpringFlag(bool s) { springFlag = s; }
 
+            GameObject* GetFinalTreasure() { return finalTreasure; }
             Vector3 GetFinalTreasurePos() { return finalTreasurePos; }
 
             Player* GetPlayer() { return player; }

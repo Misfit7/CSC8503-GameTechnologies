@@ -281,6 +281,7 @@ void CourseWork::InitMainCamera() {
 }
 
 void CourseWork::InitPlayerCamera() {
+    switchCamera = false;
     playerCamera = new PlayerCamera(*world, *player);
     world->SetMainCamera(playerCamera);
     world->GetMainCamera().SetController(controller);
@@ -294,9 +295,6 @@ void CourseWork::InitPlayerCamera() {
 
 void CourseWork::InitGameOne() {
     currentGame = 1;
-    keys.clear();
-    enemies.clear();
-    rotationBoard.clear();
     saveMazeToFile("../Assets/Data/maze.txt");
     grid = new NavigationGrid("maze.txt");
     world->ClearAndErase();
@@ -440,6 +438,13 @@ void CourseWork::InitFloor() {
 }
 
 void CourseWork::InitGameOneObject() {
+    keys.clear();
+    enemies.clear();
+    rotationBoard.clear();
+    keysPos.clear();
+    keysFound.clear();
+    safePos.clear();
+
     nodeSize = grid->GetNodeSize();
     grid->PrintAllNodes();
     //PartB area
@@ -452,7 +457,7 @@ void CourseWork::InitGameOneObject() {
                 player = new Player(*this, Vector3(x * nodeSize, 2, y * nodeSize), charMesh, nullptr, basicShader);
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'E')
             {
-                finalTreasurePos = Vector3(x * nodeSize, 0, y * nodeSize);
+                finalTreasurePos = Vector3(x * nodeSize, 2, y * nodeSize);
                 /*keysPos.emplace_back(finalTreasurePos);*/
                 finalTreasure = AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize), 1.0f, "key", 10.0f);
                 finalTreasure->SetColour(Vector4(0, 0, 0, 1));

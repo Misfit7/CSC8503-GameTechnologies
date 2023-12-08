@@ -31,6 +31,7 @@ namespace NCL {
             void OnCollisionBegin(GameObject* otherObject) override;
 
             void ResetKey();
+            void ResetFinalTreasure();
 
         protected:
             CourseWork& game;
@@ -56,7 +57,7 @@ namespace NCL {
             void DisplayPathfinding();
 
             bool getKey = false;
-            bool getFinalTreasure = false;
+            //bool getFinalTreasure = false;
 
             PositionConstraint* constraint = nullptr;
         private:
