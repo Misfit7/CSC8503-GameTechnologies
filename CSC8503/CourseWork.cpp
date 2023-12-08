@@ -201,6 +201,13 @@ void CourseWork::UpdateKeys() {
         else if (!switchCamera) { InitPlayerCamera(); }
     }
 
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::TAB)) { //switch Camera
+        for (auto& i : keysFound)
+        {
+            cout << i.first << " " << i.second << endl;
+        }
+    }
+
     //Running certain physics updates in a consistent order might cause some
     //bias in the calculations - the same objects might keep 'winning' the constraint
     //allowing the other one to stretch too much etc. Shuffling the order so that it
@@ -446,11 +453,11 @@ void CourseWork::InitGameOneObject() {
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'E')
             {
                 finalTreasurePos = Vector3(x * nodeSize, 0, y * nodeSize);
-                keysPos.emplace_back(finalTreasurePos);
-                finalTreasure = AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize));
+                /*keysPos.emplace_back(finalTreasurePos);*/
+                finalTreasure = AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize), 1.0f, "key");
                 finalTreasure->SetColour(Vector4(0, 0, 0, 1));
                 keys.emplace_back(finalTreasure);
-                aiEnemy = new AIEnemy(this, Vector3(x * nodeSize, 4, y * nodeSize),
+                aiEnemy = new AIEnemy(this, Vector3(x * nodeSize + 1.5, 4, y * nodeSize + 1.5),
                     AIenemyMesh, nullptr, basicShader, 0.5f);
             }
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'O')
@@ -461,12 +468,16 @@ void CourseWork::InitGameOneObject() {
             }
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'T')
             {
-                keys.emplace_back(AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize), 0.75f));
-                keysPos.emplace_back(Vector3(x * nodeSize, 0, y * nodeSize));
+                keys.emplace_back(AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize), 0.75f, "treasure"));
+                keysPos.emplace_back(Vector3(x * nodeSize, 2, y * nodeSize));
+            }
+            else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == '.')
+            {
+                safePos.emplace_back(Vector3(x * nodeSize, 2, y * nodeSize));
             }
         }
     }
-    //enemy->SetKeysPos(keysPos);
+    InitKeysFound(keysPos);
 
     //PartA area
     AddBoardToWorld(Vector3(nodeSize, 100, nodeSize), Vector3(0, 0, 0), Vector3(1, 0.25, 1));
@@ -710,6 +721,7 @@ void CourseWork::GameTwoRunning(float dt)
     //ShowUITwo();
     Debug::DrawLine(finalTreasurePos, Vector3(finalTreasurePos.x, 30, finalTreasurePos.z), Debug::BLUE);
     player->Update(dt);
+    aiEnemy->Update(dt);
     //for (auto& i : enemies) i->Update(dt);
     for (auto& i : rotationBoard) i->update();
     //DamageLinkSphere->Update();

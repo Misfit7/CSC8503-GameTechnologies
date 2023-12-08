@@ -61,6 +61,8 @@ namespace NCL {
             NavigationGrid* GetGrid() { return grid; }
             vector<Vector3> GetKeysPos() { return keysPos; }
             GameObject* GetKey() { return key; }
+            unordered_map<string, int>& GetKeysFound() { return keysFound; };
+            vector<Vector3> GetSafePos() { return safePos; }
 
             GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
             GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
@@ -93,11 +95,25 @@ namespace NCL {
             GameObject* key;
             vector<GameObject*> keys;
             vector<Vector3> keysPos;
+            //vector<pair<Vector3, int>> keysFound;
+            unordered_map<string, int> keysFound;
             Vector3 finalTreasurePos;
+            vector<Vector3> safePos;
             GameObject* finalTreasure;
 
             bool springFlag = false;
             float nodeSize;
+
+            /*void InitKeysFound(vector<Vector3> keysPos) {
+                for (auto& i : keysPos) keysFound.emplace_back(pair<Vector3, int>(i, 0));
+            };*/
+            void InitKeysFound(vector<Vector3> keysPos) {
+                for (auto& i : keysPos)
+                {
+                    string s = to_string(i.x) + "/" + to_string(i.y) + "/" + to_string(i.z);
+                    keysFound[s] = 0;
+                }
+            };
 
             void UpdateKeys();
 

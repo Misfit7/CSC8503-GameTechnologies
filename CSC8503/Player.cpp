@@ -212,13 +212,14 @@ void Player::Respawn()
 {
     health = 2;
     if (transform.GetPosition().y < 50.0f)
-        transform.SetPosition(Vector3(game.GetGrid()->GetNodeSize(), 2, game.GetGrid()->GetNodeSize()));
+        transform.SetPosition(game.GetSafePos()[rand() % game.GetSafePos().size()]);
     else if (transform.GetPosition().y > 50.0f)
         transform.SetPosition(Vector3(game.GetGrid()->GetNodeSize(), 98, game.GetGrid()->GetNodeSize()));
     physicsObject->SetLinearVelocity(Vector3(0, 0, 0));
     if (getKey) {
         ResetKey();
     }
+    else if (getFinalTreasure);
 }
 
 void Player::Pathfinding() {
@@ -250,7 +251,16 @@ void Player::DisplayPathfinding() {
 
 void Player::OnCollisionBegin(GameObject* otherObject)
 {
-    if (otherObject->GetName() == "key" && !getKey) {
+    if (otherObject->GetName() == "treasure")
+    {
+        Vector3 p = otherObject->GetTransform().GetPosition();
+        string s = to_string(p.x) + "/" + to_string(p.y) + "/" + to_string(p.z);
+        if (game.GetKeysFound()[s] == 0) {
+            game.GetKeysFound()[s] = 1;
+            otherObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
+        }
+    }
+    else if (otherObject->GetName() == "key" && !getKey) {
         constraint = new PositionConstraint(otherObject, this, 2.0f);
         world->AddConstraint(constraint);
         getKey = true;

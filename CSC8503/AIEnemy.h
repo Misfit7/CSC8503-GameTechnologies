@@ -21,26 +21,41 @@ namespace NCL {
         public:
             AIEnemy(CourseWork* g, const Vector3& position, Mesh* mesh, Texture* basicTex,
                 Shader* basicShader, float inverseMass);
-            void SetKeysPos(vector<Vector3> keysPos) {
-                for (auto& i : keysPos) keysFound.emplace_back(pair<Vector3, bool>(i, false));
-            };
+
+            void Update(float dt);
+            void OnCollisionBegin(GameObject* otherObject) override;
 
         protected:
             CourseWork* game;
             GameWorld* world;
             NavigationGrid* grid;
+            unordered_map<string, int> keysFound;
 
             Vector3 originalPos;
+            Vector3 destinationPos;
+
+            void Respawn();
 
             void Pathfinding(Vector3 startPos, Vector3 endPos);
             void DisplayPathfinding();
+            void GenerateBehaviourTree();
+
+            void Move(const Vector3& pos, float dt);
+            void FindKeys(float dt);
+            bool foundAllKeys;
+            void GotoFinalTreasure(float dt);
+            bool gotoSuccess;
 
             //pathfind
             NavigationPath outPath;
             vector<Vector3> pathNodes;
-            vector<pair<Vector3, bool>> keysFound;
-            int currentKeyT = 0;
+
             int currentNodeT = 0;
+
+            //behaviourtree
+            BehaviourSequence* rootSequence;
+            BehaviourSequence* sequence;
+            BehaviourSelector* selection;
         };
     }
 }

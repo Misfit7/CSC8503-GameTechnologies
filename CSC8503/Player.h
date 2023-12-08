@@ -55,7 +55,8 @@ namespace NCL {
             void Pathfinding();
             void DisplayPathfinding();
 
-            bool getKey;
+            bool getKey = false;
+            bool getFinalTreasure = false;
 
             PositionConstraint* constraint = nullptr;
         private:
