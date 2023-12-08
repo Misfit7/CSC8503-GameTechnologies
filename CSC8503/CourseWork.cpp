@@ -454,7 +454,7 @@ void CourseWork::InitGameOneObject() {
             {
                 finalTreasurePos = Vector3(x * nodeSize, 0, y * nodeSize);
                 /*keysPos.emplace_back(finalTreasurePos);*/
-                finalTreasure = AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize), 1.0f, "key");
+                finalTreasure = AddCapsuleToWorld(Vector3(x * nodeSize, 2, y * nodeSize), 1.0f, "key", 10.0f);
                 finalTreasure->SetColour(Vector4(0, 0, 0, 1));
                 keys.emplace_back(finalTreasure);
                 aiEnemy = new AIEnemy(this, Vector3(x * nodeSize + 1.5, 4, y * nodeSize + 1.5),
@@ -463,8 +463,7 @@ void CourseWork::InitGameOneObject() {
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'O')
             {
                 rotationBoard.emplace_back(new RotationBoard(*this, Vector3(x * nodeSize, 5, y * nodeSize),
-                    Vector3(0, 0, 0), Vector3(2.4f, 4.0f, 0.25f),
-                    cubeMesh, basicTex, basicShader, 0.1f));
+                    Vector3(0, 0, 0), Vector3(2.4f, 4.0f, 0.25f), cubeMesh, basicTex, basicShader, 0.1f));
             }
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'T')
             {
