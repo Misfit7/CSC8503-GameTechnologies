@@ -63,9 +63,11 @@ void NetworkedGame::UpdateGame(float dt) {
     }
 
     if (!thisServer && Window::GetKeyboard()->KeyPressed(KeyCodes::F9)) {
+        cout << "StartAsServer" << endl;
         StartAsServer();
     }
     if (!thisClient && Window::GetKeyboard()->KeyPressed(KeyCodes::F10)) {
+        cout << "StartAsClient" << endl;
         StartAsClient(127, 0, 0, 1);
     }
 

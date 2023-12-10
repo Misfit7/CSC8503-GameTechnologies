@@ -194,7 +194,7 @@ void Player::Update(float dt)
 
     }
 
-    if (!switchOrientation)
+    if (!switchOrientation && !getKey)
         Pathfinding();
 
     if (health <= 0 || playerPos.y > 120.0f || playerPos.y < -10.0f) Respawn();

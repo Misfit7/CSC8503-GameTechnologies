@@ -40,6 +40,7 @@ AIEnemy::AIEnemy(CourseWork* g, const Vector3& position, Mesh* mesh, Texture* ba
 
     world->AddGameObject(this);
 
+    InitPatrolPos();
     GenerateBehaviourTree();
 }
 
@@ -129,6 +130,57 @@ void AIEnemy::GotoFinalTreasure(float dt)
     }
 }
 
+void AIEnemy::InitPatrolPos() {
+    for (auto i : game->GetSafePos())
+        if ((i - transform.GetPosition()).Length() <= 25)
+            patrolPos.emplace_back(i);
+    patrolPos.emplace_back(game->GetFinalTreasurePos());
+}
+
+void AIEnemy::ProtectTreasure(float dt)
+{
+    if (!findPatrolPos) {
+        patrolDes = patrolPos[rand() % patrolPos.size()];
+        findPatrolPos = true;
+        getToPatrolPos = false;
+    }
+    Pathfinding(transform.GetPosition(), patrolDes);
+    if (pathNodes.size() >= 2)
+    {
+        float nodeDistance = (pathNodes[1] - transform.GetPosition()).Length();
+        if (nodeDistance <= 10)
+        {
+            Move(pathNodes[1], dt);
+        }
+    }
+    else {
+        getToPatrolPos = true;
+        findPatrolPos = false;
+    }
+}
+
+void AIEnemy::ChasingPlayer(float dt)
+{
+    Vector3 enemyPos = transform.GetPosition();
+    enemyPos.y = 1;
+    Vector3 playerPos = game->GetPlayer()->GetTransform().GetPosition();
+    playerPos.y = 1;
+    playerPos.x += 2.5f;
+    playerPos.z += 2.5f;
+    Pathfinding(enemyPos, playerPos);
+    if (pathNodes.size() >= 2)
+    {
+        float nodeDistance = (pathNodes[1] - transform.GetPosition()).Length();
+        if (nodeDistance <= 10)
+        {
+            Move(pathNodes[1], dt);
+        }
+    }
+    else if ((transform.GetPosition() - game->GetPlayer()->GetTransform().GetPosition()).Length() <= 10) {
+        Move(game->GetPlayer()->GetTransform().GetPosition(), dt);
+    }
+}
+
 void AIEnemy::Respawn()
 {
     transform.SetPosition(originalPos);
@@ -173,19 +225,41 @@ void AIEnemy::GenerateBehaviourTree() {
             return state; // will be ¡¯ ongoing ¡¯ until success
         }
     );
+    //
+    /*BehaviourAction* initSeletion = new BehaviourAction("Init Child",
+        [&](float dt, BehaviourState state) -> BehaviourState {
+            if (state == Success) {
+                cout << "Start Init" << endl;
+                selection->Reset();
+            }
+            return state;
+        }
+    );*/
     //Chase Sequence
     BehaviourAction* protectTreasure = new BehaviourAction("Protect Treasure",
         [&](float dt, BehaviourState state) -> BehaviourState {
             if (state == Initialise) {
-
+                cout << "Start Protect Treasure" << endl;
                 return Ongoing;
             }
             else if (state == Ongoing) {
-                if (1) {
-
+                if (getToPatrolPos) {
+                    cout << "Patrol Success" << endl;
+                    getToPatrolPos = false;
                     return Success;
                 }
-                return Failure;
+                else if ((game->GetPlayer()->GetTransform().GetPosition() - transform.GetPosition()).Length() > 15
+                    && !game->GetPlayer()->GetKey()) {
+                    ProtectTreasure(dt);
+                    //cout << "AIEnemy Protecting Treasure" << endl;
+                }
+                else {
+                    //cout << "Stop Protect Treasure" << endl;
+                    return Failure;
+                }
+            }
+            else if (state == Success || state == Failure) {
+                state = Ongoing;
             }
             return state;
         }
@@ -193,12 +267,27 @@ void AIEnemy::GenerateBehaviourTree() {
     BehaviourAction* chasingPlayer = new BehaviourAction("Chasing Player",
         [&](float dt, BehaviourState state) -> BehaviourState {
             if (state == Initialise) {
-
+                cout << "Start Chasing Player" << endl;
                 return Ongoing;
             }
             else if (state == Ongoing) {
-
-                return Failure;
+                if (getToPlayer)
+                {
+                    //cout << "Chasing Player Success" << endl;
+                    getToPlayer = false;
+                    return Success;
+                }
+                else if ((game->GetPlayer()->GetTransform().GetPosition() - transform.GetPosition()).Length() <= 15
+                    || game->GetPlayer()->GetKey()) {
+                    ChasingPlayer(dt);
+                }
+                else {
+                    //cout << "AIEnemy Stop Chasing Player" << endl;
+                    return Failure;
+                }
+            }
+            else if (state == Success) {
+                state = Ongoing;
             }
             return state;
         }
@@ -212,17 +301,20 @@ void AIEnemy::GenerateBehaviourTree() {
     selection->AddChild(protectTreasure);
     selection->AddChild(chasingPlayer);
 
+    /*sequence1 = new BehaviourSequence("Protect Sequence");
+    sequence1->AddChild(selection);*/
+
     rootSequence = new BehaviourSequence("Root Sequence");
     rootSequence->AddChild(sequence);
-    //rootSequence->AddChild(selection);
+    //rootSequence->AddChild(sequence1);
+    rootSequence->AddChild(selection);
 
 }
 
 void AIEnemy::Update(float dt)
 {
-    //FindKeys(dt);
+    if (game->GetPlayer()->GetHealth() == 0) getToPlayer = true;
     rootSequence->Execute(dt);
-    //BehaviourTree();
 }
 
 void AIEnemy::OnCollisionBegin(GameObject* otherObject)

@@ -45,6 +45,14 @@ namespace NCL {
             bool foundAllKeys;
             void GotoFinalTreasure(float dt);
             bool gotoSuccess;
+            void ProtectTreasure(float dt);
+            vector<Vector3> patrolPos;
+            Vector3 patrolDes;
+            void InitPatrolPos();
+            bool findPatrolPos = false;
+            bool getToPatrolPos = false;
+            void ChasingPlayer(float dt);
+            bool getToPlayer = false;
 
             //pathfind
             NavigationPath outPath;
@@ -55,6 +63,7 @@ namespace NCL {
             //behaviourtree
             BehaviourSequence* rootSequence;
             BehaviourSequence* sequence;
+            BehaviourSequence* sequence1;
             BehaviourSelector* selection;
         };
     }
