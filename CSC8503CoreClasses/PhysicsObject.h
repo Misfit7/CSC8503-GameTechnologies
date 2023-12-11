@@ -67,9 +67,9 @@ namespace NCL {
             float GetElasticity() { return elasticity; }
 
             void SetFriction(float f) { friction = f; }
-
             float GetFriction() const { return friction; }
 
+            bool isOnGround = false;
         protected:
             const CollisionVolume* volume;
             Transform* transform;

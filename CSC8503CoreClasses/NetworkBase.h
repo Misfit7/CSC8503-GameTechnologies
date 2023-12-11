@@ -51,6 +51,24 @@ struct StringPacket : public GamePacket {
     }
 };
 
+struct AddPlayerPacket : public GamePacket {
+    int playerID;
+    AddPlayerPacket(int p) {
+        type = BasicNetworkMessages::Player_Connected;
+        playerID = p;
+        size = sizeof(int);
+    }
+};
+
+struct DeletePlayerPacket : public GamePacket {
+    int playerID;
+    DeletePlayerPacket(int p) {
+        type = BasicNetworkMessages::Player_Disconnected;
+        playerID = p;
+        size = sizeof(int);
+    }
+};
+
 class PacketReceiver {
 public:
     virtual void ReceivePacket(int type, GamePacket* payload, int source = -1) = 0;

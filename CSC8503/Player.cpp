@@ -7,12 +7,10 @@
 using namespace NCL;
 using namespace CSC8503;
 
-int Player::playerNum = 0;
-
 Player::Player(CourseWork& g, const Vector3& position,
-    Mesh* mesh, Texture* basicTex, Shader* basicShader) :game(g), world(g.GetWorld())
+    Mesh* mesh, Texture* basicTex, Shader* basicShader, int playerNum, string n) :game(g), world(g.GetWorld())
 {
-    playerNum++;
+    name = n;
     networkObject = new NetworkObject(*this, playerNum);
 
     float meshSize = 1.0f;
@@ -84,6 +82,7 @@ void Player::Update(float dt)
         {
             float distance = (floorCollision.collidedAt - playerPos).Length();
             distance <= 1.01f ? isStand = 1 : isStand = 0;
+            physicsObject->isOnGround = isStand;
         }
 
         if (Window::GetKeyboard()->KeyDown(KeyCodes::W)) {
@@ -130,6 +129,12 @@ void Player::Update(float dt)
             }
 
         }
+        if (Window::GetKeyboard()->KeyDown(KeyCodes::Q)) {
+            physicsObject->AddTorque(Vector3(0.0f, 5.0f, 0.0f));
+        }
+        if (Window::GetKeyboard()->KeyDown(KeyCodes::E)) {
+            physicsObject->AddTorque(Vector3(0.0f, -5.0f, 0.0f));
+        }
 
         // double jump
         if (jumpCount >= 1 && isStand)
@@ -154,7 +159,7 @@ void Player::Update(float dt)
         Debug::Print("O", Vector2(49.5f, 49.5f), Debug::RED);
         //interact
         RayCollision grabCollision;
-        if (Window::GetKeyboard()->KeyPressed(KeyCodes::Q)) {
+        if (Window::GetKeyboard()->KeyPressed(KeyCodes::T)) {
             isGrab = !isGrab;
             if (isGrab)
             {

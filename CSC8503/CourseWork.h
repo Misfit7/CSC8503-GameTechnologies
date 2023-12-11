@@ -48,7 +48,6 @@ namespace NCL {
 
             virtual void UpdateGame(float dt);
             int GetCurrentGame() { return currentGame; }
-            void SetGameState(int value);
             PlayerCamera* GetPlayerCamera() { return playerCamera; }
             bool GetSwitchCamera() { return switchCamera; }
 
@@ -73,7 +72,6 @@ namespace NCL {
         protected:
             //Game One
             Window* window;
-            void Menu(const std::string& text = "", const Vector4& colour = Debug::WHITE);
             void ShowUIOne();
             void ShowUITwo();
             int currentGame = 0;
@@ -176,69 +174,5 @@ namespace NCL {
             NavigationGrid* grid;
         };
     }
-
-    class MainMenu : public PushdownState {
-    public:
-        MainMenu(CourseWork* g) {
-            this->game = g;
-        }
-        ~MainMenu() {
-        }
-        PushdownResult OnUpdate(float dt, PushdownState** newState) override {
-            if (game->GetCurrentGame() != 0) {
-                minChoice = 0;
-                maxChoice = 3;
-                Debug::Print("Resume", Vector2(45.0f, 20.0f), (currentChoice == 0) ? Debug::BLACK : Debug::WHITE);
-                Debug::Print("Restart Game One", Vector2(36.0f, 40.0f), (currentChoice == 1) ? Debug::BLACK : Debug::WHITE);
-                Debug::Print("Restart Game Two", Vector2(36.0f, 60.0f), (currentChoice == 2) ? Debug::BLACK : Debug::WHITE);
-                Debug::Print("Quit", Vector2(47.0f, 80.0f), (currentChoice == 3) ? Debug::BLACK : Debug::WHITE);
-            }
-            else {
-                minChoice = 1;
-                maxChoice = 3;
-                if (game->gameTime < 0.0f)
-                    Debug::Print("You Lose", Vector2(44.0f, 15.0f), Debug::RED);
-                else if (game->gameTime > 0.0f)
-                    Debug::Print("You Won", Vector2(44.0f, 15.0f), Debug::BLUE);
-                Debug::Print("SinglePlayer Game", Vector2(35.0f, 30.0f), (currentChoice == 1) ? Debug::BLACK : Debug::WHITE);
-                Debug::Print("MultiPlayer Game", Vector2(36.0f, 50.0f), (currentChoice == 2) ? Debug::BLACK : Debug::WHITE);
-                Debug::Print("Quit", Vector2(47.0f, 70.0f), (currentChoice == 3) ? Debug::BLACK : Debug::WHITE);
-            }
-
-            if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE) && game->GetCurrentGame() != 0) {
-                Window::GetWindow()->ShowOSPointer(false);
-                Window::GetWindow()->LockMouseToWindow(true);
-                return PushdownResult::Pop;
-            }
-            if (Window::GetKeyboard()->KeyPressed(KeyCodes::UP)) {
-                currentChoice = std::max(currentChoice - 1, minChoice);
-            }
-            if (Window::GetKeyboard()->KeyPressed(KeyCodes::DOWN)) {
-                currentChoice = std::min(currentChoice + 1, maxChoice);
-            }
-            if (Window::GetKeyboard()->KeyPressed(KeyCodes::RETURN)) {
-                if (currentChoice == 0 && game->GetCurrentGame() != 0) {
-                    Window::GetWindow()->ShowOSPointer(false);
-                    Window::GetWindow()->LockMouseToWindow(true);
-                    return PushdownResult::Pop;
-                }
-                Window::GetWindow()->ShowOSPointer(false);
-                Window::GetWindow()->LockMouseToWindow(true);
-                game->SetGameState(currentChoice);
-                return PushdownResult::Pop;
-            }
-            return PushdownResult::NoChange;
-        };
-
-        void OnAwake() override {
-            currentChoice = game->GetCurrentGame() ? 0 : 1;
-        }
-
-    private:
-        CourseWork* game;
-        int currentChoice;
-        int minChoice;
-        int maxChoice;
-    };
 }
 

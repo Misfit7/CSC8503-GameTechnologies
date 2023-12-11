@@ -8,99 +8,10 @@
 #include "OrientationConstraint.h"
 #include "StateGameObject.h"
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <cstdlib>
-#include <ctime>
-
 using namespace NCL;
 using namespace CSC8503;
 
 using namespace std;
-
-const int blocksize = 5;
-const int n = 20; //row
-const int m = 20; //col
-
-const int RATE_KEEP_DIR = 000;
-const int TWIST_RATE = 10;
-const int RETURN_RATE = 100;
-
-int  Sx, Sy, Tx, Ty, Max;
-char Map[n][m];
-typedef pair<int, int> PII;
-const int dx[4] = { -1,0,1,0 }, dy[4] = { 0,1,0,-1 };
-const int Dx[4] = { -2,0,2,0 }, Dy[4] = { 0,2,0,-2 };
-
-mt19937 RND(time(0));
-
-//Check if (x,y) has a neighbour can go.
-bool Check(const int x, const int y)
-{
-    for (int i = 0; i < 4; ++i)
-    {
-        int nx = x + dx[i], ny = y + dy[i], Nx = x + Dx[i], Ny = y + Dy[i];
-        if (Nx >= 0 && Nx < n && Ny >= 0 && Ny < m && (Map[Nx][Ny] == 'x' && Map[nx][ny] == 'x'))return true;
-    } return false;
-}
-
-void Dfs(const int x, const int y, const int depth, int Lim, const int last_dir)
-{
-    if (depth > Max)Tx = x, Ty = y, Max = depth;
-    if (depth > Lim) return;
-    Map[x][y] = '.';
-    while (Check(x, y))
-    {
-        int t = RND() % 4;
-        if (RND() % 1000 < RATE_KEEP_DIR) t = last_dir;
-        int nx = x + dx[t], ny = y + dy[t], Nx = x + Dx[t], Ny = y + Dy[t];
-        if (nx<0 || nx>n - 1 || ny<0 || ny>m - 1 || Map[nx][ny] != 'x')continue;
-        if (Nx<0 || Nx>n - 1 || Ny<0 || Ny>m - 1 || Map[Nx][Ny] != 'x')continue;
-        if (Nx == 0 || Nx == n - 1 || Ny == 0 || Ny == m - 1) {
-            if ((int)(RND() % 1000) <= 75)  Map[nx][ny] = 'O';
-            else if ((int)(RND() % 1000) >= 925) Map[nx][ny] = 'T';
-            else Map[nx][ny] = '.';
-            continue;
-        }
-        if ((int)(RND() % 1000) <= 75)  Map[nx][ny] = 'O';
-        else if ((int)(RND() % 1000) >= 925) Map[nx][ny] = 'T';
-        else { Map[nx][ny] = '.'; Map[Nx][Ny] = '.'; }
-        Dfs(Nx, Ny, depth + 1, Lim, t);
-
-        if ((int)(RND() % 1000) < (min(n, m) < 100 ? 0 : RETURN_RATE)) return;
-
-        Lim = depth + max(min(n, m) / TWIST_RATE, 5);
-    }
-    return;
-}
-
-void saveMazeToFile(const std::string& filename) {
-    std::ofstream file(filename);
-    if (!file.is_open()) {
-        std::cerr << "Error opening file for writing." << std::endl;
-        return;
-    }
-
-    file << blocksize << '\n';
-    file << m << '\n'; //col
-    file << n << '\n'; //row
-
-    for (int i = 0; i < n; ++i) for (int j = 0; j < m; ++j) Map[i][j] = 'x';
-    Sx = 1, Sy = 1;
-    Dfs(Sx, Sy, 0, max(min(n, m) / TWIST_RATE, 5), 2);
-    //set starting and ending points.
-    Map[Sx][Sy] = 'S';
-    Map[Tx][Ty] = 'E';
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < m; ++j)
-            file << Map[i][j];
-        file << '\n';
-    }
-
-    std::cout << "Maze saved to " << filename << std::endl;
-    file.close();
-}
 
 CourseWork::CourseWork() : controller(*Window::GetWindow()->GetKeyboard(), *Window::GetWindow()->GetMouse()) {
     world = new GameWorld();
@@ -149,7 +60,6 @@ void CourseWork::InitialiseAssets() {
     basicTex = renderer->LoadTexture("checkerboard.png");
     basicShader = renderer->LoadShader("scene.vert", "scene.frag");
 
-    Menu();
 }
 
 CourseWork::~CourseWork() {
@@ -181,26 +91,6 @@ void CourseWork::UpdateGame(float dt) {
         GameTwoRunning(dt);
     }
 
-    renderer->Render();
-    Debug::UpdateRenderables(dt);
-
-    // Display main menu
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE)) {
-        Window::GetWindow()->ShowOSPointer(true);
-        Window::GetWindow()->LockMouseToWindow(false);
-        Menu();
-    }
-
-    if (gameTime < 0.0f) {
-        currentGame = 0;
-        Menu();
-    }
-    else if ((player->GetTransform().GetPosition() - Vector3(5, 0, 5)).Length() <= 2.5f && player->GetKey())
-    {
-        currentGame = 0;
-        Menu();
-    }
-    //cout << world->GetMainCamera().GetPosition() << endl;
 }
 
 void CourseWork::UpdateKeys() {
@@ -221,7 +111,7 @@ void CourseWork::UpdateKeys() {
     //bias in the calculations - the same objects might keep 'winning' the constraint
     //allowing the other one to stretch too much etc. Shuffling the order so that it
     //is random every frame can help reduce such bias.
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::F9)) {
+    /*if (Window::GetKeyboard()->KeyPressed(KeyCodes::F9)) {
         world->ShuffleConstraints(true);
     }
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::F10)) {
@@ -235,7 +125,7 @@ void CourseWork::UpdateKeys() {
         world->ShuffleObjects(false);
     }
 
-    DebugObjectMovement();
+    DebugObjectMovement();*/
 }
 
 void CourseWork::DebugObjectMovement() {
@@ -304,7 +194,6 @@ void CourseWork::InitPlayerCamera() {
 
 void CourseWork::InitGameOne() {
     currentGame = 1;
-    saveMazeToFile("../Assets/Data/maze.txt");
     grid = new NavigationGrid("maze.txt");
     world->ClearAndErase();
     physics->Clear();
@@ -315,7 +204,7 @@ void CourseWork::InitGameOne() {
 
     InitPlayerCamera();
 
-    gameTime = 30.0f;
+    gameTime = 300.0f;
 }
 
 /*
@@ -464,7 +353,8 @@ void CourseWork::InitGameOneObject() {
                 AddBoardToWorld(Vector3(nodeSize * x, nodeSize + 1, nodeSize * y),
                     Vector3(0, 0, 0), Vector3(1, 2, 1));
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'S')
-                player = new Player(*this, Vector3(x * nodeSize, 2, y * nodeSize), charMesh, nullptr, basicShader);
+                player = new Player(*this, Vector3(x * nodeSize, 2, y * nodeSize),
+                    charMesh, nullptr, basicShader, 0, "player");
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'E')
             {
                 finalTreasurePos = Vector3(x * nodeSize, 2, y * nodeSize);
@@ -598,21 +488,6 @@ void CourseWork::MoveSelectedObject() {
                 selectionObject->GetPhysicsObject()->AddForceAtPosition(ray.GetDirection() * forceMagnitude, closestCollision.collidedAt);
             }
         }
-    }
-}
-
-void CourseWork::Menu(const std::string& text, const Vector4& colour) {
-    PushdownMachine machine(new MainMenu(this));
-
-    while (window->UpdateWindow()) {
-        float dt = window->GetTimer().GetTimeDeltaSeconds();
-        Debug::Print(text, Vector2(50.0f - text.length(), 20.0f), colour);
-        if (!machine.Update(dt)) {
-            return;
-        }
-        renderer->Update(dt);
-        renderer->Render();
-        Debug::UpdateRenderables(dt);
     }
 }
 
@@ -751,15 +626,3 @@ void CourseWork::GameTwoRunning(float dt)
     world->GetMainCamera().UpdateCamera(dt);
 }
 
-void CourseWork::SetGameState(int value) {
-    if (value == 1) {
-        InitGameOne();
-    }
-    else if (value == 2) {
-        InitGameOne();
-    }
-    else if (value == 3) {
-        Window::DestroyGameWindow();
-        exit(0);
-    }
-}

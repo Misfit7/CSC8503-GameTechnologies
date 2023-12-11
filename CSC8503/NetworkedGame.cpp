@@ -4,7 +4,102 @@
 #include "GameServer.h"
 #include "GameClient.h"
 
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <cstdlib>
+#include <ctime>
+#include "Assets.h"
+
+using namespace NCL;
+using namespace CSC8503;
+
+using namespace std;
+
 #define COLLISION_MSG 30
+
+const int blocksize = 5;
+const int n = 20; //row
+const int m = 20; //col
+
+const int RATE_KEEP_DIR = 000;
+const int TWIST_RATE = 10;
+const int RETURN_RATE = 100;
+
+int  Sx, Sy, Tx, Ty, Max;
+char Map[n][m];
+typedef pair<int, int> PII;
+const int dx[4] = { -1,0,1,0 }, dy[4] = { 0,1,0,-1 };
+const int Dx[4] = { -2,0,2,0 }, Dy[4] = { 0,2,0,-2 };
+
+mt19937 RND(time(0));
+
+//Check if (x,y) has a neighbour can go.
+bool Check(const int x, const int y)
+{
+    for (int i = 0; i < 4; ++i)
+    {
+        int nx = x + dx[i], ny = y + dy[i], Nx = x + Dx[i], Ny = y + Dy[i];
+        if (Nx >= 0 && Nx < n && Ny >= 0 && Ny < m && (Map[Nx][Ny] == 'x' && Map[nx][ny] == 'x'))return true;
+    } return false;
+}
+
+void Dfs(const int x, const int y, const int depth, int Lim, const int last_dir)
+{
+    if (depth > Max)Tx = x, Ty = y, Max = depth;
+    if (depth > Lim) return;
+    Map[x][y] = '.';
+    while (Check(x, y))
+    {
+        int t = RND() % 4;
+        if (RND() % 1000 < RATE_KEEP_DIR) t = last_dir;
+        int nx = x + dx[t], ny = y + dy[t], Nx = x + Dx[t], Ny = y + Dy[t];
+        if (nx<0 || nx>n - 1 || ny<0 || ny>m - 1 || Map[nx][ny] != 'x')continue;
+        if (Nx<0 || Nx>n - 1 || Ny<0 || Ny>m - 1 || Map[Nx][Ny] != 'x')continue;
+        if (Nx == 0 || Nx == n - 1 || Ny == 0 || Ny == m - 1) {
+            if ((int)(RND() % 1000) <= 75)  Map[nx][ny] = 'O';
+            else if ((int)(RND() % 1000) >= 925) Map[nx][ny] = 'T';
+            else Map[nx][ny] = '.';
+            continue;
+        }
+        if ((int)(RND() % 1000) <= 75)  Map[nx][ny] = 'O';
+        else if ((int)(RND() % 1000) >= 925) Map[nx][ny] = 'T';
+        else { Map[nx][ny] = '.'; Map[Nx][Ny] = '.'; }
+        Dfs(Nx, Ny, depth + 1, Lim, t);
+
+        if ((int)(RND() % 1000) < (min(n, m) < 100 ? 0 : RETURN_RATE)) return;
+
+        Lim = depth + max(min(n, m) / TWIST_RATE, 5);
+    }
+    return;
+}
+
+void saveMazeToFile(const std::string& filename) {
+    std::ofstream file(Assets::DATADIR + filename);
+    if (!file.is_open()) {
+        std::cerr << "Error opening file for writing." << std::endl;
+        return;
+    }
+
+    file << blocksize << '\n';
+    file << m << '\n'; //col
+    file << n << '\n'; //row
+
+    for (int i = 0; i < n; ++i) for (int j = 0; j < m; ++j) Map[i][j] = 'x';
+    Sx = 1, Sy = 1;
+    Dfs(Sx, Sy, 0, max(min(n, m) / TWIST_RATE, 5), 2);
+    //set starting and ending points.
+    Map[Sx][Sy] = 'S';
+    Map[Tx][Ty] = 'E';
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j)
+            file << Map[i][j];
+        file << '\n';
+    }
+
+    std::cout << "Maze saved to " << filename << std::endl;
+    file.close();
+}
 
 struct MessagePacket : public GamePacket {
     short playerID;
@@ -23,6 +118,8 @@ NetworkedGame::NetworkedGame() {
     NetworkBase::Initialise();
     timeToNextPacket = 0.0f;
     packetsToSnapshot = 0;
+
+    Menu();
 }
 
 NetworkedGame::~NetworkedGame() {
@@ -32,11 +129,10 @@ NetworkedGame::~NetworkedGame() {
 
 void NetworkedGame::StartAsServer() {
     this->name = "Server";
-    thisServer = new GameServer(NetworkBase::GetDefaultPort(), 1);
+    thisServer = new GameServer(NetworkBase::GetDefaultPort(), 2);
 
     thisServer->RegisterPacketHandler(Received_State, this);
-
-    StartLevel();
+    thisServer->RegisterPacketHandler(String_Message, this);
 }
 
 void NetworkedGame::StartAsClient(char a, char b, char c, char d) {
@@ -48,8 +144,7 @@ void NetworkedGame::StartAsClient(char a, char b, char c, char d) {
     thisClient->RegisterPacketHandler(Full_State, this);
     thisClient->RegisterPacketHandler(Player_Connected, this);
     thisClient->RegisterPacketHandler(Player_Disconnected, this);
-
-    StartLevel();
+    thisClient->RegisterPacketHandler(String_Message, this);
 }
 
 void NetworkedGame::UpdateGame(float dt) {
@@ -66,16 +161,70 @@ void NetworkedGame::UpdateGame(float dt) {
         timeToNextPacket += 1.0f / 20.0f; //20hz server/client update
     }
 
-    if (!thisServer && Window::GetKeyboard()->KeyPressed(KeyCodes::F9)) {
-        cout << "StartAsServer" << endl;
-        StartAsServer();
-    }
-    if (!thisClient && Window::GetKeyboard()->KeyPressed(KeyCodes::F10)) {
-        cout << "StartAsClient" << endl;
-        StartAsClient(127, 0, 0, 1);
+    renderer->Render();
+    Debug::UpdateRenderables(dt);
+    // Display main menu
+    if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE)) {
+        Window::GetWindow()->ShowOSPointer(true);
+        Window::GetWindow()->LockMouseToWindow(false);
+        Menu();
     }
 
+    if (gameTime < 0.0f) {
+        currentGame = 0;
+        Menu();
+    }
+    else if ((player->GetTransform().GetPosition() - Vector3(5, 0, 5)).Length() <= 2.5f && player->GetKey())
+    {
+        currentGame = 0;
+        Menu();
+    }
+    //cout << world->GetMainCamera().GetPosition() << endl;
+
+    //UpdateMinimumState();
+
     CourseWork::UpdateGame(dt);
+}
+
+void NetworkedGame::Menu(const std::string& text, const Vector4& colour) {
+    PushdownMachine machine(new MainMenu(this));
+
+    while (window->UpdateWindow()) {
+        float dt = window->GetTimer().GetTimeDeltaSeconds();
+        Debug::Print(text, Vector2(50.0f - text.length(), 20.0f), colour);
+        if (!machine.Update(dt)) {
+            return;
+        }
+        renderer->Update(dt);
+        renderer->Render();
+        Debug::UpdateRenderables(dt);
+    }
+}
+
+void NetworkedGame::SetGameState(int value) {
+    if (value == 1) {
+        cout << "StartAsServer" << endl;
+        if (!thisServer && !thisClient) {
+            StartAsServer();
+            saveMazeToFile("maze.txt");
+        }
+        InitGameOne();
+    }
+    else if (value == 2) {
+        cout << "StartAsClient" << endl;
+        if (!thisClient) {
+            thisServer = nullptr;
+            StartAsClient(127, 0, 0, 1);
+        }
+        InitGameOne();
+    }
+    else if (value == 3) {
+        Window::DestroyGameWindow();
+        exit(0);
+    }
+    else if (value == 4) {
+        InitGameOne();
+    }
 }
 
 void NetworkedGame::UpdateAsServer(float dt) {
@@ -90,14 +239,19 @@ void NetworkedGame::UpdateAsServer(float dt) {
 }
 
 void NetworkedGame::UpdateAsClient(float dt) {
-    ClientPacket newPacket;
+    GamePacket* newPacket = new StringPacket("Client says hello!");
 
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
-        //fire button pressed!
-        newPacket.buttonstates[0] = 1;
-        newPacket.lastID = 0; //You'll need to work this out somehow...
-    }
-    thisClient->SendPacket(newPacket);
+    //if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
+    //    //fire button pressed!
+    //    newPacket.buttonstates[0] = 1;
+    //    newPacket.lastID = 0; //You'll need to work this out somehow...
+    //}
+    thisClient->SendPacket(*newPacket);
+}
+
+Player* NetworkedGame::SpawnPlayer(int playerNum)
+{
+    return new Player(*this, Vector3(nodeSize, 2, nodeSize), charMesh, nullptr, basicShader, playerNum, "player");
 }
 
 void NetworkedGame::BroadcastSnapshot(bool deltaFrame) {
@@ -123,6 +277,9 @@ void NetworkedGame::BroadcastSnapshot(bool deltaFrame) {
             delete newPacket;
         }
     }
+    GamePacket* stringPacket = new StringPacket("Server says hello!");
+    thisServer->SendGlobalPacket(*stringPacket);
+    delete stringPacket;
 }
 
 void NetworkedGame::UpdateMinimumState() {
@@ -149,16 +306,25 @@ void NetworkedGame::UpdateMinimumState() {
     }
 }
 
-void NetworkedGame::SpawnPlayer() {
-
-}
-
-void NetworkedGame::StartLevel() {
-
-}
-
 void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
+    if (type == String_Message) {
+        StringPacket* realPacket = (StringPacket*)payload;
 
+        string msg = realPacket->GetStringFromData();
+
+        std::cout << name << " received message: " << msg << std::endl;
+    }
+    else if (type == Player_Connected) {
+        AddPlayerPacket* realPacket = (AddPlayerPacket*)payload;
+        std::cout << name << " add player: " << realPacket->playerID << std::endl;
+        Player* newplayer = SpawnPlayer(realPacket->playerID);
+        serverPlayers[realPacket->playerID] = SpawnPlayer(realPacket->playerID);
+    }
+    else if (type == Player_Disconnected) {
+        DeletePlayerPacket* realPacket = (DeletePlayerPacket*)payload;
+        std::cout << name << " delete player: " << realPacket->playerID << std::endl;
+        world->RemoveGameObject(serverPlayers[realPacket->playerID]);
+    }
 }
 
 void NetworkedGame::OnPlayerCollision(NetworkPlayer* a, NetworkPlayer* b) {

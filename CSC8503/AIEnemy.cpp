@@ -82,6 +82,33 @@ void AIEnemy::Move(const Vector3& pos, float dt)
     transform.SetOrientation(Quaternion::Slerp(transform.GetOrientation(), finalRot, 5.0f * dt));
 }
 
+void AIEnemy::AvoidObstacle()
+{
+    Vector3 q = transform.GetOrientation().ToEuler();
+    Vector3 Right = Matrix4::Rotation(q.y, Vector3(0, 1, 0)) *
+        Matrix4::Rotation(q.x, Vector3(1, 0, 0)) * Vector3(1, 0, 0);
+    RayCollision viewCollision;
+    viewCollision.rayDistance = 10.0f;
+    //scan by sector
+    for (float i = q.y - 35.0f; i <= q.y + 35.0f; i += 2.0f) {
+
+        Vector3 forward = Matrix4::Rotation(i, Vector3(0, 1, 0)) *
+            Matrix4::Rotation(q.x, Vector3(1, 0, 0)) * Vector3(0, 0, -1);
+        Ray viewRay = Ray(transform.GetPosition(), forward);
+        if (world->Raycast(viewRay, viewCollision, true, this))
+        {
+            if (((GameObject*)viewCollision.node)->GetName() == "treasure" &&
+                (((GameObject*)viewCollision.node)->GetRenderObject()->GetColour() == Vector4(1, 0, 0, 1) ||
+                    ((GameObject*)viewCollision.node)->GetRenderObject()->GetColour() == Vector4(0, 1, 0, 1))) {
+                physicsObject->ApplyLinearImpulse(
+                    rand() % 50 < 25 ? Right * -forward * 4.5f : -Right * -forward * 4.5f);
+                Debug::DrawLine(transform.GetPosition(), viewCollision.collidedAt, Debug::RED, 0.25f);
+            }
+            Debug::DrawLine(transform.GetPosition(), viewCollision.collidedAt, Debug::YELLOW, 0.25f);
+        }
+    }
+}
+
 void AIEnemy::FindKeys(float dt)
 {
     float x, y, z;
@@ -315,6 +342,7 @@ void AIEnemy::Update(float dt)
 {
     if (game->GetPlayer()->GetHealth() == 0) getToPlayer = true;
     rootSequence->Execute(dt);
+    AvoidObstacle();
 }
 
 void AIEnemy::OnCollisionBegin(GameObject* otherObject)
@@ -328,7 +356,7 @@ void AIEnemy::OnCollisionBegin(GameObject* otherObject)
             otherObject->GetRenderObject()->SetColour(Vector4(1, 0, 0, 1));
         }
         physicsObject->ApplyLinearImpulse(
-            Vector3(rand() % 50 < 25 ? 10 : -10, 0, rand() % 50 < 25 ? 10 : -10));
+            Vector3(rand() % 50 < 25 ? 6 : -6, 0, rand() % 50 < 25 ? 6 : -6));
     }
     if (otherObject == game->GetPlayer() && !game->GetPlayer()->GetAttack()) {
         game->GetPlayer()->SetHealth(0);

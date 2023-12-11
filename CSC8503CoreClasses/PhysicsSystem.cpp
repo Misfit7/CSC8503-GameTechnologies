@@ -67,7 +67,7 @@ float realDT = idealDT;
 void PhysicsSystem::Update(float dt) {
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::B)) {
         useBroadPhase = !useBroadPhase;
-        std::cout << "Setting broadphase to " << useBroadPhase << std::endl;
+        std::cout << "Setting broadphase to " << (useBroadPhase ? "on" : "off") << std::endl;
     }
     if (Window::GetKeyboard()->KeyPressed(KeyCodes::N)) {
         useSimpleContainer = !useSimpleContainer;
@@ -289,7 +289,7 @@ compare the collisions that we absolutely need to.
 */
 void PhysicsSystem::BroadPhase() {
     broadphaseCollisions.clear();
-    tree = QuadTree<GameObject*>(Vector2(1024, 1024), 7, 6);
+    tree = QuadTree<GameObject*>(Vector2(1024, 1024));
 
     std::vector < GameObject* >::const_iterator first;
     std::vector < GameObject* >::const_iterator last;
@@ -361,13 +361,25 @@ void PhysicsSystem::IntegrateAccel(float dt) {
         Vector3 force = object->GetForce();
         Vector3 accel = force * inverseMass;
 
-        if (applyGravity && inverseMass > 0 && (*i)->GetUsesGravity()) {
-            accel += gravity; //don move infinitely heavy things
-            linearVel += accel * dt; // integrate accel!
+        if (object->isOnGround) {
+            if (applyGravity && inverseMass > 0 && (*i)->GetUsesGravity()) {
+                accel += gravity; //don move infinitely heavy things
+                linearVel += accel * dt * object->GetFriction(); // integrate accel!
+            }
+            else if (applyGravity && inverseMass < 0 && (*i)->GetUsesGravity()) {
+                accel -= gravity; //don move infinitely heavy things
+                linearVel += accel * dt * object->GetFriction(); // integrate accel!
+            }
         }
-        else if (applyGravity && inverseMass < 0 && (*i)->GetUsesGravity()) {
-            accel -= gravity; //don move infinitely heavy things
-            linearVel += accel * dt; // integrate accel!
+        else {
+            if (applyGravity && inverseMass > 0 && (*i)->GetUsesGravity()) {
+                accel += gravity; //don move infinitely heavy things
+                linearVel += accel * dt; // integrate accel!
+            }
+            else if (applyGravity && inverseMass < 0 && (*i)->GetUsesGravity()) {
+                accel -= gravity; //don move infinitely heavy things
+                linearVel += accel * dt; // integrate accel!
+            }
         }
         object->SetLinearVelocity(linearVel); // previous code
         //(*i)->ConstrainLinearVelocity();
@@ -406,11 +418,20 @@ void PhysicsSystem::IntegrateVelocity(float dt) {
         Transform& transform = (*i)->GetTransform();
         // Position Stuff
         Vector3 position = transform.GetPosition();
-        Vector3 linearVel = object->GetLinearVelocity();
+        Vector3 linearVel;
+        linearVel = object->GetLinearVelocity();
+
         position += linearVel * dt;
         transform.SetPosition(position);
-        // Linear Damping
-        linearVel = linearVel * frameLinearDamping;
+        // Linear Damping & friction
+        float frameFriction = 1.0f - (object->GetFriction() * dt);
+        if (object->isOnGround) {
+            linearVel = object->GetLinearVelocity() * frameLinearDamping * frameFriction;
+        }
+        else
+        {
+            linearVel = linearVel * frameLinearDamping;
+        }
         object->SetLinearVelocity(linearVel);
         //(*i)->ConstrainLinearVelocity();
 

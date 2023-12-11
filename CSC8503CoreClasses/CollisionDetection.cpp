@@ -211,6 +211,9 @@ bool CollisionDetection::RayCapsuleIntersection(const Ray& r, const Transform& w
 }
 
 bool CollisionDetection::ObjectIntersection(GameObject* a, GameObject* b, CollisionInfo& collisionInfo) {
+    if (a->GetName() == "player" && b->GetName() == "player") {
+        return false;
+    }
     const CollisionVolume* volA = a->GetBoundingVolume();
     const CollisionVolume* volB = b->GetBoundingVolume();
 
@@ -587,8 +590,6 @@ bool CollisionDetection::OBBIntersection(const OBBVolume& volumeA, const Transfo
         if (abs(t[0] * R.array[0][i] + t[1] * R.array[1][i] + t[2] * R.array[2][i]) > ra + rb)
             return false;
     }
-
-
 
     //Test Axis L = A0 x B0
     ra = boxAExtents[1] * AbsR.array[2][0] + boxAExtents[2] * AbsR.array[1][0];

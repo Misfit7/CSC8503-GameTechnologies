@@ -39,6 +39,7 @@ namespace NCL {
             void Pathfinding(Vector3 startPos, Vector3 endPos);
             void DisplayPathfinding();
             void GenerateBehaviourTree();
+            void AvoidObstacle();
 
             void Move(const Vector3& pos, float dt);
             void FindKeys(float dt);

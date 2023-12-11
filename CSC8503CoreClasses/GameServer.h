@@ -2,31 +2,33 @@
 #include "NetworkBase.h"
 
 namespace NCL {
-	namespace CSC8503 {
-		class GameWorld;
-		class GameServer : public NetworkBase {
-		public:
-			GameServer(int onPort, int maxClients);
-			~GameServer();
+    namespace CSC8503 {
+        class GameWorld;
+        class GameServer : public NetworkBase {
+        public:
+            GameServer(int onPort, int maxClients);
+            ~GameServer();
 
-			bool Initialise();
-			void Shutdown();
+            bool Initialise();
+            void Shutdown();
 
-			void SetGameWorld(GameWorld &g);
+            void SetGameWorld(GameWorld& g);
 
-			bool SendGlobalPacket(int msgID);
-			bool SendGlobalPacket(GamePacket& packet);
+            bool SendGlobalPacket(int msgID);
+            bool SendGlobalPacket(GamePacket& packet);
 
-			virtual void UpdateServer();
+            virtual void UpdateServer();
 
-		protected:
-			int			port;
-			int			clientMax;
-			int			clientCount;
-			GameWorld*	gameWorld;
+            int GetClientCount() { return clientCount; }
 
-			int incomingDataRate;
-			int outgoingDataRate;
-		};
-	}
+        protected:
+            int			port;
+            int			clientMax;
+            int			clientCount;
+            GameWorld* gameWorld;
+
+            int incomingDataRate;
+            int outgoingDataRate;
+        };
+    }
 }

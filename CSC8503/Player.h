@@ -16,7 +16,7 @@ namespace NCL {
         {
         public:
             Player(CourseWork& g, const Vector3& position,
-                Mesh* mesh, Texture* basicTex, Shader* basicShader);
+                Mesh* mesh, Texture* basicTex, Shader* basicShader, int playerNum, string n = "");
 
             void Update(float dt);
 
@@ -65,7 +65,6 @@ namespace NCL {
 
             PositionConstraint* constraint = nullptr;
         private:
-            static int playerNum;
             int health = 2;
         };
     }

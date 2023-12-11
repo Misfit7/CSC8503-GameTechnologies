@@ -60,9 +60,17 @@ void GameServer::UpdateServer() {
 
         if (type == ENetEventType::ENET_EVENT_TYPE_CONNECT) {
             std::cout << "Server : New client connected" << std::endl;
+            clientCount++;
+            AddPlayerPacket* addplayer = new AddPlayerPacket(peer);
+            SendGlobalPacket(*addplayer);
+            delete addplayer;
         }
         else if (type == ENetEventType::ENET_EVENT_TYPE_DISCONNECT) {
             std::cout << "Server : A client has disconnected" << std::endl;
+            if (clientCount) clientCount--;
+            DeletePlayerPacket* deleteplayer = new DeletePlayerPacket(peer);
+            SendGlobalPacket(*deleteplayer);
+            delete deleteplayer;
         }
         else if (type == ENetEventType::ENET_EVENT_TYPE_RECEIVE) {
             GamePacket* packet = (GamePacket*)event.packet->data;
