@@ -43,6 +43,8 @@ namespace NCL {
 
             std::map<int, GameObject*> serverPlayers;
             GameObject* localPlayer;
+
+            string name;
         };
     }
 }

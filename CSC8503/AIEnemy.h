@@ -25,6 +25,8 @@ namespace NCL {
             void Update(float dt);
             void OnCollisionBegin(GameObject* otherObject) override;
 
+            void Respawn();
+
         protected:
             CourseWork* game;
             GameWorld* world;
@@ -33,8 +35,6 @@ namespace NCL {
 
             Vector3 originalPos;
             Vector3 destinationPos;
-
-            void Respawn();
 
             void Pathfinding(Vector3 startPos, Vector3 endPos);
             void DisplayPathfinding();

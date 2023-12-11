@@ -22,6 +22,7 @@ namespace NCL {
 
             void SetHealth(int h) { health = max(0, h); }
             int GetHealth() { return health; }
+            int GetPower() { return power; }
 
             bool GetKey() { return getKey; }
 
@@ -33,6 +34,7 @@ namespace NCL {
             void ResetKey();
             void ResetFinalTreasure();
 
+            bool GetAttack() { return attack; }
         protected:
             CourseWork& game;
             GameWorld* world;
@@ -47,6 +49,8 @@ namespace NCL {
             float invincible = 0.0f;
             bool switchOrientation = false;
             int jumpCount = 0;
+            int power = 0;
+            bool attack = false;
 
             Vector3 grabPoint;
 

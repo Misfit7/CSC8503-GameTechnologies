@@ -330,7 +330,7 @@ void AIEnemy::OnCollisionBegin(GameObject* otherObject)
         physicsObject->ApplyLinearImpulse(
             Vector3(rand() % 50 < 25 ? 10 : -10, 0, rand() % 50 < 25 ? 10 : -10));
     }
-    if (otherObject == game->GetPlayer()) {
+    if (otherObject == game->GetPlayer() && !game->GetPlayer()->GetAttack()) {
         game->GetPlayer()->SetHealth(0);
     }
 }

@@ -31,7 +31,8 @@ NetworkedGame::~NetworkedGame() {
 }
 
 void NetworkedGame::StartAsServer() {
-    thisServer = new GameServer(NetworkBase::GetDefaultPort(), 4);
+    this->name = "Server";
+    thisServer = new GameServer(NetworkBase::GetDefaultPort(), 1);
 
     thisServer->RegisterPacketHandler(Received_State, this);
 
@@ -39,6 +40,7 @@ void NetworkedGame::StartAsServer() {
 }
 
 void NetworkedGame::StartAsClient(char a, char b, char c, char d) {
+    this->name = "Client";
     thisClient = new GameClient();
     thisClient->Connect(a, b, c, d, NetworkBase::GetDefaultPort());
 
@@ -55,9 +57,11 @@ void NetworkedGame::UpdateGame(float dt) {
     if (timeToNextPacket < 0) {
         if (thisServer) {
             UpdateAsServer(dt);
+            thisServer->UpdateServer();
         }
         else if (thisClient) {
             UpdateAsClient(dt);
+            thisClient->UpdateClient();
         }
         timeToNextPacket += 1.0f / 20.0f; //20hz server/client update
     }

@@ -37,10 +37,11 @@ Player::Player(CourseWork& g, const Vector3& position,
 
 void Player::Update(float dt)
 {
-    if (isHit) invincible += dt;
+    if (isHit || attack) invincible += dt;
     if (invincible >= 1.0f) {
         invincible = 0.0f;
         isHit = false;
+        attack = false;
     }
 
     Vector3 playerPos = transform.GetPosition();
@@ -180,7 +181,23 @@ void Player::Update(float dt)
             }
         }
         if (Window::GetKeyboard()->KeyDown(KeyCodes::F)) {
+            if ((game.GetAIEnemy()->GetTransform().GetPosition() -
+                transform.GetPosition()).Length() <= 12.5f) {
+                if (power > 0 && !attack) {
+                    --power;
+                    attack = true;
+                    Vector3 v = (game.GetAIEnemy()->GetTransform().GetPosition()
+                        - transform.GetPosition()).Normalised();
+                    v.y = 0.0f;
+                    physicsObject->ApplyLinearImpulse(v * 60.0f);
 
+                    //rotate
+                    Vector3 ogRotEuler = Quaternion(Matrix4::BuildViewMatrix(transform.GetPosition(),
+                        game.GetAIEnemy()->GetTransform().GetPosition(), Vector3(0, 1, 0)).Inverse()).ToEuler();
+                    Quaternion finalRot = Quaternion::EulerAnglesToQuaternion(ogRotEuler.x, ogRotEuler.y, ogRotEuler.z);
+                    transform.SetOrientation(Quaternion::Slerp(transform.GetOrientation(), finalRot, 5.0f * dt));
+                }
+            }
         }
 
 
@@ -266,11 +283,15 @@ void Player::OnCollisionBegin(GameObject* otherObject)
         if (game.GetKeysFound()[s] == 0) {
             game.GetKeysFound()[s] = 1;
             otherObject->GetRenderObject()->SetColour(Vector4(0, 1, 0, 1));
+            ++power;
         }
     }
     else if (otherObject->GetName() == "key" && !getKey) {
         constraint = new PositionConstraint(otherObject, this, 2.0f);
         world->AddConstraint(constraint);
         getKey = true;
+    }
+    else if (otherObject == game.GetAIEnemy() && attack) {
+        game.GetAIEnemy()->Respawn();
     }
 }

@@ -191,6 +191,15 @@ void CourseWork::UpdateGame(float dt) {
         Menu();
     }
 
+    if (gameTime < 0.0f) {
+        currentGame = 0;
+        Menu();
+    }
+    else if ((player->GetTransform().GetPosition() - Vector3(5, 0, 5)).Length() <= 2.5f && player->GetKey())
+    {
+        currentGame = 0;
+        Menu();
+    }
     //cout << world->GetMainCamera().GetPosition() << endl;
 }
 
@@ -306,6 +315,7 @@ void CourseWork::InitGameOne() {
 
     InitPlayerCamera();
 
+    gameTime = 30.0f;
 }
 
 /*
@@ -608,11 +618,17 @@ void CourseWork::Menu(const std::string& text, const Vector4& colour) {
 
 void CourseWork::ShowUIOne() {
     Debug::Print("Current Health: " + std::to_string(player->GetHealth()), Vector2(1.5, 5));
+    Debug::Print("Time: " + std::to_string(gameTime), Vector2(80, 9));
     return;
 }
 
 void CourseWork::ShowUITwo() {
-
+    Debug::Print("Current Health: " + std::to_string(player->GetHealth()), Vector2(1.5, 5));
+    Debug::Print("Current Power: " + std::to_string(player->GetPower()), Vector2(1.5, 9));
+    auto condition = [](const auto& pair) { return pair.second == 1; };
+    size_t count = std::count_if(keysFound.begin(), keysFound.end(), condition);
+    Debug::Print("Score: " + std::to_string(count), Vector2(80, 5));
+    Debug::Print("Time: " + std::to_string((int)gameTime) + "s", Vector2(80, 9));
     return;
 }
 
@@ -693,6 +709,7 @@ void CourseWork::ShowUITwo() {
 
 void CourseWork::GameOneRunning(float dt)
 {
+    gameTime -= dt;
     ShowUIOne();
     //ShowUITwo();
     player->Update(dt);
@@ -721,8 +738,9 @@ void CourseWork::GameOneRunning(float dt)
 
 void CourseWork::GameTwoRunning(float dt)
 {
-    ShowUIOne();
-    //ShowUITwo();
+    gameTime -= dt;
+    //ShowUIOne();
+    ShowUITwo();
     Debug::DrawLine(finalTreasurePos, Vector3(finalTreasurePos.x, 30, finalTreasurePos.z), Debug::BLUE);
     player->Update(dt);
     aiEnemy->Update(dt);

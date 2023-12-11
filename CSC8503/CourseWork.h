@@ -58,6 +58,7 @@ namespace NCL {
             Vector3 GetFinalTreasurePos() { return finalTreasurePos; }
 
             Player* GetPlayer() { return player; }
+            AIEnemy* GetAIEnemy() { return aiEnemy; }
             GameWorld* GetWorld() { return world; }
             NavigationGrid* GetGrid() { return grid; }
             vector<Vector3> GetKeysPos() { return keysPos; }
@@ -67,13 +68,14 @@ namespace NCL {
 
             GameObject* AddSphereToWorld(const Vector3& position, float radius, float inverseMass = 10.0f);
             GameObject* AddCubeToWorld(const Vector3& position, Vector3 dimensions, float inverseMass = 10.0f);
+
+            float gameTime = 0.0f;
         protected:
             //Game One
             Window* window;
             void Menu(const std::string& text = "", const Vector4& colour = Debug::WHITE);
             void ShowUIOne();
             void ShowUITwo();
-            float gameTime = 0.0;
             int currentGame = 0;
             void GameOneRunning(float dt);
             void GameTwoRunning(float dt);
@@ -194,6 +196,10 @@ namespace NCL {
             else {
                 minChoice = 1;
                 maxChoice = 3;
+                if (game->gameTime < 0.0f)
+                    Debug::Print("You Lose", Vector2(44.0f, 15.0f), Debug::RED);
+                else if (game->gameTime > 0.0f)
+                    Debug::Print("You Won", Vector2(44.0f, 15.0f), Debug::BLUE);
                 Debug::Print("SinglePlayer Game", Vector2(35.0f, 30.0f), (currentChoice == 1) ? Debug::BLACK : Debug::WHITE);
                 Debug::Print("MultiPlayer Game", Vector2(36.0f, 50.0f), (currentChoice == 2) ? Debug::BLACK : Debug::WHITE);
                 Debug::Print("Quit", Vector2(47.0f, 70.0f), (currentChoice == 3) ? Debug::BLACK : Debug::WHITE);
