@@ -153,6 +153,8 @@ void NetworkedGame::UpdateGame(float dt) {
         if (thisServer) {
             UpdateAsServer(dt);
             thisServer->UpdateServer();
+            UpdateAsClient(dt);
+            thisClient->UpdateClient();
         }
         else if (thisClient) {
             UpdateAsClient(dt);
@@ -161,29 +163,35 @@ void NetworkedGame::UpdateGame(float dt) {
         timeToNextPacket += 1.0f / 20.0f; //20hz server/client update
     }
 
-    renderer->Render();
-    Debug::UpdateRenderables(dt);
-    // Display main menu
-    if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE)) {
-        Window::GetWindow()->ShowOSPointer(true);
-        Window::GetWindow()->LockMouseToWindow(false);
-        Menu();
-    }
+    if (localPlayer) {
+        renderer->Render();
+        Debug::UpdateRenderables(dt);
+        // Display main menu
+        if (Window::GetKeyboard()->KeyPressed(KeyCodes::ESCAPE)) {
+            Window::GetWindow()->ShowOSPointer(true);
+            Window::GetWindow()->LockMouseToWindow(false);
+            Menu();
+        }
 
-    if (gameTime < 0.0f) {
-        currentGame = 0;
-        Menu();
-    }
-    else if ((player->GetTransform().GetPosition() - Vector3(5, 0, 5)).Length() <= 2.5f && player->GetKey())
-    {
-        currentGame = 0;
-        Menu();
-    }
-    //cout << world->GetMainCamera().GetPosition() << endl;
+        if (gameTime < 0.0f) {
+            currentGame = 0;
+            Menu();
+        }
+        else if ((player->GetTransform().GetPosition() - Vector3(5, 0, 5)).Length() <= 2.5f && player->GetKey())
+        {
+            currentGame = 0;
+            Menu();
+        }
+        //cout << world->GetMainCamera().GetPosition() << endl;
 
-    //UpdateMinimumState();
+        //UpdateMinimumState();
 
-    CourseWork::UpdateGame(dt);
+        CourseWork::UpdateGame(dt);
+
+        for (const auto& pair : scores) {
+            Debug::Print("Player" + std::to_string(pair.first) + ":" + std::to_string(pair.second), Vector2(80, 20 + pair.first * 5));
+        }
+    }
 }
 
 void NetworkedGame::Menu(const std::string& text, const Vector4& colour) {
@@ -205,18 +213,19 @@ void NetworkedGame::SetGameState(int value) {
     if (value == 1) {
         cout << "StartAsServer" << endl;
         if (!thisServer && !thisClient) {
-            StartAsServer();
             saveMazeToFile("maze.txt");
+            InitGameOne();
+            StartAsServer();
+            StartAsClient(127, 0, 0, 1);
         }
-        InitGameOne();
     }
     else if (value == 2) {
         cout << "StartAsClient" << endl;
         if (!thisClient) {
+            InitGameOne();
             thisServer = nullptr;
             StartAsClient(127, 0, 0, 1);
         }
-        InitGameOne();
     }
     else if (value == 3) {
         Window::DestroyGameWindow();
@@ -228,6 +237,11 @@ void NetworkedGame::SetGameState(int value) {
 }
 
 void NetworkedGame::UpdateAsServer(float dt) {
+    for (const auto& pair : scores) {
+        GamePacket* score = new StringPacket(to_string(pair.first) + " " + to_string(pair.second));
+        thisServer->SendGlobalPacket(*score);
+    }
+
     packetsToSnapshot--;
     if (packetsToSnapshot < 0) {
         BroadcastSnapshot(false);
@@ -239,19 +253,19 @@ void NetworkedGame::UpdateAsServer(float dt) {
 }
 
 void NetworkedGame::UpdateAsClient(float dt) {
-    GamePacket* newPacket = new StringPacket("Client says hello!");
+    GamePacket* score = new StringPacket(to_string(localplayerID) + " " + to_string(playerscore));
 
-    //if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
-    //    //fire button pressed!
-    //    newPacket.buttonstates[0] = 1;
-    //    newPacket.lastID = 0; //You'll need to work this out somehow...
-    //}
-    thisClient->SendPacket(*newPacket);
+    ////if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
+    ////    //fire button pressed!
+    ////    newPacket.buttonstates[0] = 1;
+    ////    newPacket.lastID = 0; //You'll need to work this out somehow...
+    ////}
+    thisClient->SendPacket(*score);
 }
 
 Player* NetworkedGame::SpawnPlayer(int playerNum)
 {
-    return new Player(*this, Vector3(nodeSize, 2, nodeSize), charMesh, nullptr, basicShader, playerNum, "player");
+    return new Player(*this, Vector3(nodeSize, 98, nodeSize), charMesh, nullptr, basicShader, playerNum, "player");
 }
 
 void NetworkedGame::BroadcastSnapshot(bool deltaFrame) {
@@ -277,10 +291,10 @@ void NetworkedGame::BroadcastSnapshot(bool deltaFrame) {
             delete newPacket;
         }
     }
-    GamePacket* stringPacket = new StringPacket("Server says hello!");
-    thisServer->SendGlobalPacket(*stringPacket);
-    delete stringPacket;
 }
+/*GamePacket* stringPacket = new StringPacket("Server says hello!");
+    thisServer->SendGlobalPacket(*stringPacket);
+    delete stringPacket;*/
 
 void NetworkedGame::UpdateMinimumState() {
     //Periodically remove old data from the server
@@ -312,18 +326,35 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
 
         string msg = realPacket->GetStringFromData();
 
-        std::cout << name << " received message: " << msg << std::endl;
+        std::istringstream iss(msg);
+        int playerID, playerscore;
+        if (iss >> playerID >> playerscore) {
+            scores[playerID] = max(scores[playerID], playerscore);
+        }
+        //std::cout << name << " received message: " << msg << std::endl;
     }
     else if (type == Player_Connected) {
         AddPlayerPacket* realPacket = (AddPlayerPacket*)payload;
         std::cout << name << " add player: " << realPacket->playerID << std::endl;
-        Player* newplayer = SpawnPlayer(realPacket->playerID);
-        serverPlayers[realPacket->playerID] = SpawnPlayer(realPacket->playerID);
+        if (!localPlayer) {
+            player = new Player(*this, Vector3(nodeSize, 2, nodeSize),
+                charMesh, nullptr, basicShader, 0, "player");
+            localPlayer = player;
+            localplayerID = realPacket->playerID;
+            InitPlayerCamera();
+            serverPlayers[realPacket->playerID] = player;
+        }
+        else {
+            Player* newplayer = SpawnPlayer(realPacket->playerID);
+            serverPlayers[realPacket->playerID] = newplayer;
+        }
     }
     else if (type == Player_Disconnected) {
         DeletePlayerPacket* realPacket = (DeletePlayerPacket*)payload;
         std::cout << name << " delete player: " << realPacket->playerID << std::endl;
         world->RemoveGameObject(serverPlayers[realPacket->playerID]);
+        serverPlayers.erase(realPacket->playerID);
+        scores.erase(realPacket->playerID);
     }
 }
 

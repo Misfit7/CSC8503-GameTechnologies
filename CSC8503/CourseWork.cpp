@@ -202,7 +202,6 @@ void CourseWork::InitGameOne() {
     InitFloor();
     InitGameOneObject();
 
-    InitPlayerCamera();
 
     gameTime = 300.0f;
 }
@@ -352,9 +351,8 @@ void CourseWork::InitGameOneObject() {
             if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'x')
                 AddBoardToWorld(Vector3(nodeSize * x, nodeSize + 1, nodeSize * y),
                     Vector3(0, 0, 0), Vector3(1, 2, 1));
-            else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'S')
-                player = new Player(*this, Vector3(x * nodeSize, 2, y * nodeSize),
-                    charMesh, nullptr, basicShader, 0, "player");
+            //else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'S')
+
             else if (grid->GetAllNodes()[(grid->GetGridWidth() * y) + x].type == 'E')
             {
                 finalTreasurePos = Vector3(x * nodeSize, 2, y * nodeSize);
@@ -501,8 +499,8 @@ void CourseWork::ShowUITwo() {
     Debug::Print("Current Health: " + std::to_string(player->GetHealth()), Vector2(1.5, 5));
     Debug::Print("Current Power: " + std::to_string(player->GetPower()), Vector2(1.5, 9));
     auto condition = [](const auto& pair) { return pair.second == 1; };
-    size_t count = std::count_if(keysFound.begin(), keysFound.end(), condition);
-    Debug::Print("Score: " + std::to_string(count), Vector2(80, 5));
+    playerscore = std::count_if(keysFound.begin(), keysFound.end(), condition);
+    Debug::Print("Score: " + std::to_string(playerscore), Vector2(80, 5));
     Debug::Print("Time: " + std::to_string((int)gameTime) + "s", Vector2(80, 9));
     return;
 }

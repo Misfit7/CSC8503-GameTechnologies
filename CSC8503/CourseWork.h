@@ -87,6 +87,7 @@ namespace NCL {
             bool switchCamera = false;
 
             Player* player;
+            size_t playerscore;
             AIEnemy* aiEnemy;
             vector<Enemy*> enemies;
             DamageObject* DamageLinkSphere;

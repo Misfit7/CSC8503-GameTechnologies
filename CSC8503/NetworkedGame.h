@@ -35,6 +35,7 @@ namespace NCL {
             void BroadcastSnapshot(bool deltaFrame);
             void UpdateMinimumState();
             std::map<int, int> stateIDs;
+            map<int, int> scores;
 
             GameServer* thisServer;
             GameClient* thisClient;
@@ -45,6 +46,7 @@ namespace NCL {
 
             std::map<int, GameObject*> serverPlayers;
             GameObject* localPlayer;
+            int localplayerID;
 
             string name;
         };
