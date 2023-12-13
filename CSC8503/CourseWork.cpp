@@ -202,7 +202,6 @@ void CourseWork::InitGameOne() {
     InitFloor();
     InitGameOneObject();
 
-
     gameTime = 300.0f;
 }
 
@@ -332,7 +331,7 @@ GameObject* CourseWork::AddCapsuleToWorld(const Vector3& position, float meshSiz
 
 void CourseWork::InitFloor() {
     AddFloorToWorld(Vector3(-2.5f, 0, -2.5f), 50);
-    AddFloorToWorld(Vector3(-2.5f, 110, -2.5f), 50);
+    //AddFloorToWorld(Vector3(-2.5f, 110, -2.5f), 50);
 }
 
 void CourseWork::InitGameOneObject() {
@@ -491,7 +490,7 @@ void CourseWork::MoveSelectedObject() {
 
 void CourseWork::ShowUIOne() {
     Debug::Print("Current Health: " + std::to_string(player->GetHealth()), Vector2(1.5, 5));
-    Debug::Print("Time: " + std::to_string(gameTime), Vector2(80, 9));
+    Debug::Print("Time: " + std::to_string((int)gameTime), Vector2(80, 9));
     return;
 }
 
@@ -585,7 +584,7 @@ void CourseWork::GameOneRunning(float dt)
     gameTime -= dt;
     ShowUIOne();
     //ShowUITwo();
-    player->Update(dt);
+    //player->Update(dt);
     for (auto& i : enemies) i->Update(dt);
     //for (auto& i : rotationBoard) i->update();
     DamageLinkSphere->Update();

@@ -8,13 +8,12 @@ using namespace NCL;
 using namespace CSC8503;
 
 Player::Player(CourseWork& g, const Vector3& position,
-    Mesh* mesh, Texture* basicTex, Shader* basicShader, int playerNum, string n) :game(g), world(g.GetWorld())
+    Mesh* mesh, Texture* basicTex, Shader* basicShader, int playerNum, string n, float inverseMass) :game(g), world(g.GetWorld())
 {
     name = n;
     networkObject = new NetworkObject(*this, playerNum);
 
     float meshSize = 1.0f;
-    float inverseMass = 1.0f;
     iMass = inverseMass;
 
     SphereVolume* volume = new SphereVolume(1.0f);
@@ -204,7 +203,11 @@ void Player::Update(float dt)
                 }
             }
         }
-
+        if (Window::GetKeyboard()->KeyDown(KeyCodes::P)) {
+            world->RemoveConstraint(constraint);
+            game.GetFinalTreasure()->GetPhysicsObject()->SetLinearVelocity(Vector3(0, 0, 0));
+            getKey = false;
+        }
 
         //scale
         if (Window::GetKeyboard()->KeyDown(KeyCodes::PLUS)) {

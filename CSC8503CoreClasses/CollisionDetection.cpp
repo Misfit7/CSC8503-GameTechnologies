@@ -241,7 +241,6 @@ bool CollisionDetection::ObjectIntersection(GameObject* a, GameObject* b, Collis
     if (pairType == VolumeType::OBB) {
         return OBBIntersection((OBBVolume&)*volA, transformA, (OBBVolume&)*volB, transformB, collisionInfo);
     }
-    //Two Capsules
 
     //AABB vs Sphere pairs
     if (volA->type == VolumeType::AABB && volB->type == VolumeType::Sphere) {
@@ -280,6 +279,15 @@ bool CollisionDetection::ObjectIntersection(GameObject* a, GameObject* b, Collis
         collisionInfo.a = b;
         collisionInfo.b = a;
         return AABBCapsuleIntersection((CapsuleVolume&)*volB, transformB, (AABBVolume&)*volA, transformA, collisionInfo);
+    }
+
+    if (volA->type == VolumeType::OBB && volB->type == VolumeType::Capsule) {
+        return OBBCapsuleIntersection((OBBVolume&)*volA, transformA, (SphereVolume&)*volB, transformB, collisionInfo);
+    }
+    if (volA->type == VolumeType::Capsule && volB->type == VolumeType::OBB) {
+        collisionInfo.a = b;
+        collisionInfo.b = a;
+        return OBBCapsuleIntersection((OBBVolume&)*volB, transformB, (SphereVolume&)*volA, transformA, collisionInfo);
     }
 
     return false;
@@ -472,6 +480,33 @@ bool  CollisionDetection::OBBSphereIntersection(const OBBVolume& volumeA, const 
     return collided;
 }
 
+bool  CollisionDetection::OBBCapsuleIntersection(const OBBVolume& volumeA, const Transform& worldTransformA,
+    const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo) {
+    Quaternion orientation = worldTransformA.GetOrientation();
+    Vector3 position = worldTransformA.GetPosition();
+
+    Matrix3 transform = Matrix3(orientation);
+    Matrix3 invTransform = Matrix3(orientation.Conjugate());
+
+    Vector3 localSpherePos = worldTransformB.GetPosition() - position;
+
+    Transform one = worldTransformA;
+    one.SetPosition(Vector3());
+
+    Transform two = worldTransformB;
+    two.SetPosition(invTransform * localSpherePos);
+
+    bool collided = AABBSphereIntersection(AABBVolume(volumeA.GetHalfDimensions()), one, volumeB, two, collisionInfo);
+
+    if (collided) {
+        collisionInfo.point.localA = transform * collisionInfo.point.localA;
+        collisionInfo.point.localB = transform * collisionInfo.point.localB;
+        collisionInfo.point.normal = transform * collisionInfo.point.normal;
+    }
+
+    return collided;
+}
+
 
 bool CollisionDetection::SphereCapsuleIntersection(
     const CapsuleVolume& volumeA, const Transform& worldTransformA,
@@ -528,7 +563,6 @@ bool CollisionDetection::OBBIntersection(const OBBVolume& volumeA, const Transfo
     float ra, rb;
     Matrix3 R, AbsR;
 
-    //------------------------------------------------------------------------------
     //Get Local Axis of OBB A
     Matrix4 boxAMat = worldTransformA.GetMatrix();
     boxAMat.SetPositionVector(Vector3(0, 0, 0));
@@ -540,9 +574,7 @@ bool CollisionDetection::OBBIntersection(const OBBVolume& volumeA, const Transfo
     Vector3 uA[3] = { boxARight.Normalised(), boxAUp.Normalised(), boxAForward.Normalised() };
 
     Vector3 boxAExtents = volumeA.GetHalfDimensions();
-    //------------------------------------------------------------------------------
 
-    //------------------------------------------------------------------------------
     //Get Local Axis of OBB B
     Matrix4 boxBMat = worldTransformB.GetMatrix();
     boxBMat.SetPositionVector(Vector3(0, 0, 0));
@@ -554,7 +586,6 @@ bool CollisionDetection::OBBIntersection(const OBBVolume& volumeA, const Transfo
     Vector3 uB[3] = { boxBRight.Normalised(), boxBUp.Normalised(), boxBForward.Normalised() };
 
     Vector3 boxBExtents = volumeB.GetHalfDimensions();
-    //------------------------------------------------------------------------------
 
     for (int i = 0; i < 3; i++)
         for (int j = 0; j < 3; j++)
@@ -645,16 +676,13 @@ bool CollisionDetection::OBBIntersection(const OBBVolume& volumeA, const Transfo
     if (abs(t[1] * R.array[0][2] - t[0] * R.array[1][2]) > ra + rb)
         return false;
 
-    //Debug::DrawLine(t, t + Vector3(0, 1, 0), Debug::MAGENTA, 1000.0f);
     RayCollision rayCollision;
     Ray ray = Ray(worldTransformA.GetPosition(), worldTransformB.GetPosition() - worldTransformA.GetPosition());
     if (RayOBBIntersection(ray, worldTransformB, volumeB, rayCollision))
     {
-        //Debug::DrawLine(rayCollision.collidedAt, rayCollision.collidedAt + rayCollision.collidedNormal, Debug::MAGENTA, 1000.0f);
         collisionInfo.AddContactPoint(Vector3(), rayCollision.collidedAt, -rayCollision.collidedNormal, rayCollision.rayDistance);
     }
 
-    //std::cout << "There is an OBB-OBB collision\n";
     return true;
 }
 

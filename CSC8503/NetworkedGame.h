@@ -44,7 +44,7 @@ namespace NCL {
 
             std::vector<NetworkObject*> networkObjects;
 
-            std::map<int, GameObject*> serverPlayers;
+            std::map<int, Player*> serverPlayers;
             GameObject* localPlayer;
             int localplayerID;
 

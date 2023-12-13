@@ -16,7 +16,8 @@ namespace NCL {
         {
         public:
             Player(CourseWork& g, const Vector3& position,
-                Mesh* mesh, Texture* basicTex, Shader* basicShader, int playerNum, string n = "");
+                Mesh* mesh, Texture* basicTex, Shader* basicShader,
+                int playerNum, string n = "", float inverseMass = 1.0f);
 
             void Update(float dt);
 
@@ -35,6 +36,7 @@ namespace NCL {
             void ResetFinalTreasure();
 
             bool GetAttack() { return attack; }
+            float iMass;
         protected:
             CourseWork& game;
             GameWorld* world;
@@ -42,7 +44,6 @@ namespace NCL {
             void Respawn();
 
             float speed = 1.0f;
-            float iMass;
             bool isStand;
             bool isGrab = false;
             bool isHit = false;

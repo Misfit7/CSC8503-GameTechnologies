@@ -187,7 +187,10 @@ void NetworkedGame::UpdateGame(float dt) {
         //UpdateMinimumState();
 
         CourseWork::UpdateGame(dt);
-
+        //player update
+        for (const auto& pair : serverPlayers) {
+            pair.second->Update(dt);
+        }
         for (const auto& pair : scores) {
             Debug::Print("Player" + std::to_string(pair.first) + ":" + std::to_string(pair.second), Vector2(80, 20 + pair.first * 5));
         }
@@ -218,6 +221,14 @@ void NetworkedGame::SetGameState(int value) {
             StartAsServer();
             StartAsClient(127, 0, 0, 1);
         }
+        else {
+            InitGameOne();
+            player = new Player(*this, Vector3(nodeSize, 98, nodeSize),
+                charMesh, nullptr, basicShader, 0, "player");
+            localPlayer = player;
+            InitPlayerCamera();
+            serverPlayers[localplayerID] = player;
+        }
     }
     else if (value == 2) {
         cout << "StartAsClient" << endl;
@@ -226,6 +237,14 @@ void NetworkedGame::SetGameState(int value) {
             thisServer = nullptr;
             StartAsClient(127, 0, 0, 1);
         }
+        else {
+            InitGameOne();
+            player = new Player(*this, Vector3(nodeSize, 98, nodeSize),
+                charMesh, nullptr, basicShader, 0, "player");
+            localPlayer = player;
+            InitPlayerCamera();
+            serverPlayers[localplayerID] = player;
+        }
     }
     else if (value == 3) {
         Window::DestroyGameWindow();
@@ -233,6 +252,11 @@ void NetworkedGame::SetGameState(int value) {
     }
     else if (value == 4) {
         InitGameOne();
+        player = new Player(*this, Vector3(nodeSize, 98, nodeSize),
+            charMesh, nullptr, basicShader, 0, "player");
+        localPlayer = player;
+        InitPlayerCamera();
+        serverPlayers[localplayerID] = player;
     }
 }
 
@@ -337,7 +361,7 @@ void NetworkedGame::ReceivePacket(int type, GamePacket* payload, int source) {
         AddPlayerPacket* realPacket = (AddPlayerPacket*)payload;
         std::cout << name << " add player: " << realPacket->playerID << std::endl;
         if (!localPlayer) {
-            player = new Player(*this, Vector3(nodeSize, 2, nodeSize),
+            player = new Player(*this, Vector3(nodeSize, 98, nodeSize),
                 charMesh, nullptr, basicShader, 0, "player");
             localPlayer = player;
             localplayerID = realPacket->playerID;

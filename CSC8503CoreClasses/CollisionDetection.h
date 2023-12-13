@@ -90,7 +90,8 @@ namespace NCL {
             const AABBVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
         static bool SphereCapsuleIntersection(const CapsuleVolume& volumeA, const Transform& worldTransformA,
             const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
-
+        static bool OBBCapsuleIntersection(const OBBVolume& volumeA, const Transform& worldTransformA,
+            const SphereVolume& volumeB, const Transform& worldTransformB, CollisionInfo& collisionInfo);
         static Vector3 Unproject(const Vector3& screenPos, const PerspectiveCamera& cam);
 
         static Vector3		UnprojectScreenPosition(Vector3 position, float aspect, float fov, const PerspectiveCamera& c);
