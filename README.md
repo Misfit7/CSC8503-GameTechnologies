@@ -48,15 +48,15 @@ The level is a randomly generated maze with an intelligent adversary—an angry 
 - Stack Automata used for Menu.
 # Hotkey
 
-"WASD" - Player Move.
-"QE" - Player Rotate.
-"SPACE" - Player Jump (can double jump).
-"LEFT SHIFT" - Player Accelerate.
-"T" - Player launches grappling hooks.
-"F" - When empowered,  player can dash towards enemy and hit it.
-"Y" - Switch camera perspective.
-"B" - Change Broad phase and Narrow phase.
-"P" - Put down the carried objects.
+"WASD" - Player Move.  
+"QE" - Player Rotate.  
+"SPACE" - Player Jump (can double jump).  
+"LEFT SHIFT" - Player Accelerate.  
+"T" - Player launches grappling hooks.  
+"F" - When empowered,  player can dash towards enemy and hit it.  
+"Y" - Switch camera perspective.  
+"B" - Change Broad phase and Narrow phase.  
+"P" - Put down the carried objects.  
 
 #  Screenshot
 
