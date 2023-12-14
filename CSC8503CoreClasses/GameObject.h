@@ -2,6 +2,7 @@
 #include "Transform.h"
 #include "CollisionVolume.h"
 #include "RenderObject.h"
+#include "PhysicsObject.h"
 
 using std::vector;
 using namespace std;
@@ -11,17 +12,6 @@ namespace NCL {
         class NetworkObject;
         class RenderObject;
         class PhysicsObject;
-
-        enum class CollisionLayer {
-            Default = 1,
-            Wall = 2,
-            Player = 4,
-            Enemy = 8,
-            Coins = 16,
-            Floor = 32,
-            UI = 256,
-            Finish = 512
-        };
 
         enum AxisLock {
             LINEAR_X = (1 << 0),
@@ -95,19 +85,28 @@ namespace NCL {
                 worldID = newID;
             }
 
-            int		GetWorldID() const {
+            int	GetWorldID() const {
                 return worldID;
             }
 
-            void ConstrainLinearVelocity();
-            void ConstrainAngularVelocity();
+            void ConstraintVelocity(bool isLinear) {
+                Vector3 velocity = isLinear ? physicsObject->GetLinearVelocity() : physicsObject->GetAngularVelocity();
+
+                if (lockFlags & LINEAR_X || lockFlags & ANGULAR_X) {
+                    velocity.x = 0;
+                }
+                if (lockFlags & LINEAR_Y || lockFlags & ANGULAR_Y) {
+                    velocity.y = 0;
+                }
+                if (lockFlags & LINEAR_Z || lockFlags & ANGULAR_Z) {
+                    velocity.z = 0;
+                }
+
+                isLinear ? physicsObject->SetLinearVelocity(velocity) : physicsObject->SetAngularVelocity(velocity);
+            }
 
             void SetLockFlags(int lf) {
                 lockFlags = lf;
-            }
-
-            int	GetLockFlags() const {
-                return lockFlags;
             }
 
             void SetColour(Vector4 c) {
@@ -132,6 +131,7 @@ namespace NCL {
             bool		isActive;
             int			worldID;
             std::string	name;
+            //map<>
 
             Vector3 broadphaseAABB;
 

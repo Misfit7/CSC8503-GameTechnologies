@@ -139,8 +139,8 @@ void Player::Update(float dt)
         if (jumpCount >= 1 && isStand)
         {
             //clear elasticity
-            Vector3 playerLV = physicsObject->GetLinearVelocity();
-            physicsObject->SetLinearVelocity(Vector3(playerLV.x, 0, playerLV.z));
+            Vector3 playerV = physicsObject->GetLinearVelocity();
+            physicsObject->SetLinearVelocity(Vector3(playerV.x, 0, playerV.z));
             jumpCount = 0;
         }
         if (Window::GetKeyboard()->KeyPressed(KeyCodes::SPACE)) {
@@ -155,7 +155,7 @@ void Player::Update(float dt)
         }
         //cout << jumpCount << endl;
 
-        Debug::Print("O", Vector2(49.5f, 49.5f), Debug::RED);
+        Debug::Print("+", Vector2(49.5f, 49.5f), Debug::RED);
         //interact
         RayCollision grabCollision;
         if (Window::GetKeyboard()->KeyPressed(KeyCodes::T)) {
@@ -210,12 +210,12 @@ void Player::Update(float dt)
         }
 
         //scale
-        if (Window::GetKeyboard()->KeyDown(KeyCodes::PLUS)) {
+       /* if (Window::GetKeyboard()->KeyDown(KeyCodes::PLUS)) {
 
         }
         if (Window::GetKeyboard()->KeyDown(KeyCodes::MINUS)) {
 
-        }
+        }*/
 
     }
 

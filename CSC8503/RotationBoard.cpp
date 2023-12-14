@@ -35,5 +35,8 @@ RotationBoard::RotationBoard(CourseWork& g, const Vector3& position, const Vecto
 
 void RotationBoard::update()
 {
-    physicsObject->AddTorque(Vector3(0, -15.0f / physicsObject->GetInverseMass(), 0));
+    ConstraintVelocity(0);
+    ConstraintVelocity(1);
+    physicsObject->ApplyAngularImpulse(Vector3(0, -15.0f / physicsObject->GetInverseMass(), 0));
+    //physicsObject->AddTorque(Vector3(0, -15.0f / physicsObject->GetInverseMass(), 0));
 }

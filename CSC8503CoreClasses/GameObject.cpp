@@ -51,33 +51,3 @@ void GameObject::UpdateBroadphaseAABB() {
         broadphaseAABB = mat * halfSizes;
     }
 }
-
-void GameObject::ConstrainLinearVelocity() {
-    Vector3 linearVel = physicsObject->GetLinearVelocity();
-    if (lockFlags & AxisLock::LINEAR_X) {
-        physicsObject->SetLinearVelocity(Vector3(0, linearVel.y, linearVel.z));
-        linearVel = physicsObject->GetLinearVelocity();
-    }
-    if (lockFlags & AxisLock::LINEAR_Y) {
-        physicsObject->SetLinearVelocity(Vector3(linearVel.x, 0, linearVel.z));
-        linearVel = physicsObject->GetLinearVelocity();
-    }
-    if (lockFlags & AxisLock::LINEAR_Z) {
-        physicsObject->SetLinearVelocity(Vector3(linearVel.x, linearVel.y, 0));
-    }
-}
-
-void GameObject::ConstrainAngularVelocity() {
-    Vector3 angularVel = this->physicsObject->GetAngularVelocity();
-    if (lockFlags & AxisLock::ANGULAR_X) {
-        this->physicsObject->SetAngularVelocity(Vector3(0, angularVel.y, angularVel.z));
-        angularVel = this->physicsObject->GetAngularVelocity();
-    }
-    if (lockFlags & AxisLock::ANGULAR_Y) {
-        this->physicsObject->SetAngularVelocity(Vector3(angularVel.x, 0, angularVel.z));
-        angularVel = this->physicsObject->GetAngularVelocity();
-    }
-    if (lockFlags & AxisLock::ANGULAR_Z) {
-        this->physicsObject->SetAngularVelocity(Vector3(angularVel.x, angularVel.y, 0));
-    }
-}
