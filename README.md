@@ -3,9 +3,9 @@
 
 Developing a C++-based game encompassing physics, networking, and artificial intelligence functionalities within a rudimentary 3D setting. The player assumes control of an avatar through intricate physics computations, integrating collision detection and resolution mechanisms. 
 
-# Youtube Link:
+# Demo Link:
 
-Most of the functionality is demonstrated in the following demo [video](https://youtu.be/B7SkwaWGWYE)
+Most of the functionality is demonstrated in the following demo Youtube: [video](https://youtu.be/B7SkwaWGWYE) Bili: [video](https://www.bilibili.com/video/BV1Ge411v72c/)
 
 # Gameplay
 
